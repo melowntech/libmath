@@ -5,8 +5,8 @@
  * Analytical geometry functions
  */
 
-#ifndef GEOMETRY_HPP
-#define GEOMETRY_HPP
+#ifndef MATH_GEOMETRY_HPP
+#define MATH_GEOMETRY_HPP
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
@@ -123,4 +123,4 @@ ublas::vector<double> intersection(
 
 } // namespace math
 
-#endif //GEOMETRY_HPP
+#endif // MATH_GEOMETRY_HPP

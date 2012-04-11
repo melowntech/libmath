@@ -5,8 +5,10 @@
  * FIR filters
  */
 
-#ifndef FILTERS_HPP
-#define FILTERS_HPP
+#ifndef MATH_FILTERS_HPP
+#define MATH_FILTERS_HPP
+
+#include <cmath>
 
 namespace math {
 
@@ -49,7 +51,7 @@ public:
 private :
 
     static float sinc( float x, float cutoff )  {
-        if ( fabs( x ) < VERY_SMALL_NUMBER )
+        if ( fabs( x ) < 1E-15 )
             return 2.0 / cutoff;
         else
             return 1.0 / ( M_PI * x ) * sin( 2 * M_PI * x / cutoff );
@@ -64,5 +66,5 @@ private :
 
 } // namespace math
 
-#endif // FILTERS_HPP
+#endif // MATH_FILTERS_HPP
 

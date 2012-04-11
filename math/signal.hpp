@@ -5,10 +5,8 @@
  * 2d signal with forward signal reconstruction capability.
  */
 
-#ifndef SIGNAL_HPP
-#define SIGNAL_HPP
-
-#include "math.hpp"
+#ifndef MATH_SIGNAL_HPP
+#define MATH_SIGNAL_HPP
 
 #include <boost/gil/gil_all.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -44,7 +42,7 @@ public :
 
         bool defined() const {
 
-            if ( pwsum - nwsum < VERY_SMALL_NUMBER ) return false;
+            if ( pwsum - nwsum < 1E-15 ) return false;
             if ( pwsum <= 3 * nwsum ) return false;
             if ( quadrants != QUADRANT_ALL ) return false;
 
@@ -157,4 +155,4 @@ private:
 
 } // namespace math
 
-#endif
+#endif // MATH_SIGNAL_HPP

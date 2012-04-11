@@ -5,10 +5,12 @@
  * Combinatorics functions
  */
 
-#ifndef COMBINATORICS_HPP
-#define COMBINATORICS_HPP
+#ifndef MATH_COMBINATORICS_HPP
+#define MATH_COMBINATORICS_HPP
 
 #include <vector>
+
+#include <sys/types.h>
 
 namespace math {
 
@@ -30,4 +32,4 @@ private :
 
 }
 
-#endif // COMBINATORICS_HPP
+#endif // MATH_COMBINATORICS_HPP

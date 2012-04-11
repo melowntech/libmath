@@ -5,8 +5,8 @@
  * Low level math helper functions
  */
       
-#ifndef MATH_HPP
-#define MATH_HPP
+#ifndef MATH_MATH_HPP
+#define MATH_MATH_HPP
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
@@ -100,5 +100,5 @@ ublas::matrix<T> matrixInvert( const ublas::matrix<T> & input ) {
 
 } // namespace math
 
-#endif // MATH_HPP
+#endif // MATH_MATH_HPP
       

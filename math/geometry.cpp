@@ -4,6 +4,8 @@
  
 #include "geometry.hpp"
 
+#include "math.hpp"
+
 namespace math {
 
 float lineDistance(
@@ -22,7 +24,7 @@ float lineDistance(
     b(1) = inner_prod( u1, p2 - p1 );
 
     // test for parallel vectors
-    if ( fabs( a(0,0) * a(1,1) - a(1,0) * a(0,1) ) < VERY_SMALL_NUMBER ) {
+    if ( fabs( a(0,0) * a(1,1) - a(1,0) * a(0,1) ) < 1E-15 ) {
 
         // well, not quite right - but this is a singular case
         r1 = r2 = 0.0;

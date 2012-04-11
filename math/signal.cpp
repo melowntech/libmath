@@ -4,10 +4,14 @@
 
 #include "signal.hpp"
 
+#include "math.hpp"
+#include "filters.hpp"
 #include <cmath>
 
 
-Signal_t::Signal_t( int sizeX, int sizeY,
+namespace math {
+
+Signal2::Signal2( int sizeX, int sizeY,
     const double llx, const double lly, const double urx,
     const double ury, const Type_t type )
     : sizeX( sizeX ), sizeY( sizeY ),
@@ -20,11 +24,11 @@ Signal_t::Signal_t( int sizeX, int sizeY,
     cells = new Cell_s[ sizeX * sizeY ];
 }
 
-Signal_t::~Signal_t() {
+Signal2::~Signal2() {
     delete[] cells;
 }
 
-void Signal_t::sample( double x, double y, double value,
+void Signal2::sample( double x, double y, double value,
     double periodX, double periodY ) {
 
     double px = ( x - llx ) / pixelx;
@@ -35,7 +39,7 @@ void Signal_t::sample( double x, double y, double value,
     double phwinx = pcutoffX;
     double phwiny = pcutoffY;
 
-    LowPassFilter2_t filter( pcutoffX, phwinx, pcutoffY, phwiny );
+    math::LowPassFilter2_t filter( pcutoffX, phwinx, pcutoffY, phwiny );
 
     int minpx = int( floor( px - phwinx ) );
     int maxpx = int( ceil( px + phwinx ) );
@@ -54,9 +58,9 @@ void Signal_t::sample( double x, double y, double value,
             unsigned char quadrant = Cell_s::QUADRANT_NONE;
 
             bool innerWindow =
-                ccinterval( px - 0.55 * pcutoffX,
+                math::ccinterval( px - 0.55 * pcutoffX,
                             px + 0.55 * pcutoffX, (double) i ) &&
-                ccinterval( py - 0.55 * pcutoffY,
+                math::ccinterval( py - 0.55 * pcutoffY,
                             py + 0.55 * pcutoffY, (double) j );
 
             if ( innerWindow ) {
@@ -79,7 +83,7 @@ void Signal_t::sample( double x, double y, double value,
         }
 }
 
-void Signal_t::visualize( gil::rgba8_image_t & output ) const {
+void Signal2::visualize( gil::rgba8_image_t & output ) const {
 
     gil::rgba8_view_t ov = gil::view( output );
     gil::fill_pixels( ov, gil::rgba8_pixel_t( 0x0, 0x0, 0x0, 0x0 ) );
@@ -100,7 +104,7 @@ void Signal_t::visualize( gil::rgba8_image_t & output ) const {
         }
 
     if ( ! isdef  ) return;
-    if ( fabs( maxValue - minValue ) < VERY_SMALL_NUMBER )
+    if ( fabs( maxValue - minValue ) < 1E-15 )
         minValue = maxValue - 1.0;
 
 
@@ -135,7 +139,7 @@ void Signal_t::visualize( gil::rgba8_image_t & output ) const {
     }
 }
 
-void Signal_t::getQuads( QuadList_t & quads, const Transform_t & trafo  ) {
+void Signal2::getQuads( QuadList_t & quads, const Transform_t & trafo  ) {
 
     int xupper = ( type & Xperiodic ) ? sizeX : sizeX - 1;
 
@@ -176,3 +180,5 @@ void Signal_t::getQuads( QuadList_t & quads, const Transform_t & trafo  ) {
         }
     }
 }
+
+} // namespace math
