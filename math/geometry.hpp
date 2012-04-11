@@ -123,4 +123,4 @@ ublas::vector<double> intersection(
 
 } // namespace math
 
-#endif GEOMETRY_HPP
+#endif //GEOMETRY_HPP
