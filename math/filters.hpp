@@ -13,6 +13,161 @@
 namespace math {
 
 /**
+ * Abstract class providing horizontal image filtering with a static convolution
+ * kernel.
+ */
+
+#include "volume.hpp"
+
+
+class FIRFilter_t {
+
+public :
+
+    FIRFilter_t( const uint halforder ) : halforder( halforder ) {
+        order = 2 * halforder + 1;
+        kernel = new float[ order ];
+        std::fill( kernel, kernel + order, 0 );
+    }
+
+    ~FIRFilter_t() { delete[] kernel; };
+
+    void dump() {
+        for ( uint i = 0; i < order; i++ )
+            std::cout << "\t" << i << "\t"
+            << std::setprecision( 10 ) << std::fixed << kernel[ i ] << "\n";
+    }
+
+    /**
+     * Filter a grayscale image (in x direction). GIL image views should be used.
+     */
+    template <typename SrcView_t, typename DstView_t>
+    void filterImage( const SrcView_t & srcView, const DstView_t & dstView ) {
+
+        for ( int y = 0; y < srcView.height(); y++ ) {
+            typename SrcView_t::x_iterator srcxit = srcView.row_begin( y );
+            typename DstView_t::x_iterator dstxit = dstView.row_begin( y );
+
+            for ( int x = 0; x < srcView.width(); x++ ) {
+
+                *dstxit = gilConvolute( srcxit, x, srcView.width() );
+                srcxit++; dstxit++;
+            }
+
+        }
+    }
+
+    /**
+     * Filter a volume (in a single direction).
+     */
+    template <typename SrcVolume_t, typename DstVolume_t>
+    void filterVolume( SrcVolume_t & srcVolume,
+                       DstVolume_t & dstVolume,
+                       const VolumeBase_t::Displacement_s & diff ) {
+
+        assert( srcVolume.sizeX() == dstVolume.sizeX() );
+        assert( srcVolume.sizeY() == dstVolume.sizeY() );
+        assert( srcVolume.sizeZ() == dstVolume.sizeZ() );
+        assert( diff != VolumeBase_t::Displacement_s( 0, 0, 0 ) );
+
+        std::set<VolumeBase_t::Position_s> poss
+            = srcVolume.iteratorPositions( diff );
+
+        BOOST_FOREACH( VolumeBase_t::Position_s pos, poss ) {
+
+            typename SrcVolume_t::Giterator_t sit( srcVolume, pos, diff );
+            typename SrcVolume_t::Giterator_t send = srcVolume.gend( sit );
+            typename DstVolume_t::Giterator_t dit( dstVolume, pos, diff );
+
+            int rowSize = send - sit;
+
+            for ( int x = 0; x < rowSize; x++ ) {
+                dit.setValue( convolute( sit, x, rowSize ) );
+                ++sit; ++dit;
+            }
+        }
+    }
+
+
+    template <typename Iterator_t>
+    float convolute( const Iterator_t & pos,
+                        uint xpos, uint rowSize ) const {
+
+        float weightSum = 0.0;
+        float valueSum = 0.0;
+
+        Iterator_t begin = pos - std::min( xpos, halforder );
+        Iterator_t end = pos + std::min( rowSize - 1 - xpos, halforder );
+
+        int index = std::max( (int) ( halforder - xpos ), (int) 0 );
+
+        for ( Iterator_t it = begin; it <= end; ++it ) {
+            valueSum += it[0] * kernel[ index ];
+            weightSum += kernel[ index ];
+            index++;
+        }
+
+        return valueSum / weightSum;
+    }
+
+protected :
+
+
+/*    template <typename Iterator_t>
+    float gilConvolute( const Iterator_t & pos,
+        uint xpos, uint rowSize ) const {
+
+            float weightSum = 0.0;
+            float valueSum = 0.0;
+
+            Iterator_t begin
+                         = pos - std::min( xpos, halforder );
+            Iterator_t end
+                         = pos + std::min( rowSize - 1 - xpos, halforder );
+
+            int index = std::max( (int) ( halforder - xpos ), (int) 0 );
+
+            for ( Iterator_t it = begin; it <= end; ++it ) {
+                valueSum += it[0][0] * kernel[ index ];
+                weightSum += kernel[ index ];
+                index++;
+            }
+
+            return valueSum / weightSum;
+    }*/
+
+
+    uint halforder, order;
+    float * kernel;
+};
+
+/**
+ * Low-pass filter constructed from sinc function by applying a hamming window.
+ */
+
+class LowPassFilter_t : public FIRFilter_t {
+
+public :
+    LowPassFilter_t( float cutoffPeriod, uint halfwindow )
+    : FIRFilter_t( halfwindow ) {
+
+        for ( uint i = 0; i <= halforder; i++ ) {
+
+            float sinci = i == 0 ? 2 / cutoffPeriod :
+                1.0 / ( M_PI * i ) * sin( 2 * M_PI * i / cutoffPeriod );
+            float hamming = ( order == 1 ) ? 1 :
+                0.54 + 0.46 * cos( 2 * M_PI * i / ( order - 1 ) );
+            kernel[ halforder - i ]
+                = kernel[ halforder + i ] = hamming * sinci;
+
+        }
+    }
+};
+
+
+
+
+/**
  * Abstract class for 2D analytic window filter
  */
 
