@@ -58,37 +58,12 @@ public :
     }
 
     /**
-     * Filter a volume (in a single direction).
-     */
-    template <typename SrcVolume_t, typename DstVolume_t>
-    void filterVolume( SrcVolume_t & srcVolume,
-                       DstVolume_t & dstVolume,
-                       const VolumeBase_t::Displacement_s & diff ) {
-
-        assert( srcVolume.sizeX() == dstVolume.sizeX() );
-        assert( srcVolume.sizeY() == dstVolume.sizeY() );
-        assert( srcVolume.sizeZ() == dstVolume.sizeZ() );
-        assert( diff != VolumeBase_t::Displacement_s( 0, 0, 0 ) );
-
-        std::set<VolumeBase_t::Position_s> poss
-            = srcVolume.iteratorPositions( diff );
-
-        BOOST_FOREACH( VolumeBase_t::Position_s pos, poss ) {
-
-            typename SrcVolume_t::Giterator_t sit( srcVolume, pos, diff );
-            typename SrcVolume_t::Giterator_t send = srcVolume.gend( sit );
-            typename DstVolume_t::Giterator_t dit( dstVolume, pos, diff );
-
-            int rowSize = send - sit;
-
-            for ( int x = 0; x < rowSize; x++ ) {
-                dit.setValue( convolute( sit, x, rowSize ) );
-                ++sit; ++dit;
-            }
-        }
-    }
-
-
+     * Obtain a single filter response value for a given input. The input is represented
+     * by an iterator.
+     * This is in fact a convolution operation, with filter used as a convolution kernel.
+     * xpos and rowsize parameters signal the position within input sequence and the length
+     * of the sequence.
+     */ 
     template <typename Iterator_t>
     float convolute( const Iterator_t & pos,
                         uint xpos, uint rowSize ) const {
@@ -111,31 +86,6 @@ public :
     }
 
 protected :
-
-
-/*    template <typename Iterator_t>
-    float gilConvolute( const Iterator_t & pos,
-        uint xpos, uint rowSize ) const {
-
-            float weightSum = 0.0;
-            float valueSum = 0.0;
-
-            Iterator_t begin
-                         = pos - std::min( xpos, halforder );
-            Iterator_t end
-                         = pos + std::min( rowSize - 1 - xpos, halforder );
-
-            int index = std::max( (int) ( halforder - xpos ), (int) 0 );
-
-            for ( Iterator_t it = begin; it <= end; ++it ) {
-                valueSum += it[0][0] * kernel[ index ];
-                weightSum += kernel[ index ];
-                index++;
-            }
-
-            return valueSum / weightSum;
-    }*/
-
 
     uint halforder, order;
     float * kernel;
