@@ -8,6 +8,9 @@
 #ifndef MATH_FILTERS_HPP
 #define MATH_FILTERS_HPP
 
+#include <iomanip>
+#include <sstream>
+
 #include <cmath>
 
 namespace math {
@@ -16,8 +19,6 @@ namespace math {
  * Abstract class providing horizontal image filtering with a static convolution
  * kernel.
  */
-
-#include "volume.hpp"
 
 
 class FIRFilter_t {
@@ -32,29 +33,12 @@ public :
 
     ~FIRFilter_t() { delete[] kernel; };
 
-    void dump() {
+    std::string dump() {
+        std::ostringstream str;
         for ( uint i = 0; i < order; i++ )
-            std::cout << "\t" << i << "\t"
+            str << "\t" << i << "\t"
             << std::setprecision( 10 ) << std::fixed << kernel[ i ] << "\n";
-    }
-
-    /**
-     * Filter a grayscale image (in x direction). GIL image views should be used.
-     */
-    template <typename SrcView_t, typename DstView_t>
-    void filterImage( const SrcView_t & srcView, const DstView_t & dstView ) {
-
-        for ( int y = 0; y < srcView.height(); y++ ) {
-            typename SrcView_t::x_iterator srcxit = srcView.row_begin( y );
-            typename DstView_t::x_iterator dstxit = dstView.row_begin( y );
-
-            for ( int x = 0; x < srcView.width(); x++ ) {
-
-                *dstxit = gilConvolute( srcxit, x, srcView.width() );
-                srcxit++; dstxit++;
-            }
-
-        }
+        return str.str();
     }
 
     /**
@@ -74,6 +58,7 @@ public :
         Iterator_t begin = pos - std::min( xpos, halforder );
         Iterator_t end = pos + std::min( rowSize - 1 - xpos, halforder );
 
+
         int index = std::max( (int) ( halforder - xpos ), (int) 0 );
 
         for ( Iterator_t it = begin; it <= end; ++it ) {
@@ -84,6 +69,34 @@ public :
 
         return valueSum / weightSum;
     }
+
+
+    /**
+     * boost::gil view iterators need a special treatment, even if theya are grayscale views.
+     * I don't know why.
+     */
+    template <typename Iterator_t>
+    float gilConvolute( const Iterator_t & pos,
+                        uint xpos, uint rowSize ) const {
+
+        float weightSum = 0.0;
+        float valueSum = 0.0;
+
+        Iterator_t begin = pos - std::min( xpos, halforder );
+        Iterator_t end = pos + std::min( rowSize - 1 - xpos, halforder );
+
+
+        int index = std::max( (int) ( halforder - xpos ), (int) 0 );
+
+        for ( Iterator_t it = begin; it <= end; ++it ) {
+            valueSum += it[0][0] * kernel[ index ];
+            weightSum += kernel[ index ];
+            index++;
+        }
+
+        return valueSum / weightSum;
+    }
+     
 
 protected :
 
