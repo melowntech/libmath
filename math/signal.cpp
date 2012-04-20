@@ -8,6 +8,7 @@
 #include "filters.hpp"
 #include <cmath>
 
+#include <dbglog/dbglog.hpp>
 
 namespace math {
 
@@ -18,8 +19,16 @@ Signal2::Signal2( int sizeX, int sizeY,
       llx( llx ), lly( lly ), urx( urx ), ury( ury ),
       type( type ) {
 
-    pixelx = ( urx - llx ) / sizeX;
-    pixely = ( ury - lly ) / sizeY;
+    LOG( info2 )
+        << "Created signal with extents ["
+        << llx << "," << lly << "]->[" << urx << "," << ury << "]";
+          
+    if ( type & Xperiodic )
+        pixelx = ( urx - llx ) / sizeX;
+    else
+        pixelx = ( urx - llx ) / ( sizeX - 1 );
+    
+    pixely = ( ury - lly ) / ( sizeY - 1 );
 
     cells = new Cell_s[ sizeX * sizeY ];
 }
@@ -33,14 +42,20 @@ void Signal2::sample( double x, double y, double value,
 
     double px = ( x - llx ) / pixelx;
     double py = ( y - lly ) / pixely;
-
+    
     double pcutoffX = 2 * std::max( periodX, pixelx ) / pixelx;
     double pcutoffY = 2 * std::max( periodY, pixely ) / pixely;
-    double phwinx = pcutoffX;
-    double phwiny = pcutoffY;
 
-    math::LowPassFilter2_t filter( pcutoffX, phwinx, pcutoffY, phwiny );
+    LOG( debug ) << "Adding sample at [" << x << "," << y << "] ("
+        << px << "," << py << "), periods ["
+        << periodX << "," << periodY <<"].";
+    
+    math::LowPassFilter2_t filter( pcutoffX, pcutoffX, pcutoffY, pcutoffY );
 
+    double phwinx = filter.halfwindowX();
+    double phwiny = filter.halfwindowY();
+
+    
     int minpx = int( floor( px - phwinx ) );
     int maxpx = int( ceil( px + phwinx ) );
     int minpy = std::max( int( floor( py - phwiny ) ), 0 );
@@ -53,7 +68,7 @@ void Signal2::sample( double x, double y, double value,
 
     for ( int j = minpy; j <= maxpy; j++ )
         for ( int i = minpx; i <= maxpx; i++ ) {
-            Cell_s & cell = at( ( i + sizeX ) % sizeX, j ) ;
+            Cell_s & cell = at( ( i + 10 * sizeX ) % sizeX, j ) ;
 
             unsigned char quadrant = Cell_s::QUADRANT_NONE;
 
@@ -65,21 +80,13 @@ void Signal2::sample( double x, double y, double value,
 
             if ( innerWindow ) {
 
-                if ( i < px  &&  j < py ) quadrant = Cell_s::QUADRANT_LL;
-                if ( i >= px  &&  j < py ) quadrant = Cell_s::QUADRANT_LR;
-                if ( i >= px  &&  j >= py ) quadrant = Cell_s::QUADRANT_UR;
-                if ( i < px  &&  j >= py ) quadrant = Cell_s::QUADRANT_UL;
+                if ( i <= px  &&  j <= py ) quadrant |= Cell_s::QUADRANT_LL;
+                if ( i >= px  &&  j <= py ) quadrant |= Cell_s::QUADRANT_LR;
+                if ( i >= px  &&  j >= py ) quadrant |= Cell_s::QUADRANT_UR;
+                if ( i <= px  &&  j >= py ) quadrant |= Cell_s::QUADRANT_UL;
             }
 
-            /*double weight = 1.0 / ( 15.0 * (
-                sqr( ( i - px ) / std::min( periodX, periodY )  )
-                + sqr( ( j - py ) / std::min( periodX, periodY ) ) ) + 1.0 );*/
-
             cell.add( value, filter( i - px, j - py ), quadrant );
-            //cell.add( value, weight, quadrant );
-            /*if ( ( ( i + sizeX ) % sizeX ) == 95 && j == 220 )
-            std::cout << px << "\t" << py << "\t" << filter( i - px, j - py )
-                << "\t" << value << "\t" << periodY << std::endl; */
         }
 }
 
@@ -108,8 +115,6 @@ void Signal2::visualize( gil::rgba8_image_t & output ) const {
         minValue = maxValue - 1.0;
 
 
-    //std::cout << "min = " << minValue << ", max = " << maxValue << "\n";
-
     // iterate through pixels
     for ( int j = 0; j < sizeY; j++ ) {
         const_iterator sit = row_begin( sizeY - 1 - j );
@@ -137,6 +142,79 @@ void Signal2::visualize( gil::rgba8_image_t & output ) const {
             dit++; sit++;
         }
     }
+}
+
+double Signal2::operator() ( const double x, const double y ) const {
+
+    // transform coordinates to pixel space
+    double px = ( x - llx ) / pixelx;
+    double py = ( y - lly ) / pixely;
+
+    if ( type & Xperiodic ) {
+        int hedge = int( floor( px / sizeX ) );
+        px -= hedge * sizeX;
+    }
+
+    if ( fabs( px - 0.0 ) < 1E-15 ) px = 0.0;
+    if ( fabs( px - sizeX + 1 ) < 1E-15 ) px = sizeX - 1;
+    if ( fabs( py - 0.0 ) < 1E-15 ) py = 0.0;
+    if ( fabs( py - sizeY + 1 ) < 1E-15 ) py = sizeY - 1;
+
+    if ( ! ( type & Xperiodic ) )
+        if ( ! math::ccinterval( 0.0, sizeX - 1.0, px ) ) {
+
+            LOG( err2 ) << "Out of domain value (" << x << "," << y
+                        << ") requested from signal.";
+            throw std::runtime_error( "Domain error in Signal2" );
+            
+        }
+            
+    if ( ! math::ccinterval( 0.0, sizeY - 1.0, py ) ) {
+            LOG( err2 ) << "Out of domain value (" << x << "," << y
+                        << ") requested from signal.";
+            throw std::runtime_error( "Domain error in Signal2" );
+    }
+
+    // reconstruct value
+    LowPassFilter2_t filter( 2, 2, 2, 2 );
+
+    int minpx, maxpx, minpy, maxpy;
+    
+    
+    if ( type & Xperiodic ) {
+        minpx = int( floor( px - filter.halfwindowX() ) );
+        maxpx = int( ceil( px + filter.halfwindowX() ) );
+        
+    } else {
+        minpx = std::max( int( floor( px - filter.halfwindowX() ) ), 0 );
+        maxpx = std::min( int( ceil( px + filter.halfwindowX() ) ), sizeX - 1 );
+    }
+    
+    minpy = std::max( int( floor( py - filter.halfwindowY() ) ), 0 );
+    maxpy = std::min( int( ceil( py ) + filter.halfwindowY() ), sizeY - 1 );
+    
+    double valueSum( 0.0 ), weightSum( 0.0 );
+    
+    for ( int i = minpx; i <= maxpx; i++ )
+        for ( int j = minpy; j <= maxpy; j++ ) {
+
+            const Cell_s & cell( at( ( i + 10 * sizeX ) % sizeX, j ) );
+            
+            if ( cell.defined() ) {
+                double weight = filter( i - px, j - py );
+                
+                valueSum += weight * cell.value();
+                weightSum += weight;
+            }
+        }
+
+
+    if ( weightSum < 1E-15 ) {
+        LOG( err1 ) << "Signal value undefined at (" << x << "," << y << ").";
+        throw std::runtime_error( "Value error in Signal2" );
+    }
+
+    return valueSum / weightSum;
 }
 
 void Signal2::getQuads( QuadList_t & quads, const Transform_t & trafo  ) {

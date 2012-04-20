@@ -20,6 +20,34 @@ class Signal2 {
 
 public :
 
+    enum Type_t {
+        Nonperiodic = 0x00,
+        Xperiodic = 0x01
+    };
+
+    Signal2( int sizeX, int sizeY,
+        const double llx, const double lly, const double urx,
+        const double ury, const Type_t type = Nonperiodic );
+
+    /**
+     * provide a signal sample at given position, of given value, and with
+     * given sampling period hint. */
+    void sample( double x, double y, double value,
+        double periodX, double periodY );
+
+    int width() { return sizeX; }
+    int height() { return sizeY; }
+
+    double pixelX() { return pixelx; }
+    double pixelY() { return pixely; }
+
+    /**
+     * return interpolated value of the signal at given position.
+     */    
+    double operator () ( const double x, const double y ) const;
+    
+    ~Signal2();
+    
     struct Cell_s {
 
         enum {
@@ -62,28 +90,6 @@ public :
         };
     };
 
-    typedef enum {
-        Nonperiodic,
-        Xperiodic
-    } Type_t;
-
-    Signal2( int sizeX, int sizeY,
-        const double llx, const double lly, const double urx,
-        const double ury, const Type_t type = Nonperiodic );
-
-    ~Signal2();
-
-    /**
-     * provide a signal sample at given position, of given value, and with
-     * given sampling period hint. */
-    void sample( double x, double y, double value,
-        double periodX, double periodY );
-
-    int width() { return sizeX; }
-    int height() { return sizeY; }
-
-    double pixelX() { return pixelx; }
-    double pixelY() { return pixely; }
 
     typedef Cell_s * iterator;
     typedef const Cell_s * const_iterator;
@@ -110,9 +116,11 @@ public :
         int step;
     };
 
+    Cell_s & at( int i, int j ) { return *( cells + sizeX * j + i ); }
+    const Cell_s & at( int i, int j ) const { return *( cells + sizeX * j + i ); }
+
     iterator begin() { return iterator( cells ); }
     const_iterator begin() const { return iterator( cells ); }
-    Cell_s & at( int i, int j ) { return *( cells + sizeX * j + i ); }
     iterator end() { return iterator( cells + sizeX * sizeY ); }
     const_iterator end() const { return const_iterator( cells + sizeX * sizeY ); }
     const_iterator row_begin( int j ) const {
