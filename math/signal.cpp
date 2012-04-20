@@ -46,9 +46,9 @@ void Signal2::sample( double x, double y, double value,
     double pcutoffX = 2 * std::max( periodX, pixelx ) / pixelx;
     double pcutoffY = 2 * std::max( periodY, pixely ) / pixely;
 
-    LOG( debug ) << "Adding sample at [" << x << "," << y << "] ("
+    /* LOG( debug ) << "Adding sample at [" << x << "," << y << "] ("
         << px << "," << py << "), periods ["
-        << periodX << "," << periodY <<"].";
+        << periodX << "," << periodY <<"].";*/
     
     math::LowPassFilter2_t filter( pcutoffX, pcutoffX, pcutoffY, pcutoffY );
 
