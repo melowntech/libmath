@@ -19,7 +19,7 @@ namespace math {
 
 /* sizes */
 
-tamplate <class T>
+template <class T>
 struct Size2_ {
 
     Size2_( const T & width, const T & height )
@@ -82,12 +82,12 @@ typedef Point3_<int> Point3i;
 typedef Point3_<double> Point3f;
 typedef Point3i Point3;
 
-typedef std::vector<Point2<int> > Points2i;
-typedef std::vector<Point2<double> > Points2f;
+typedef std::vector<Point2_<int> > Points2i;
+typedef std::vector<Point2_<double> > Points2f;
 typedef std::vector<Point2> Points2;
 
-typedef std::vector<Point3<int> > Points3i;
-typedef std::vector<Point3<double> > Points3f;
+typedef std::vector<Point3_<int> > Points3i;
+typedef std::vector<Point3_<double> > Points3f;
 typedef std::vector<Point3> Points3;
 
 
