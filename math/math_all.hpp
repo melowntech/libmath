@@ -6,6 +6,7 @@
  */
  
 #include "math.hpp"
+#include "geometry_core.hpp"
 #include "geometry.hpp"
 #include "signal.hpp"
 #include "filters.hpp"

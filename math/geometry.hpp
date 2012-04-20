@@ -8,6 +8,8 @@
 #ifndef MATH_GEOMETRY_HPP
 #define MATH_GEOMETRY_HPP
 
+#include "geometry_core.hpp"
+
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
