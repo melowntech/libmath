@@ -11,6 +11,10 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
+#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/qi_match.hpp>
+#include <boost/spirit/include/qi_match_auto.hpp>
+
 #include <vector>
 
 namespace ublas = boost::numeric::ublas;
@@ -21,12 +25,14 @@ namespace math {
 
 template <class T>
 struct Size2_ {
+    Size2_() : width( 0 ), height( 0 ) {};
 
     Size2_( const T & width, const T & height )
         : width( width ), height( height ) {};
-        
-    T width, height; 
+
+    T width, height;
 };
+
 
 typedef Size2_<int> Size2i;
 typedef Size2_<double> Size2f;
@@ -90,6 +96,24 @@ typedef std::vector<Point3_<int> > Points3i;
 typedef std::vector<Point3_<double> > Points3f;
 typedef std::vector<Point3> Points3;
 
+template<typename CharT, typename Traits, typename T>
+inline std::basic_ostream<CharT, Traits>&
+operator<<(std::basic_ostream<CharT, Traits> &os, const Size2_<T> &s)
+{
+    return os << s.width << "x" << s.height;
+}
+
+template<typename CharT, typename Traits, typename T>
+inline std::basic_istream<CharT, Traits>&
+operator>>(std::basic_istream<CharT, Traits> &is, math::Size2_<T> &s)
+{
+    using boost::spirit::qi::auto_;
+    using boost::spirit::qi::char_;
+    using boost::spirit::qi::omit;
+    using boost::spirit::qi::match;
+
+    return is >> match(auto_ >> omit['x'] >> auto_, s.width, s.height);
+}
 
 } // namespace math
 
