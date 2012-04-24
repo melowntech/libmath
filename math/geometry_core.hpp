@@ -77,7 +77,7 @@ public:
     Point3_( const ublas::vector<T> & op )
         : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
-    }    
+    }
 };
 
 typedef Point2_<int> Point2i;
