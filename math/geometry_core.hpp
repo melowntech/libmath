@@ -81,19 +81,23 @@ public:
 };
 
 typedef Point2_<int> Point2i;
-typedef Point2_<double> Point2f;
-typedef Point2f Point2;
+typedef Point2_<float> Point2f;
+typedef Point2_<double> Point2d;
+typedef Point2d Point2;
 
 typedef Point3_<int> Point3i;
-typedef Point3_<double> Point3f;
-typedef Point3f Point3;
+typedef Point3_<float> Point3f;
+typedef Point3_<double> Point3d;
+typedef Point3d Point3;
 
 typedef std::vector<Point2_<int> > Points2i;
-typedef std::vector<Point2_<double> > Points2f;
+typedef std::vector<Point2_<float> > Points2f;
+typedef std::vector<Point2_<double> > Points2d;
 typedef std::vector<Point2> Points2;
 
 typedef std::vector<Point3_<int> > Points3i;
-typedef std::vector<Point3_<double> > Points3f;
+typedef std::vector<Point3_<float> > Points3f;
+typedef std::vector<Point3_<double> > Points3d;
 typedef std::vector<Point3> Points3;
 
 template<typename CharT, typename Traits, typename T>
