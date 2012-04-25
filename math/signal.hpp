@@ -35,8 +35,8 @@ public :
     void sample( double x, double y, double value,
         double periodX, double periodY );
 
-    int width() { return sizeX; }
-    int height() { return sizeY; }
+    int width() const { return sizeX; }
+    int height() const { return sizeY; }
 
     double pixelX() { return pixelx; }
     double pixelY() { return pixely; }

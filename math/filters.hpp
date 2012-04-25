@@ -129,6 +129,111 @@ public :
 
 
 
+/**
+ * Filter2 is a 2D analytic window filter, used in image processing.
+ * It models the following concept:
+ *
+ * class Filter2Concept {
+ * public:
+ *      double operator() ( const double x, const double y ) const;
+ *      double halfwinx() const;
+ *      double halfwiny() const;
+ * };
+ */
+ 
+class SincHamming {
+
+public:
+    SincHamming( double cutoffX, double hwinx, double cutoffY, double hwiny )
+        : hwinx( hwinx ), hwiny( hwiny ),
+          cutoffX( cutoffX ), cutoffY( cutoffY ) {}
+
+    double operator() ( const double x, const double y ) const {
+
+        return sinc( x, cutoffX ) * hamming( x, hwinx )
+            * sinc( y, cutoffY ) * hamming( y, hwiny );
+    }
+
+    double halfwinx() const { return hwinx; }
+    double halfwiny() const { return hwiny; }
+    
+
+private :
+
+    static double sinc( double x, double cutoff )  {
+        if ( fabs( x ) < 1E-15 )
+            return 2.0 / cutoff;
+        else
+            return 1.0 / ( M_PI * x ) * sin( 2 * M_PI * x / cutoff );
+    }
+
+    static double hamming( double x, double hwin ) {
+        return fabs( x ) > hwin ? 0.0 : 0.54 + 0.46 * cos( M_PI * x / hwin );
+    }
+
+    double hwinx, hwiny, cutoffX, cutoffY;
+};
+
+
+class Lanczos3 {
+
+public:
+    Lanczos3( double cutoffX, double hwinx, double cutoffY, double hwiny )
+        : hwinx( hwinx ), hwiny( hwiny ),
+          cutoffX( cutoffX ), cutoffY( cutoffY ) {}
+
+    double operator() ( const double x, const double y ) const {
+
+        if ( fabs( x ) <= hwinx && fabs( y ) <= hwiny )
+            return
+                sinc( x, cutoffX ) * sinc( x, 2.0 * hwinx )
+                * sinc( y, cutoffY ) * sinc( y, 2.0 * hwiny );
+            else
+                return 0;
+        
+    }
+
+    double halfwinx() const { return hwinx; }
+    double halfwiny() const { return hwiny; }
+
+
+private :
+
+    static double sinc( double x, double cutoff )  {
+        if ( fabs( x ) < 1E-15 )
+            return 2.0 / cutoff;
+        else
+            return 1.0 / ( M_PI * x ) * sin( 2 * M_PI * x / cutoff );
+    }
+
+    double hwinx, hwiny, cutoffX, cutoffY;    
+};
+
+
+class BoxFilter {
+
+public:
+    BoxFilter( double hwinx, double hwiny )
+        : hwinx_( hwinx ), hwiny_( hwiny ) {
+        value_ = 1.0 / ( hwinx_ * hwiny_ );
+    }
+
+    double operator() ( double x, double y ) const {
+        if ( fabs( x ) <= hwinx_ && fabs( y ) <= hwiny_ )
+            return value_;
+        else
+            return 0.0;
+    }
+
+    double halfwinx() const { return hwinx_; }
+    double halfwiny() const { return hwiny_; }
+    
+private:
+    double hwinx_, hwiny_;
+    double value_;
+    
+};
+
 
 /**
  * Abstract class for 2D analytic window filter
