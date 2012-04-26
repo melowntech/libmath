@@ -130,6 +130,10 @@ typedef std::vector<Point3_<float> > Points3f;
 typedef std::vector<Point3_<double> > Points3d;
 typedef std::vector<Point3> Points3;
 
+typedef ublas::matrix<double,ublas::row_major,
+                      ublas::bounded_array<double, 16> > Matrix4;
+
+
 template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
 operator<<(std::basic_ostream<CharT, Traits> &os, const Size2_<T> &s)

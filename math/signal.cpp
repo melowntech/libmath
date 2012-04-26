@@ -50,10 +50,10 @@ void Signal2::sample( double x, double y, double value,
         << px << "," << py << "), periods ["
         << periodX << "," << periodY <<"].";*/
     
-    math::LowPassFilter2_t filter( pcutoffX, pcutoffX, pcutoffY, pcutoffY );
+    math::SincHamming2 filter( pcutoffX, pcutoffY );
 
-    double phwinx = filter.halfwindowX();
-    double phwiny = filter.halfwindowY();
+    double phwinx = filter.halfwinx();
+    double phwiny = filter.halfwiny();
 
     
     int minpx = int( floor( px - phwinx ) );
@@ -176,22 +176,22 @@ double Signal2::operator() ( const double x, const double y ) const {
     }
 
     // reconstruct value
-    LowPassFilter2_t filter( 2, 2, 2, 2 );
+    math::SincHamming2 filter( 2, 2 );
 
     int minpx, maxpx, minpy, maxpy;
     
     
     if ( type & Xperiodic ) {
-        minpx = int( floor( px - filter.halfwindowX() ) );
-        maxpx = int( ceil( px + filter.halfwindowX() ) );
+        minpx = int( floor( px - filter.halfwinx() ) );
+        maxpx = int( ceil( px + filter.halfwinx() ) );
         
     } else {
-        minpx = std::max( int( floor( px - filter.halfwindowX() ) ), 0 );
-        maxpx = std::min( int( ceil( px + filter.halfwindowX() ) ), sizeX - 1 );
+        minpx = std::max( int( floor( px - filter.halfwinx() ) ), 0 );
+        maxpx = std::min( int( ceil( px + filter.halfwinx() ) ), sizeX - 1 );
     }
     
-    minpy = std::max( int( floor( py - filter.halfwindowY() ) ), 0 );
-    maxpy = std::min( int( ceil( py ) + filter.halfwindowY() ), sizeY - 1 );
+    minpy = std::max( int( floor( py - filter.halfwiny() ) ), 0 );
+    maxpy = std::min( int( ceil( py ) + filter.halfwiny() ), sizeY - 1 );
     
     double valueSum( 0.0 ), weightSum( 0.0 );
     

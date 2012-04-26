@@ -131,7 +131,7 @@ public :
 
 /**
  * Filter2 is a 2D analytic window filter, used in image processing.
- * It models the following concept:
+ * It models the following concepts:
  *
  * class Filter2Concept {
  * public:
@@ -139,12 +139,25 @@ public :
  *      double halfwinx() const;
  *      double halfwiny() const;
  * };
+ *
+ *
+ * class LowPassFilter2Concept {
+ * public :
+ *      LowPassFilter2Concept( double cutoffX, double cutoffY )
+ *      double operator() ( const double x, const double y ) const;
+ *      double halfwinx() const;
+ *      double halfwiny() const;
+ * }
  */
  
-class SincHamming {
+class SincHamming2 {
 
 public:
-    SincHamming( double cutoffX, double hwinx, double cutoffY, double hwiny )
+    SincHamming2( double cutoffX, double cutoffY  )
+        : hwinx( cutoffX ), hwiny( cutoffY ),
+          cutoffX( cutoffX ), cutoffY( cutoffY ) {}
+          
+    SincHamming2( double cutoffX, double hwinx, double cutoffY, double hwiny )
         : hwinx( hwinx ), hwiny( hwiny ),
           cutoffX( cutoffX ), cutoffY( cutoffY ) {}
 
@@ -175,10 +188,15 @@ private :
 };
 
 
-class Lanczos3 {
+class Lanczos2 {
 
 public:
-    Lanczos3( double cutoffX, double hwinx, double cutoffY, double hwiny )
+
+    Lanczos2( double cutoffX, double cutoffY )
+        : hwinx( cutoffX ), hwiny( cutoffY ),
+          cutoffX( cutoffX ), cutoffY( cutoffY ) {}
+
+    Lanczos2( double cutoffX, double hwinx, double cutoffY, double hwiny )
         : hwinx( hwinx ), hwiny( hwiny ),
           cutoffX( cutoffX ), cutoffY( cutoffY ) {}
 
@@ -210,10 +228,10 @@ private :
 };
 
 
-class BoxFilter {
+class Box2 {
 
 public:
-    BoxFilter( double hwinx, double hwiny )
+    Box2( double hwinx, double hwiny )
         : hwinx_( hwinx ), hwiny_( hwiny ) {
         value_ = 1.0 / ( hwinx_ * hwiny_ );
     }
@@ -235,30 +253,28 @@ private:
 };
 
 
-/**
+/** OBSOLETE
  * Abstract class for 2D analytic window filter
  */
 
-class Filter2_t {
+/*class Filter2_t {
 public :
-    /** window sizes */
     float halfwindowX() const { return hwinx; }
     float halfwindowY() const { return hwiny; }
 
-    /** kernel value at given pos */
     virtual float operator() ( float x, float y ) const = 0;
 
     Filter2_t( float hwinx, float hwiny ) : hwinx( hwinx ), hwiny( hwiny ) {};
 
 protected :
     float hwinx, hwiny;
-};
+};*/
 
 /**
  * 2D sinc function with a hamming window
  */
 
-class LowPassFilter2_t : public Filter2_t {
+/*class LowPassFilter2_t : public Filter2_t {
 
 public:
     LowPassFilter2_t( float cutoffX, float hwinx, float cutoffY, float hwiny )
@@ -285,7 +301,7 @@ private :
     }
 
     float cutoffX, cutoffY;
-};
+};*/
 
 } // namespace math
 
