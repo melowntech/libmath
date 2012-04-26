@@ -14,8 +14,11 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/qi_match.hpp>
 #include <boost/spirit/include/qi_match_auto.hpp>
+#include <boost/spirit/include/qi_alternative.hpp>
 
 #include <vector>
+#include <iostream>
+#include <iomanip>
 
 namespace ublas = boost::numeric::ublas;
 
@@ -37,6 +40,33 @@ struct Size2_ {
 typedef Size2_<int> Size2i;
 typedef Size2_<double> Size2f;
 typedef Size2i Size2;
+
+/* viewports */
+
+template <typename T>
+struct Viewport2_ {
+    typedef T value_type;
+    typedef Size2_<T> size_type;
+
+    value_type width;
+    value_type height;
+    value_type x;
+    value_type y;
+
+    Viewport2_() : width(1000), height(1000), x(0), y(0) {}
+
+    Viewport2_(value_type width, value_type height)
+        : width(width), height(height), x(0), y(0) {};
+
+    Viewport2_(const size_type &size)
+        : width( size.width ), height( size.height ), x( 0 ), y( 0 ) {};
+
+    size_type size() const { return math::Size2i(width, height); }
+};
+
+typedef Viewport2_<int> Viewport2i;
+typedef Viewport2_<double> Viewport2f;
+typedef Viewport2i Viewport2;
 
 /* points and point vectors */
 
@@ -117,6 +147,37 @@ operator>>(std::basic_istream<CharT, Traits> &is, math::Size2_<T> &s)
     using boost::spirit::qi::match;
 
     return is >> match(auto_ >> omit['x'] >> auto_, s.width, s.height);
+}
+
+template<typename CharT, typename Traits, typename T>
+inline std::basic_ostream<CharT, Traits>&
+operator<<(std::basic_ostream<CharT, Traits> &os, const Viewport2_<T> &v)
+{
+    std::ios::fmtflags flags(os.flags());
+    os << v.width << "x" << v.height << std::showpos << v.x << v.y;
+    os.flags(flags);
+    return os;
+}
+
+template<typename CharT, typename Traits, typename T>
+inline std::basic_istream<CharT, Traits>&
+operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
+{
+    using boost::spirit::qi::auto_;
+    using boost::spirit::qi::char_;
+    using boost::spirit::qi::omit;
+    using boost::spirit::qi::match;
+
+    char sign1, sign2;
+
+    is >> match((auto_ >> omit['x'] >> auto_
+                 >> (char_('+') | char_('-')) >> auto_
+                 >> (char_('+') | char_('-')) >> auto_)
+                , v.width, v.height, sign1, v.x, sign2, v.y);
+
+    if (sign1 == '-') { v.x = -v.x; }
+    if (sign2 == '-') { v.y = -v.y; }
+    return is;
 }
 
 } // namespace math
