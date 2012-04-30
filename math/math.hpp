@@ -41,21 +41,6 @@ bool ccinterval( const T & lb, const T  & ub, const T & value ) {
 }
     
 
-/* cross product */
-
-template<typename T>
-ublas::vector<T> crossProduct( 
-    const ublas::vector<T> & u,   
-    const ublas::vector<T> & v ) {
-    
-    assert( u.size() == 3 && v.size() == 3 );
-    ublas::vector<T> retval( 3 );
-    retval(0) = u(1) * v(2) - v(1) * u(2); 
-    retval(1) = -u(0) * v(2) + v(0) * u(2);
-    retval(2) = u(0) * v(1) - v(0) * u(1);
-    return retval;
-}
-                                
 
 /**
   * Signum function

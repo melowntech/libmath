@@ -37,7 +37,7 @@ float lineDistance(
 
 /** normalize vector */
 template <class T>
-ublas::vector<T> normalize( const ublas::vector<T> & v ) {
+ublas::vector<typename T::value_type> normalize( const T & v ) {
     return v / ublas::norm_2( v );
 }
 
@@ -58,12 +58,29 @@ ublas::vector<typename T::value_type> euclidian( const T & src ) {
     return ublas::subrange( src, 0, src.size() - 1 ) / src( src.size() - 1 );
 }
 
+/** cross product, in euclidian 3D */
+
+template<typename T, typename U>
+ublas::vector<typename T::value_type> crossProduct(
+    const T & u,
+    const U & v ) {
+
+    assert( u.size() == 3 && v.size() == 3 );
+    ublas::vector<typename T::value_type> retval( 3 );
+    retval(0) = u(1) * v(2) - v(1) * u(2);
+    retval(1) = -u(0) * v(2) + v(0) * u(2);
+    retval(2) = u(0) * v(1) - v(0) * u(1);
+    return retval;
+}
+
+
+
 /** Parametric line, in euclidian 2D
  */
-struct Line2_t {
+struct Line2 {
     ublas::vector<double> p, u;
 
-    Line2_t( const ublas::vector<double> p, const ublas::vector<double> u )
+    Line2( const ublas::vector<double> p, const ublas::vector<double> u )
         : p( p ), u( u ) {};
 };
 
@@ -71,10 +88,10 @@ struct Line2_t {
  * Parametric line, in euclidian 3D
  */
 
-struct Line3_t {
+struct Line3 {
     ublas::vector<double> p, u;
 
-    Line3_t(
+    Line3(
         const ublas::vector<double> p = ublas::zero_vector<double>( 3 ),
         const ublas::vector<double> u = ublas::zero_vector<double>( 3 ) )
         : p( p ), u( u ) {}
@@ -83,7 +100,7 @@ struct Line3_t {
 template <typename E, typename T>
 static std::basic_ostream<E, T> & operator << (
         std::basic_ostream<E,T> & os,
-        const Line3_t & line ) {
+        const Line3 & line ) {
 
     os << line.p << " + t * " << line.u;
     return os;
@@ -94,11 +111,11 @@ static std::basic_ostream<E, T> & operator << (
  * Parametric plane, in euclidian 3D
  */
 
-struct Plane3_t {
+struct Plane3 {
 
     ublas::vector<double> p, u, v;
 
-    Plane3_t(
+    Plane3(
         const ublas::vector<double> p = ublas::zero_vector<double>( 3 ),
         const ublas::vector<double> u = ublas::zero_vector<double>( 3 ),
         const ublas::vector<double> v = ublas::zero_vector<double>( 3 ) )
@@ -109,7 +126,7 @@ struct Plane3_t {
 template <typename E, typename T>
 static std::basic_ostream<E, T> & operator << (
         std::basic_ostream<E,T> & os,
-        const Plane3_t & plane ) {
+        const Plane3 & plane ) {
 
     os << plane.p << " + t * " << plane.u << " + s * " << plane.v;
     return os;
@@ -119,7 +136,7 @@ static std::basic_ostream<E, T> & operator << (
 /** line and plane intersection */
 
 ublas::vector<double> intersection(
-    const Line3_t & line, const Plane3_t & plane );
+    const Line3 & line, const Plane3 & plane );
 
 
 

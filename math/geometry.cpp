@@ -42,7 +42,7 @@ float lineDistance(
 
 
 ublas::vector<double> intersection(
-    const Line3_t & line, const Plane3_t & plane ) {
+    const Line3 & line, const Plane3 & plane ) {
 
     ublas::matrix<double> a( 3, 3 ), ai( 3, 3 );
     ublas::vector<double> op( 3 ), pars( 3 );
