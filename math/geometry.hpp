@@ -41,6 +41,18 @@ ublas::vector<typename T::value_type> normalize( const T & v ) {
     return v / ublas::norm_2( v );
 }
 
+/** normalize vector */
+template <class T>
+Point2_<T> normalize( const Point2_<T> & v ) {
+    return v / ublas::norm_2( v );
+}
+
+/** normalize vector */
+template <class T>
+Point3_<T> normalize( const Point3_<T> & v ) {
+    return v / ublas::norm_2( v );
+}
+
 /** homogenous coordinates (from euclidian) */
 template <class T>
 ublas::vector<typename T::value_type> homogeneous( const T & src ) {
@@ -73,6 +85,31 @@ ublas::vector<typename T::value_type> crossProduct(
     return retval;
 }
 
+template <typename T>
+Point3_<T> crossProduct(const Point3_<T> & u, const Point3_<T> & v )
+{
+    return Point3_<T>(u(1) * v(2) - v(1) * u(2)
+                     , -u(0) * v(2) + v(0) * u(2)
+                     , u(0) * v(1) - v(0) * u(1));
+}
+
+template<typename T>
+Point3_<T> crossProduct(const Point3_<T> & u, const ublas::vector<T> & v )
+{
+    assert(v.size() == 3);
+    return Point3_<T>(u(1) * v(2) - v(1) * u(2)
+                     , -u(0) * v(2) + v(0) * u(2)
+                     , u(0) * v(1) - v(0) * u(1));
+}
+
+template<typename T>
+Point3_<T> crossProduct(const ublas::vector<T> & u, const Point3_<T> & v )
+{
+    assert(u.size() == 3);
+    return Point3_<T>(u(1) * v(2) - v(1) * u(2)
+                     , -u(0) * v(2) + v(0) * u(2)
+                     , u(0) * v(1) - v(0) * u(1));
+}
 
 
 /** Parametric line, in euclidian 2D
