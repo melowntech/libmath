@@ -34,6 +34,13 @@ struct Size2_ {
         : width( width ), height( height ) {};
 
     T width, height;
+
+    bool operator== (const Size2_<T>& s) const {
+        return width == s.width && height == s.height;
+    }
+    bool operator!= (const Size2_<T>& s) const {
+        return !operator==(s);
+    }
 };
 
 
