@@ -88,6 +88,13 @@ public:
         : ublas::vector<T, ublas::bounded_array<T, 2> >(2) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
+
+    bool operator== (const Point2_<T>& p) const {
+        return (*this)(0) == p(0) && (*this)(1) == p(1);
+    }
+    bool operator!= (const Point2_<T>& p) const {
+        return !operator==(p);
+    }
 };
 
 template <class T>
@@ -107,6 +114,13 @@ public:
     Point3_( const ublas::vector<T> & op )
         : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
+    }
+
+    bool operator== (const Point3_<T>& p) const {
+        return (*this)(0) == p(0) && (*this)(1) == p(1) && (*this)(2) == p(2);
+    }
+    bool operator!= (const Point3_<T>& p) const {
+        return !operator==(p);
     }
 };
 

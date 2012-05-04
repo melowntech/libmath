@@ -43,7 +43,7 @@ ublas::vector<typename T::value_type> normalize( const T & v ) {
 
 /** homogenous coordinates (from euclidian) */
 template <class T>
-ublas::vector<typename T::value_type> homogenous( const T & src ) {
+ublas::vector<typename T::value_type> homogeneous( const T & src ) {
     
     ublas::vector<typename T::value_type> ret(
         ublas::unit_vector<typename T::value_type>(
