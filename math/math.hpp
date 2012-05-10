@@ -15,9 +15,10 @@
 #include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
-namespace ublas = boost::numeric::ublas; 
 
 namespace math {
+
+namespace ublas = boost::numeric::ublas;
 
 /* square function */
 
@@ -81,7 +82,6 @@ ublas::matrix<T> matrixInvert( const ublas::matrix<T,L,C> & input ) {
     return inverse;
 }
                                                                                
-
 
 } // namespace math
 

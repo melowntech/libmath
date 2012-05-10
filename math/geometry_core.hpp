@@ -20,9 +20,10 @@
 #include <iostream>
 #include <iomanip>
 
-namespace ublas = boost::numeric::ublas;
 
 namespace math {
+
+namespace ublas = boost::numeric::ublas;
 
 /* sizes */
 

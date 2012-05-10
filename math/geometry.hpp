@@ -115,7 +115,7 @@ Point3_<T> crossProduct(const ublas::vector<T> & u, const Point3_<T> & v )
 /** Parametric line, in euclidian 2D
  */
 struct Line2 {
-    ublas::vector<double> p, u;
+    Point2 p, u;
 
     Line2( const ublas::vector<double> p, const ublas::vector<double> u )
         : p( p ), u( u ) {};
@@ -126,7 +126,7 @@ struct Line2 {
  */
 
 struct Line3 {
-    ublas::vector<double> p, u;
+    Point3 p, u;
 
     Line3(
         const ublas::vector<double> p = ublas::zero_vector<double>( 3 ),
@@ -150,7 +150,7 @@ static std::basic_ostream<E, T> & operator << (
 
 struct Plane3 {
 
-    ublas::vector<double> p, u, v;
+    Point3 p, u, v;
 
     Plane3(
         const ublas::vector<double> p = ublas::zero_vector<double>( 3 ),
