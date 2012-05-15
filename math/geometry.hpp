@@ -53,7 +53,7 @@ Point3_<T> normalize( const Point3_<T> & v ) {
     return v / ublas::norm_2( v );
 }
 
-/** homogenous coordinates (from euclidian) */
+/** homogeneous coordinates (from euclidian) */
 template <class T>
 ublas::vector<typename T::value_type> homogeneous( const T & src ) {
     
@@ -164,9 +164,9 @@ struct Plane3 {
 
         Plane3 tplane;
         
-        tplane.p = euclidian( prod( trafo, homogenous( p ) ) );
-        tplane.u = euclidian( prod( trafo, homogenous( p + u ) ) ) - tplane.p;
-        tplane.v = euclidian( prod( trafo, homogenous( p + v ) ) ) - tplane.p;
+        tplane.p = euclidian( prod( trafo, homogeneous( p ) ) );
+        tplane.u = euclidian( prod( trafo, homogeneous( p + u ) ) ) - tplane.p;
+        tplane.v = euclidian( prod( trafo, homogeneous( p + v ) ) ) - tplane.p;
 
         return tplane;
         
