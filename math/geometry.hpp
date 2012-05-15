@@ -157,7 +157,23 @@ struct Plane3 {
         const ublas::vector<double> u = ublas::zero_vector<double>( 3 ),
         const ublas::vector<double> v = ublas::zero_vector<double>( 3 ) )
         : p( p ), u( u ), v( v ) {}
+
+
+    template <class Matrix>
+    Plane3 transform( const Matrix & trafo ) const {
+
+        Plane3 tplane;
+        
+        tplane.p = euclidian( prod( trafo, homogenous( p ) ) );
+        tplane.u = euclidian( prod( trafo, homogenous( p + u ) ) ) - tplane.p;
+        tplane.v = euclidian( prod( trafo, homogenous( p + v ) ) ) - tplane.p;
+
+        return tplane;
+        
+    }
 };
+
+
 
 
 template <typename E, typename T>
