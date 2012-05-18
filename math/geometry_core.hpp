@@ -153,6 +153,8 @@ typedef std::vector<Point3_<double> > Points3d;
 typedef std::vector<Point3> Points3;
 
 typedef ublas::matrix<double,ublas::row_major,
+                      ublas::bounded_array<double, 9> > Matrix3;
+typedef ublas::matrix<double,ublas::row_major,
                       ublas::bounded_array<double, 16> > Matrix4;
 
 
