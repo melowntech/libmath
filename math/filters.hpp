@@ -127,6 +127,20 @@ public :
     }
 };
 
+/*
+ * Box filter, used for simple average.
+ */
+
+class BoxFilter : public FIRFilter_t {
+
+public:
+    BoxFilter( uint halfwindow ) : FIRFilter_t( halfwindow ) {
+
+        for ( uint i = 0; i <= halforder; i++ )
+            kernel[ halforder - i ] = 1.0 /  ( 2 * halforder + 1 );
+    }
+};
+
 
 
 /**
