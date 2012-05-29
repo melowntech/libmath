@@ -9,6 +9,7 @@
 #define MATH_GEOMETRY_CORE_HPP
 
 #include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
 #include <boost/spirit/include/qi.hpp>
@@ -19,6 +20,7 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 
 namespace math {
@@ -158,6 +160,8 @@ typedef ublas::matrix<double,ublas::row_major,
                       ublas::bounded_array<double, 16> > Matrix4;
 
 
+                      
+
 template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
 operator<<(std::basic_ostream<CharT, Traits> &os, const Size2_<T> &s)
@@ -208,6 +212,18 @@ operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
     return is;
 }
 
+template <class UblasContainer>
+bool operator < (
+    const UblasContainer & op1, const UblasContainer & op2 ) {
+
+    return std::lexicographical_compare(
+                op1.data().begin(), op1.data().end(),
+                op2.data().begin(), op2.data().end() );
+}
+
+
 } // namespace math
+
+
 
 #endif
