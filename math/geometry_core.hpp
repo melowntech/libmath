@@ -65,11 +65,12 @@ struct Viewport2_ {
 
     Viewport2_() : width(1000), height(1000), x(0), y(0) {}
 
-    Viewport2_(value_type width, value_type height)
-        : width(width), height(height), x(0), y(0) {};
+    Viewport2_(value_type width, value_type height
+               , value_type x = 0, value_type y = 0)
+        : width(width), height(height), x(x), y(y) {};
 
-    Viewport2_(const size_type &size)
-        : width( size.width ), height( size.height ), x( 0 ), y( 0 ) {};
+    Viewport2_(const size_type &size, value_type x = 0, value_type y = 0)
+        : width( size.width ), height( size.height ), x( x ), y( y ) {};
 
     size_type size() const { return math::Size2i(width, height); }
 };
