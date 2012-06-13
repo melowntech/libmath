@@ -72,7 +72,11 @@ ublas::matrix<T> matrixInvert( const ublas::matrix<T,L,C> & input ) {
                                                
     // perform LU-factorization
     int res = lu_factorize(A,pm);
-    if( res != 0 ) abort();
+    if( res != 0 )
+    {
+        std::cerr << "Singular matrix in math::matrixInvert. Aborting.";
+        abort();
+    }
                                                            
     // create identity matrix of "inverse"
     matrix<T> inverse = identity_matrix<T>(A.size1());
