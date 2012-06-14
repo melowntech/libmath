@@ -61,11 +61,10 @@ int sgn( const Value_t & value ) {
 template<typename T, typename L, typename C>
 ublas::matrix<T> matrixInvert( const ublas::matrix<T,L,C> & input ) {
                        
-    using namespace boost::numeric::ublas;
-    typedef permutation_matrix<std::size_t> pmatrix;
+    typedef ublas::permutation_matrix<std::size_t> pmatrix;
                                
     // create a working copy of the input
-    matrix<T,L,C> A(input);
+    ublas::matrix<T,L,C> A(input);
                                        
     // create a permutation matrix for the LU-factorization
     pmatrix pm(A.size1());
@@ -79,7 +78,7 @@ ublas::matrix<T> matrixInvert( const ublas::matrix<T,L,C> & input ) {
     }
                                                            
     // create identity matrix of "inverse"
-    matrix<T> inverse = identity_matrix<T>(A.size1());
+    ublas::matrix<T> inverse = ublas::identity_matrix<T>(A.size1());
                                                          
     // backsubstitute to get the inverse
     lu_substitute(A, pm, inverse);
