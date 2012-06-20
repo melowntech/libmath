@@ -58,7 +58,7 @@ int sgn( const Value_t & value ) {
   * Matrix inversion
   */
                        
-template<typename T, typename L, typename C>
+template <typename T, typename L, typename C>
 ublas::matrix<T> matrixInvert( const ublas::matrix<T,L,C> & input ) {
                        
     typedef ublas::permutation_matrix<std::size_t> pmatrix;
@@ -85,7 +85,37 @@ ublas::matrix<T> matrixInvert( const ublas::matrix<T,L,C> & input ) {
     return inverse;
 }
                                                                                
+/**
+ * Matrix determinant
+ */
 
+template <class matrix_T>
+double determinant(ublas::matrix_expression<matrix_T> const& mat_r)
+{
+  double det = 1.0;
+
+  matrix_T mLu(mat_r() );
+  ublas::permutation_matrix<std::size_t> pivots(mat_r().size1() );
+
+  int is_singular = lu_factorize(mLu, pivots);
+
+  if (!is_singular)
+  {
+    for (std::size_t i=0; i < pivots.size(); ++i)
+    {
+      if (pivots(i) != i)
+        det *= -1.0;
+
+      det *= mLu(i,i);
+    }
+  }
+  else
+    det = 0.0;
+
+  return det;
+} 
+
+                                                                               
 } // namespace math
 
 #endif // MATH_MATH_HPP
