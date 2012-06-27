@@ -11,5 +11,5 @@
 #include "signal.hpp"
 #include "filters.hpp"
 #include "combinatorics.hpp"
-
+#include "rotation.hpp"
 

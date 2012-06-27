@@ -1,15 +1,75 @@
 /**
- *  @file quaternion.hpp
+ *  @file rotation.hpp
  *  @author Jakub Cerveny <jakub.cerveny@ext.citationtech.net>
  *
+ *  Math related to rotations.
  */
 
-#ifndef MATH_QUATERNION_HPP
-#define MATH_QUATERNION_HPP
+#ifndef MATH_ROTATION_HPP
+#define MATH_ROTATION_HPP
 
 #include "geometry_core.hpp"
 
 namespace math {
+
+
+/** Converts a rotation vector (see below) to a rotation matrix.
+ */
+inline Matrix4 rotationMatrix(const Point3 & rvec)
+{
+    Matrix4 m( ublas::identity_matrix<double>(4) );
+
+    double angle = ublas::norm_2(rvec);
+
+    Point3 vec(rvec * (1.0 / angle));
+
+    double s = sin(angle),
+           c = cos(angle);
+
+    double xx = vec(0) * vec(0),
+           yy = vec(1) * vec(1),
+           zz = vec(2) * vec(2),
+           xy = vec(0) * vec(1),
+           yz = vec(1) * vec(2),
+           zx = vec(2) * vec(0);
+
+    double xs = vec(0) * s,
+           ys = vec(1) * s,
+           zs = vec(2) * s;
+
+    double one_c = 1.0 - c;
+
+    m(0, 0) = (one_c * xx) + c;
+    m(0, 1) = (one_c * xy) - zs;
+    m(0, 2) = (one_c * zx) + ys;
+
+    m(1, 0) = (one_c * xy) + zs;
+    m(1, 1) = (one_c * yy) + c;
+    m(1, 2) = (one_c * yz) - xs;
+
+    m(2, 0) = (one_c * zx) - ys;
+    m(2, 1) = (one_c * yz) + xs;
+    m(2, 2) = (one_c * zz) + c;
+
+    return m;
+}
+
+
+/** Converts a rotation matrix to a rotation vector, whose direction represents
+ *  the axis of rotation and its magnitude represents the angle of rotation
+ *  in radians.
+ */
+inline Point3 rotationVector(const Matrix4 & mat)
+{
+    double angle = acos(0.5 * (mat(0,0) + mat(1,1) + mat(2,2) - 1.0));
+
+    Point3 axis(mat(2,1) - mat(1,2),
+                mat(0,2) - mat(2,0),
+                mat(1,0) - mat(0,1));
+
+    return angle / (2*sin(angle)) * axis;
+}
+
 
 
 /** Quaternion -- represents a rotation.
@@ -57,25 +117,21 @@ inline Quaternion Quaternion::operator*(double s) const
     return Quaternion(s*x, s*y, s*z, s*w);
 }
 
-
 inline Quaternion& Quaternion::operator*=(double s)
 {
     x*=s;  y*=s;  z*=s;  w*=s;
     return *this;
 }
 
-
 inline Quaternion& Quaternion::operator*=(const Quaternion& other)
 {
     return (*this = other * (*this));
 }
 
-
 inline Quaternion Quaternion::operator+(const Quaternion& b) const
 {
     return Quaternion(x+b.x, y+b.y, z+b.z, w+b.w);
 }
-
 
 inline Quaternion Quaternion::operator*(const Quaternion& other) const
 {
@@ -88,7 +144,7 @@ inline Quaternion Quaternion::operator*(const Quaternion& other) const
 }
 
 
-void Quaternion::fromMatrix(const Matrix4& m)
+inline void Quaternion::fromMatrix(const Matrix4& m)
 {
     const double diag = m(0,0) + m(1,1) + m(2,2) + 1;
 
@@ -142,7 +198,7 @@ void Quaternion::fromMatrix(const Matrix4& m)
 }
 
 
-Quaternion& Quaternion::normalize()
+inline Quaternion& Quaternion::normalize()
 {
     double n = x*x + y*y + z*z + w*w;
     *this *= 1.0 / sqrt(n);
@@ -150,7 +206,7 @@ Quaternion& Quaternion::normalize()
 }
 
 
-Matrix4 Quaternion::toMatrix() const
+inline Matrix4 Quaternion::toMatrix() const
 {
     Matrix4 m = ublas::identity_matrix<double>(4);
 
@@ -176,59 +232,6 @@ Matrix4 Quaternion::toMatrix() const
 
     return m;
 }
-
-
-/** Matrix4Quat -- represents a general rigid body transformation, however
- *                 unlike in Matrix4 the rotation is represented as a
- *                 quaternion, which allows for interpolations.
- */
-class Matrix4Quat
-{
-public:
-
-    Matrix4Quat(const Matrix4& mat)
-        { fromMatrix(mat); }
-
-    Matrix4Quat(const Quaternion& q, const Point3& t)
-        : rot(q), trans(t) {}
-
-    void fromMatrix(const Matrix4& mat)
-    {
-        rot.fromMatrix(mat);
-        trans(0) = mat(0,3);
-        trans(1) = mat(1,3);
-        trans(2) = mat(2,3);
-    }
-
-    Matrix4 toMatrix()
-    {
-        rot.normalize();
-        Matrix4 mat = rot.toMatrix();
-        mat(0,3) = trans(0);
-        mat(1,3) = trans(1);
-        mat(2,3) = trans(2);
-        return mat;
-    }
-
-    Matrix4Quat operator+(const Matrix4Quat& other) const
-        { return Matrix4Quat(rot + other.rot, trans + other.trans); }
-
-    Matrix4Quat operator*(double scalar) const
-        { return Matrix4Quat(rot*scalar, trans*scalar); }
-
-    Quaternion rot;
-    Point3 trans;
-};
-
-
-/** lerp -- linear interpolation between 'a' (t=0) and 'b' (t=1)
- */
-template<typename T>
-T lerp(const T& a, const T& b, double t)
-{
-    return a*(1.0-t) + b*t;
-}
-
 
 } // namespace math
 
