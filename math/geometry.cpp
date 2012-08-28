@@ -6,6 +6,8 @@
 
 #include "math.hpp"
 
+#include <dbglog/dbglog.hpp>
+
 namespace math {
 
 float lineDistance(
@@ -55,6 +57,35 @@ ublas::vector<double> intersection(
     ai = matrixInvert( a );
     pars = ublas::prod( ai, op );
     return line.p + line.u * pars( 0 );
+}
+
+
+double polygonRegularity(
+    const Point3 & v0, const Point3 & v1, const Point3 & v2  ) {
+
+    double areaToCircumverence =
+        ublas::norm_2( crossProduct( v1 - v0, v2 - v1 ) * 0.5 ) /
+        sqr( ublas::norm_2( v1 - v0 ) + ublas::norm_2( v2 - v1 ) +
+          ublas::norm_2( v0 - v2 ) ) ;
+
+    //LOG( debug ) << areaToCircumverence / ( sqrt( 3 ) / 36.0 );
+        
+    return areaToCircumverence / ( sqrt( 3 ) / 36.0 );
+}
+
+double polygonRegularity(
+    const Point3 & v0, const Point3 & v1, const Point3 & v2,
+    const Point3 & v3  ) {
+
+    double areaToCircumverence =
+        ( ublas::norm_2( crossProduct( v1 - v0, v2 - v1 ) * 0.5 )
+          + ublas::norm_2( crossProduct( v3 - v2, v0 - v3 ) * 0.5 ) ) /
+        sqr( ublas::norm_2( v1 - v0 ) + ublas::norm_2( v2 - v1 ) +
+          ublas::norm_2( v3 - v2 ) + ublas::norm_2 ( v0 - v3 ) );
+
+    //LOG( debug ) << areaToCircumverence / ( 1 / 16.0 );
+        
+    return areaToCircumverence / ( 1 / 16.0 );
 }
 
 

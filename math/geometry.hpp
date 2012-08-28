@@ -193,6 +193,22 @@ ublas::vector<double> intersection(
 
 
 
+/**
+ * Returns a measure of triangular polyface regularity. Value of 1.0
+ * indicates an equilateral triangle, value of 0.0 indicates a triangle
+ * with at least one degenerate edge.
+ */
+double polygonRegularity(
+    const Point3 & v0, const Point3 & v1, const Point3 & v2  );
+
+/**
+ * Returns a measure of quad polyface regularity. Value of 1.0
+ * indicates a square, value of 0.0 indicates a triangle
+ * with at least one degenerate edge.
+ */
+double polygonRegularity(
+    const Point3 & v0, const Point3 & v1, const Point3 & v2, const Point3 & v3 );
+
 } // namespace math
 
 #endif // MATH_GEOMETRY_HPP
