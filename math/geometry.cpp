@@ -43,6 +43,36 @@ float lineDistance(
 }
 
 
+Point3 midpoint( const Line3 & line1, const Line3 & line2 ) {
+
+    ublas::matrix<double> a(2,2);
+    ublas::vector<double> b(2);
+    double r1, r2;
+    
+    a(0,0) = - inner_prod( line1.u, line2.u );
+    a(0,1) = inner_prod( line2.u, line2.u );
+    a(1,0) = inner_prod( line1.u, line1.u );
+    a(1,1) = - inner_prod( line1.u, line2.u );
+    b(0) = inner_prod( line2.u, line1.p - line2.p );
+    b(1) = inner_prod( line1.u, line2.p - line1.p );
+
+    // test for parallel vectors
+    if ( fabs( a(0,0) * a(1,1) - a(1,0) * a(0,1) ) < 1E-15 ) {
+
+        LOGTHROW( err1, std::runtime_error )
+            << "Paralel lines detected, no midpoint.";        
+    }
+
+
+    ublas::matrix<float> ai = matrixInvert( a );
+    ublas::vector<float> r = ublas::prod( ai, b );
+    r1 = r[0]; r2 = r[1];
+
+
+    return ( line1.p + r1 * line1.u + line2.p + r2 * line2.u ) * 0.5;
+}
+
+
 ublas::vector<double> intersection(
     const Line3 & line, const Plane3 & plane ) {
 

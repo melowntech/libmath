@@ -121,6 +121,7 @@ struct Line2 {
         : p( p ), u( u ) {};
 };
 
+
 /**
  * Parametric line, in euclidian 3D
  */
@@ -143,6 +144,7 @@ static std::basic_ostream<E, T> & operator << (
     return os;
 }
 
+Point3 midpoint( const Line3 & line1, const Line3 & line2 );
 
 /**
  * Parametric plane, in euclidian 3D
