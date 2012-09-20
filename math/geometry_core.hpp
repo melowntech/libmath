@@ -1,6 +1,7 @@
 /**
  * @file geometry_core.hpp
  * @author Ondrej Prochazka <ondrej.prochazka@citationtech.net>
+ * @author Vaclav Blazek <vaclav.blazek@citationtech.net>
  *
  * Basic structures for geometric modeling
  */
@@ -161,7 +162,30 @@ typedef ublas::matrix<double,ublas::row_major,
                       ublas::bounded_array<double, 16> > Matrix4;
 
 
-                      
+template <typename T>
+struct Extents2_ {
+    typedef T value_type;
+    typedef Point2_<T> point_type;
+
+    point_type ll;
+    point_type ur;
+
+    Extents2_() : ll(), ur() {}
+
+    Extents2_(const point_type &ll, const point_type &ur)
+        : ll(ll), ur(ur)
+    {}
+
+    Extents2_(const value_type &xll, const value_type yll
+              , const value_type &xur, const value_type yur)
+        : ll(xll, yll), ur(xur, yur)
+    {}
+};
+
+typedef Extents2_<int> Extents2i;
+typedef Extents2_<double> Extents2f;
+typedef Extents2f Extents2;
+
 
 template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
@@ -222,9 +246,33 @@ bool operator < (
                 op2.data().begin(), op2.data().end() );
 }
 
+template<typename CharT, typename Traits, typename T>
+inline std::basic_ostream<CharT, Traits>&
+operator<<(std::basic_ostream<CharT, Traits> &os, const Extents2_<T> &e)
+{
+    std::ios::fmtflags flags(os.flags());
+    os << e.ll(0) << ',' << e.ll(1) << ':' << e.ur(0) << ',' << e.ur(1);
+    os.flags(flags);
+    return os;
+}
+
+template<typename CharT, typename Traits, typename T>
+inline std::basic_istream<CharT, Traits>&
+operator>>(std::basic_istream<CharT, Traits> &is, Extents2_<T> &e)
+{
+    using boost::spirit::qi::auto_;
+    using boost::spirit::qi::char_;
+    using boost::spirit::qi::omit;
+    using boost::spirit::qi::match;
+
+    is >> match((auto_ >> omit[','] >> auto_ >> omit[':']
+                 >> auto_ >> omit[','] >> auto_)
+                , e.ll(0), e.ll(1), e.ur(0), e.ur(1));
+
+    return is;
+}
 
 } // namespace math
 
+#endif // MATH_GEOMETRY_CORE_HPP
 
-
-#endif
