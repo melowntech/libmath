@@ -186,6 +186,12 @@ typedef Extents2_<int> Extents2i;
 typedef Extents2_<double> Extents2f;
 typedef Extents2f Extents2;
 
+template <typename T1, typename T2>
+bool overlaps(const Extents2_<T1> &a, const Extents2_<T2> &b)
+{
+    return ((a.ll(0) < b.ur(0)) && (b.ll(0) < a.ur(0))
+             && (a.ll(1) < b.ur(1)) && (b.ll(1) < a.ur(1)));
+}
 
 template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
@@ -250,9 +256,7 @@ template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
 operator<<(std::basic_ostream<CharT, Traits> &os, const Extents2_<T> &e)
 {
-    std::ios::fmtflags flags(os.flags());
     os << e.ll(0) << ',' << e.ll(1) << ':' << e.ur(0) << ',' << e.ur(1);
-    os.flags(flags);
     return os;
 }
 
