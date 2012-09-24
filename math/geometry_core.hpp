@@ -52,6 +52,12 @@ typedef Size2_<int> Size2i;
 typedef Size2_<double> Size2f;
 typedef Size2i Size2;
 
+template <typename T>
+T area(const Size2_<T> &size)
+{
+    return size.width * size.height;
+}
+
 /* viewports */
 
 template <typename T>
