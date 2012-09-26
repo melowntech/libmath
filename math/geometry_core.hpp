@@ -186,18 +186,59 @@ struct Extents2_ {
               , const value_type &xur, const value_type yur)
         : ll(xll, yll), ur(xur, yur)
     {}
+
+    T area() const {
+        if ( ur[1] < ll[1] || ur[0] < ll[0] ) return 0;
+        return ( ur[1] - ll[1] ) * ( ur[0] - ll[0] ); }
 };
 
 typedef Extents2_<int> Extents2i;
 typedef Extents2_<double> Extents2f;
 typedef Extents2f Extents2;
 
+template <typename T>
+Extents2_<T> unite( const Extents2_<T> &a, const Extents2_<T> &b ) {
+
+    return Extents2_<T>(
+        typename Extents2_<T>::point_type (
+            std::min( a.ll[0], b.ll[0] ),
+            std::min( a.ll[1], b.ll[1] ) ),
+        typename Extents2_<T>::point_type (
+            std::max( a.ur[0], b.ur[0] ),
+            std::max( a.ur[1], b.ur[1] ) ) );
+}
+
+template <typename T>
+Extents2_<T> intersect( const Extents2_<T> &a, const Extents2_<T> &b ) {
+
+    return Extents2_<T>(
+        typename Extents2_<T>::point_type (
+            std::max( a.ll[0], b.ll[0] ),
+            std::max( a.ll[1], b.ll[1] ) ),
+        typename Extents2_<T>::point_type (
+            std::min( a.ur[0], b.ur[0] ),
+            std::min( a.ur[1], b.ur[1] ) ) );
+}
+
+
+
 template <typename T1, typename T2>
 bool overlaps(const Extents2_<T1> &a, const Extents2_<T2> &b)
 {
+
+
     return ((a.ll(0) < b.ur(0)) && (b.ll(0) < a.ur(0))
              && (a.ll(1) < b.ur(1)) && (b.ll(1) < a.ur(1)));
 }
+
+
+
+template <typename T>
+double overlap( const Extents2_<T> & a, const Extents2_<T> & b ) {
+
+    return ( intersect( a, b ).area() / unite( a, b ).area() ); 
+}
+
 
 template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
