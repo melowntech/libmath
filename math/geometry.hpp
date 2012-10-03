@@ -10,6 +10,8 @@
 
 #include "geometry_core.hpp"
 
+#include <algorithm>
+
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -37,25 +39,25 @@ float lineDistance(
 
 /** normalize vector */
 template <class T>
-ublas::vector<typename T::value_type> normalize( const T & v ) {
+inline ublas::vector<typename T::value_type> normalize( const T & v ) {
     return v / ublas::norm_2( v );
 }
 
 /** normalize vector */
 template <class T>
-Point2_<T> normalize( const Point2_<T> & v ) {
+inline Point2_<T> normalize( const Point2_<T> & v ) {
     return v / ublas::norm_2( v );
 }
 
 /** normalize vector */
 template <class T>
-Point3_<T> normalize( const Point3_<T> & v ) {
+inline Point3_<T> normalize( const Point3_<T> & v ) {
     return v / ublas::norm_2( v );
 }
 
 /** homogeneous coordinates (from euclidian) */
 template <class T>
-ublas::vector<typename T::value_type> homogeneous( const T & src ) {
+inline ublas::vector<typename T::value_type> homogeneous( const T & src ) {
     
     ublas::vector<typename T::value_type> ret(
         ublas::unit_vector<typename T::value_type>(
@@ -66,14 +68,14 @@ ublas::vector<typename T::value_type> homogeneous( const T & src ) {
 
 /** euclidian coordinates (from homogenous) */
 template <class T>
-ublas::vector<typename T::value_type> euclidian( const T & src ) {
+inline ublas::vector<typename T::value_type> euclidian( const T & src ) {
     return ublas::subrange( src, 0, src.size() - 1 ) / src( src.size() - 1 );
 }
 
 /** cross product, in euclidian 3D */
 
 template<typename T, typename U>
-ublas::vector<typename T::value_type> crossProduct(
+inline ublas::vector<typename T::value_type> crossProduct(
     const T & u,
     const U & v ) {
 
@@ -86,7 +88,7 @@ ublas::vector<typename T::value_type> crossProduct(
 }
 
 template <typename T>
-Point3_<T> crossProduct(const Point3_<T> & u, const Point3_<T> & v )
+inline Point3_<T> crossProduct(const Point3_<T> & u, const Point3_<T> & v )
 {
     return Point3_<T>(u(1) * v(2) - v(1) * u(2)
                      , -u(0) * v(2) + v(0) * u(2)
@@ -94,7 +96,7 @@ Point3_<T> crossProduct(const Point3_<T> & u, const Point3_<T> & v )
 }
 
 template<typename T>
-Point3_<T> crossProduct(const Point3_<T> & u, const ublas::vector<T> & v )
+inline Point3_<T> crossProduct(const Point3_<T> & u, const ublas::vector<T> & v )
 {
     assert(v.size() == 3);
     return Point3_<T>(u(1) * v(2) - v(1) * u(2)
@@ -103,7 +105,7 @@ Point3_<T> crossProduct(const Point3_<T> & u, const ublas::vector<T> & v )
 }
 
 template<typename T>
-Point3_<T> crossProduct(const ublas::vector<T> & u, const Point3_<T> & v )
+inline Point3_<T> crossProduct(const ublas::vector<T> & u, const Point3_<T> & v )
 {
     assert(u.size() == 3);
     return Point3_<T>(u(1) * v(2) - v(1) * u(2)
@@ -136,7 +138,7 @@ struct Line3 {
 };
 
 template <typename E, typename T>
-static std::basic_ostream<E, T> & operator << (
+inline std::basic_ostream<E, T> & operator << (
         std::basic_ostream<E,T> & os,
         const Line3 & line ) {
 
@@ -179,7 +181,7 @@ struct Plane3 {
 
 
 template <typename E, typename T>
-static std::basic_ostream<E, T> & operator << (
+inline std::basic_ostream<E, T> & operator << (
         std::basic_ostream<E,T> & os,
         const Plane3 & plane ) {
 
@@ -210,6 +212,42 @@ double polygonRegularity(
  */
 double polygonRegularity(
     const Point3 & v0, const Point3 & v1, const Point3 & v2, const Point3 & v3 );
+
+namespace detail {
+    template <typename T, typename Q> struct ExtentsTypeTraits;
+
+    template <typename T> struct ExtentsTypeTraits<T, Point2_<T>> {
+        typedef Extents2_<T> type;
+    };
+
+    template <typename T> struct ExtentsTypeTraits<T, Point3_<T>> {
+        typedef Extents3_<T> type;
+    };
+
+} // namespace detail
+
+template <typename Iterator>
+inline auto computeExtents(Iterator begin, Iterator end)
+    -> typename detail::ExtentsTypeTraits
+    <typename std::iterator_traits<Iterator>::value_type::value_type
+    , typename std::iterator_traits<Iterator>::value_type>::type
+{
+    typedef typename detail::ExtentsTypeTraits
+        <typename std::iterator_traits<Iterator>::value_type::value_type
+         , typename std::iterator_traits<Iterator>::value_type>::type Extents;
+    typedef typename Extents::point_type point_type;
+
+    if (begin == end) {
+        return Extents();
+    }
+
+    Extents extents(*begin);
+    std::for_each(begin + 1, end
+                  , [&extents](const point_type &p) {
+                      update(extents, p);
+                  });
+    return extents;
+}
 
 } // namespace math
 

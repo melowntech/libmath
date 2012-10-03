@@ -178,12 +178,16 @@ struct Extents2_ {
 
     Extents2_() : ll(), ur() {}
 
+    explicit Extents2_(const point_type &p)
+        : ll(p), ur(p)
+    {}
+
     Extents2_(const point_type &ll, const point_type &ur)
         : ll(ll), ur(ur)
     {}
 
-    Extents2_(const value_type &xll, const value_type yll
-              , const value_type &xur, const value_type yur)
+    Extents2_(const value_type &xll, const value_type &yll
+              , const value_type &xur, const value_type &yur)
         : ll(xll, yll), ur(xur, yur)
     {}
 
@@ -196,8 +200,20 @@ typedef Extents2_<int> Extents2i;
 typedef Extents2_<double> Extents2f;
 typedef Extents2f Extents2;
 
+template<typename T>
+inline Point2_<T> center(const Extents2_<T> &e) {
+    return (e.ur - e.ll) / 2;
+}
+
+template<typename T>
+inline T area(const Extents2_<T> &e) {
+    return ((e.ur[1] < e.ll[1]) || (e.ur[0] < e.ll[0]))
+        ? 0
+        : (e.ur[1] - e.ll[1]) * (e.ur[0] - e.ll[0]);
+}
+
 template <typename T>
-Extents2_<T> unite( const Extents2_<T> &a, const Extents2_<T> &b ) {
+inline Extents2_<T> unite( const Extents2_<T> &a, const Extents2_<T> &b ) {
 
     return Extents2_<T>(
         typename Extents2_<T>::point_type (
@@ -209,7 +225,7 @@ Extents2_<T> unite( const Extents2_<T> &a, const Extents2_<T> &b ) {
 }
 
 template <typename T>
-Extents2_<T> intersect( const Extents2_<T> &a, const Extents2_<T> &b ) {
+inline Extents2_<T> intersect( const Extents2_<T> &a, const Extents2_<T> &b ) {
 
     return Extents2_<T>(
         typename Extents2_<T>::point_type (
@@ -220,25 +236,112 @@ Extents2_<T> intersect( const Extents2_<T> &a, const Extents2_<T> &b ) {
             std::min( a.ur[1], b.ur[1] ) ) );
 }
 
-
-
 template <typename T1, typename T2>
-bool overlaps(const Extents2_<T1> &a, const Extents2_<T2> &b)
+inline bool overlaps(const Extents2_<T1> &a, const Extents2_<T2> &b)
 {
-
-
     return ((a.ll(0) < b.ur(0)) && (b.ll(0) < a.ur(0))
              && (a.ll(1) < b.ur(1)) && (b.ll(1) < a.ur(1)));
 }
 
 
-
 template <typename T>
-double overlap( const Extents2_<T> & a, const Extents2_<T> & b ) {
-
+inline double overlap( const Extents2_<T> & a, const Extents2_<T> & b ) {
     return ( intersect( a, b ).area() / unite( a, b ).area() ); 
 }
 
+template <typename T>
+inline void update(Extents2_<T> &e, const Point2_<T> &p) {
+    e.ll(0) = std::min(e.ll(0), p(0));
+    e.ll(1) = std::min(e.ll(1), p(1));
+
+    e.ur(0) = std::max(e.ur(0), p(0));
+    e.ur(1) = std::max(e.ur(1), p(1));
+}
+
+template <typename T>
+struct Extents3_ {
+    typedef T value_type;
+    typedef Point3_<T> point_type;
+
+    point_type ll;
+    point_type ur;
+
+    Extents3_() : ll(), ur() {}
+
+    explicit Extents3_(const point_type &p)
+        : ll(p), ur(p)
+    {}
+
+    Extents3_(const point_type &ll, const point_type &ur)
+        : ll(ll), ur(ur)
+    {}
+
+    Extents3_(const value_type &xll, const value_type &yll
+              , const value_type &zll
+              , const value_type &xur, const value_type yur
+              , const value_type &zur)
+        : ll(xll, yll, zll), ur(xur, yur, zur)
+    {}
+};
+
+typedef Extents3_<int> Extents3i;
+typedef Extents3_<double> Extents3f;
+typedef Extents3f Extents3;
+
+template<typename T>
+inline Point3_<T> center(const Extents3_<T> &e) {
+    return (e.ur - e.ll) / 2;
+}
+
+template<typename T>
+inline T volume(const Extents3_<T> &e) {
+    return ((e.ur[2] < e.ll[2]) || (e.ur[1] < e.ll[1]) || (e.ur[0] < e.ll[0]))
+        ? 0
+        : (e.ur[2] - e.ll[2]) * (e.ur[1] - e.ll[1]) * (e.ur[0] - e.ll[0]);
+}
+
+template <typename T>
+inline void update(Extents3_<T> &e, const Point3_<T> &p) {
+    e.ll(0) = std::min(e.ll(0), p(0));
+    e.ll(1) = std::min(e.ll(1), p(1));
+    e.ll(2) = std::min(e.ll(2), p(2));
+
+    e.ur(0) = std::max(e.ur(0), p(0));
+    e.ur(1) = std::max(e.ur(1), p(1));
+    e.ur(2) = std::max(e.ur(2), p(2));
+}
+
+template <typename T>
+inline Extents3_<T> unite(const Extents3_<T> &a, const Extents3_<T> &b ) {
+    Extents3_<T> res(a);
+    update(res, b);
+    return res;
+}
+
+template <typename T>
+inline Extents3_<T> intersect( const Extents3_<T> &a, const Extents3_<T> &b ) {
+    typedef Extents3_<T> E3;
+    typedef typename E3::point_type point_type;
+    return Extents3(point_type(std::max(a.ll[0], b.ll[0])
+                               , std::max(a.ll[1], b.ll[1])
+                               , std::max(a.ll[2], b.ll[2]))
+                    , point_type(std::min(a.ll[0], b.ll[0])
+                                 , std::min(a.ll[1], b.ll[1])
+                                 , std::min(a.ll[2], b.ll[2])));
+}
+
+template <typename T1, typename T3>
+inline bool overlaps(const Extents3_<T1> &a, const Extents3_<T3> &b)
+{
+    return ((a.ll(0) < b.ur(0)) && (b.ll(0) < a.ur(0))
+             && (a.ll(1) < b.ur(1)) && (b.ll(1) < a.ur(1))
+             && (a.ll(2) < b.ur(2)) && (b.ll(2) < a.ur(2)));
+}
+
+template <typename T>
+inline double overlap(const Extents3_<T> & a, const Extents3_<T> & b) {
+    return (volume(intersect(a, b)) / volume(unite(a, b)));
+}
 
 template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
@@ -319,6 +422,31 @@ operator>>(std::basic_istream<CharT, Traits> &is, Extents2_<T> &e)
     is >> match((auto_ >> omit[','] >> auto_ >> omit[':']
                  >> auto_ >> omit[','] >> auto_)
                 , e.ll(0), e.ll(1), e.ur(0), e.ur(1));
+
+    return is;
+}
+
+template<typename CharT, typename Traits, typename T>
+inline std::basic_ostream<CharT, Traits>&
+operator<<(std::basic_ostream<CharT, Traits> &os, const Extents3_<T> &e)
+{
+    os << e.ll(0) << ',' << e.ll(1) << ',' << e.ll(2) << ':'
+       << e.ur(0) << ',' << e.ur(1) << ',' << e.ur(2);
+    return os;
+}
+
+template<typename CharT, typename Traits, typename T>
+inline std::basic_istream<CharT, Traits>&
+operator>>(std::basic_istream<CharT, Traits> &is, Extents3_<T> &e)
+{
+    using boost::spirit::qi::auto_;
+    using boost::spirit::qi::char_;
+    using boost::spirit::qi::omit;
+    using boost::spirit::qi::match;
+
+    is >> match((auto_ >> omit[','] >> auto_ >> omit[','] >> auto_ >> omit[':']
+                 >> auto_ >> omit[','] >> auto_ >> omit[','] >> auto_)
+                , e.ll(0), e.ll(1), e.ll(2), e.ur(0), e.ur(1), e.ur(2));
 
     return is;
 }
