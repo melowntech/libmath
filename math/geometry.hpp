@@ -241,8 +241,8 @@ inline auto computeExtents(Iterator begin, Iterator end)
         return Extents();
     }
 
-    Extents extents(*begin);
-    std::for_each(begin + 1, end
+    Extents extents(*begin++);
+    std::for_each(begin, end
                   , [&extents](const point_type &p) {
                       update(extents, p);
                   });
