@@ -39,6 +39,11 @@ struct Size2_ {
 
     T width, height;
 
+    template <typename U>
+    explicit Size2_(const Size2_<U> &s)
+        : width(s.width), height(s.height)
+    {}
+
     bool operator== (const Size2_<T>& s) const {
         return width == s.width && height == s.height;
     }
@@ -80,6 +85,11 @@ struct Viewport2_ {
         : width( size.width ), height( size.height ), x( x ), y( y ) {};
 
     size_type size() const { return math::Size2i(width, height); }
+
+    template <typename U>
+    explicit Viewport2_(const Viewport2_<U> &v)
+        : width(v.width), height(v.height), x(v.x), y(v.y)
+    {}
 };
 
 typedef Viewport2_<int> Viewport2i;
@@ -191,6 +201,11 @@ struct Extents2_ {
         : ll(xll, yll), ur(xur, yur)
     {}
 
+    template <typename U>
+    explicit Extents2_(const Extents2_<U> &e)
+        : ll(e.ll), ur(e.ur)
+    {}
+
     T area() const {
         if ( ur[1] < ll[1] || ur[0] < ll[0] ) return 0;
         return ( ur[1] - ll[1] ) * ( ur[0] - ll[0] ); }
@@ -200,9 +215,40 @@ typedef Extents2_<int> Extents2i;
 typedef Extents2_<double> Extents2f;
 typedef Extents2f Extents2;
 
+template <typename T>
+const typename Extents2_<T>::point_type& ll(const Extents2_<T> &e) {
+    return e.ll;
+}
+
+template <typename T>
+const typename Extents2_<T>::point_type& ur(const Extents2_<T> &e) {
+    return e.ur;
+}
+
+template <typename T>
+typename Extents2_<T>::point_type ul(const Extents2_<T> &e) {
+    return typename Extents2_<T>::point_type(e.ll(0), e.ur(1));
+}
+
+template <typename T>
+typename Extents2_<T>::point_type lr(const Extents2_<T> &e) {
+    return typename Extents2_<T>::point_type(e.ur(0), e.ll(1));
+}
+
+template<typename T>
+inline Point2_<T> clip(const Extents2_<T> &e, const Point2_<T> &p) {
+    return Point2_<T>(std::max(e.ll(0), std::min(e.ur(0), p(0)))
+                      , std::max(e.ll(1), std::min(e.ur(1), p(1))));
+}
+
 template<typename T>
 inline Point2_<T> center(const Extents2_<T> &e) {
     return (e.ur - e.ll) / 2;
+}
+
+template<typename T>
+inline Size2_<T> size(const Extents2_<T> &e) {
+    return Size2_<T>(e.ur(0) - e.ll(0), e.ur(1) - e.ll(1));
 }
 
 template<typename T>
@@ -282,6 +328,11 @@ struct Extents3_ {
               , const value_type &zur)
         : ll(xll, yll, zll), ur(xur, yur, zur)
     {}
+
+    template <typename U>
+    explicit Extents3_(const Extents3_<U> &e)
+        : ll(e.ll), ur(e.ur)
+    {}
 };
 
 typedef Extents3_<int> Extents3i;
@@ -291,6 +342,13 @@ typedef Extents3f Extents3;
 template<typename T>
 inline Point3_<T> center(const Extents3_<T> &e) {
     return (e.ur - e.ll) / 2;
+}
+
+template<typename T>
+inline Point3_<T> clip(const Extents3_<T> &e, const Point3_<T> &p) {
+    return Point3_<T>(std::max(e.ll(0), std::min(e.ur(0), p(0)))
+                      , std::max(e.ll(1), std::min(e.ur(1), p(1)))
+                      , std::max(e.ll(2), std::min(e.ur(2), p(2))));
 }
 
 template<typename T>
