@@ -146,6 +146,8 @@ public :
      public :
          virtual ublas::vector<double> operator () (
             const ublas::vector<double> & v ) const { return v; }
+
+         virtual ~Transform_t() {}
      };
 
      typedef std::vector<ublas::vector<double> > QuadList_t;
