@@ -1,3 +1,4 @@
+define_module(LIBRARY math DEPENDS dbglog)
 
 set(math_SOURCES
 	math.cpp
@@ -7,16 +8,7 @@ set(math_SOURCES
 	signal.cpp
 )
 
-# This magic either creates (static) library or assigns all sources to variable
-# passed in ${Add_Subdirectory_And_Grab_Sources_Var}.
-#
-# Used to fetch sources when static library is not an option (e.g. when building
-# shared library containing object files compiled from these sources,
-# (like python extension)).
-if(Add_Subdirectory_And_Grab_Sources_Var)
-  set(${Add_Subdirectory_And_Grab_Sources_Var}
-    ${${Add_Subdirectory_And_Grab_Sources_Var}};${math_SOURCES}
-    PARENT_SCOPE)
-else()
-  add_library(math STATIC ${math_SOURCES})
-endif()
+add_library(math STATIC ${math_SOURCES})
+set_target_properties(math PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
+  ${CMAKE_SOURCE_DIR}/lib)
+target_link_libraries(math ${MODULE_LIBRARIES})
