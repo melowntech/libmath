@@ -11,4 +11,4 @@ set(math_SOURCES
 add_library(math STATIC ${math_SOURCES})
 set_target_properties(math PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
   ${CMAKE_SOURCE_DIR}/lib)
-target_link_libraries(math ${MODULE_LIBRARIES})
+target_link_libraries(math ${MODULE_LIBRARIES} -lm)
