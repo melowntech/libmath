@@ -22,11 +22,20 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <stdexcept>
 
 
 namespace math {
 
 namespace ublas = boost::numeric::ublas;
+
+struct GeometryError : std::runtime_error {
+    GeometryError(const std::string &msg) : std::runtime_error(msg) {}
+};
+
+struct NoIntersectError : GeometryError {
+    NoIntersectError(const std::string &msg) : GeometryError(msg) {}
+};
 
 /* sizes */
 
@@ -270,8 +279,19 @@ inline Extents2_<T> unite( const Extents2_<T> &a, const Extents2_<T> &b ) {
             std::max( a.ur[1], b.ur[1] ) ) );
 }
 
+template <typename T1, typename T2>
+inline bool overlaps(const Extents2_<T1> &a, const Extents2_<T2> &b)
+{
+    return ((a.ll(0) < b.ur(0)) && (b.ll(0) < a.ur(0))
+             && (a.ll(1) < b.ur(1)) && (b.ll(1) < a.ur(1)));
+}
+
 template <typename T>
 inline Extents2_<T> intersect( const Extents2_<T> &a, const Extents2_<T> &b ) {
+    if (!overlaps(a, b)) {
+        throw NoIntersectError
+            ("Extents do not overlap, cannot compute intersection");
+    }
 
     return Extents2_<T>(
         typename Extents2_<T>::point_type (
@@ -282,17 +302,14 @@ inline Extents2_<T> intersect( const Extents2_<T> &a, const Extents2_<T> &b ) {
             std::min( a.ur[1], b.ur[1] ) ) );
 }
 
-template <typename T1, typename T2>
-inline bool overlaps(const Extents2_<T1> &a, const Extents2_<T2> &b)
-{
-    return ((a.ll(0) < b.ur(0)) && (b.ll(0) < a.ur(0))
-             && (a.ll(1) < b.ur(1)) && (b.ll(1) < a.ur(1)));
-}
-
 
 template <typename T>
 inline double overlap( const Extents2_<T> & a, const Extents2_<T> & b ) {
-    return ( intersect( a, b ).area() / unite( a, b ).area() ); 
+    try {
+        return ( intersect( a, b ).area() / unite( a, b ).area() );
+    } catch (const NoIntersectError &) {
+        return .0;
+    }
 }
 
 template <typename T>
@@ -376,8 +393,21 @@ inline Extents3_<T> unite(const Extents3_<T> &a, const Extents3_<T> &b ) {
     return res;
 }
 
+template <typename T1, typename T3>
+inline bool overlaps(const Extents3_<T1> &a, const Extents3_<T3> &b)
+{
+    return ((a.ll(0) < b.ur(0)) && (b.ll(0) < a.ur(0))
+             && (a.ll(1) < b.ur(1)) && (b.ll(1) < a.ur(1))
+             && (a.ll(2) < b.ur(2)) && (b.ll(2) < a.ur(2)));
+}
+
 template <typename T>
 inline Extents3_<T> intersect( const Extents3_<T> &a, const Extents3_<T> &b ) {
+    if (!overlaps(a, b)) {
+        throw NoIntersectError
+            ("Extents do not overlap, cannot compute intersection");
+    }
+
     typedef Extents3_<T> E3;
     typedef typename E3::point_type point_type;
     return Extents3(point_type(std::max(a.ll[0], b.ll[0])
@@ -388,17 +418,13 @@ inline Extents3_<T> intersect( const Extents3_<T> &a, const Extents3_<T> &b ) {
                                  , std::min(a.ll[2], b.ll[2])));
 }
 
-template <typename T1, typename T3>
-inline bool overlaps(const Extents3_<T1> &a, const Extents3_<T3> &b)
-{
-    return ((a.ll(0) < b.ur(0)) && (b.ll(0) < a.ur(0))
-             && (a.ll(1) < b.ur(1)) && (b.ll(1) < a.ur(1))
-             && (a.ll(2) < b.ur(2)) && (b.ll(2) < a.ur(2)));
-}
-
 template <typename T>
 inline double overlap(const Extents3_<T> & a, const Extents3_<T> & b) {
-    return (volume(intersect(a, b)) / volume(unite(a, b)));
+    try {
+        return (volume(intersect(a, b)) / volume(unite(a, b)));
+    } catch (const NoIntersectError&) {
+        return .0;
+    }
 }
 
 template<typename CharT, typename Traits, typename T>
