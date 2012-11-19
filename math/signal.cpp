@@ -19,7 +19,7 @@ Signal2::Signal2( int sizeX, int sizeY,
       llx( llx ), lly( lly ), urx( urx ), ury( ury ),
       type( type ) {
 
-    LOG( info2 )
+    LOG( info1 )
         << "Created signal with extents ["
         << llx << "," << lly << "]->[" << urx << "," << ury << "]";
           

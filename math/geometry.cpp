@@ -61,17 +61,21 @@ Point3 midpoint( const Line3 & line1, const Line3 & line2 ) {
           << "Lines close to paralel, midpoint not reliable";
 
     // test for parallel vectors
-    if ( fabs( a(0,0) * a(1,1) - a(1,0) * a(0,1) ) < 1E-15 ) {
+    double detA = a(0,0) * a(1,1) - a(1,0) * a(0,1);
+          
+    if ( fabs( detA ) < 1E-15 ) {
 
         LOGTHROW( err1, std::runtime_error )
             << "Paralel lines detected, no midpoint.";        
     }
 
 
+    /*
     ublas::matrix<float> ai = matrixInvert( a );
-    ublas::vector<float> r = ublas::prod( ai, b );
-    r1 = r[0]; r2 = r[1];
+    ublas::vector<float> r = ublas::prod( ai, b );*/
 
+    r1 = ( b(0) * a(1,1) - b(1) * a(0,1) ) / detA;
+    r2 = ( a(0,0) * b(1) - a(1,0) * b(0) ) / detA;
 
     return ( line1.p + r1 * line1.u + line2.p + r2 * line2.u ) * 0.5;
 }
