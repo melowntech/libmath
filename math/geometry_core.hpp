@@ -477,6 +477,8 @@ operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
     return is;
 }
 
+#ifndef __APPLE__
+
 template <class UblasContainer>
 bool operator < (
     const UblasContainer & op1, const UblasContainer & op2 ) {
@@ -485,6 +487,36 @@ bool operator < (
                 op1.data().begin(), op1.data().end(),
                 op2.data().begin(), op2.data().end() );
 }
+
+#else
+
+inline bool operator < (
+    const Matrix4 & op1, const Matrix4 & op2 ) {
+
+    return std::lexicographical_compare(
+                op1.data().begin(), op1.data().end(),
+                op2.data().begin(), op2.data().end() );
+}
+
+template <typename T1, typename T2>
+bool operator < (
+    const Point3_<T1> & op1, const Point3_<T2> & op2 ) {
+
+    return std::lexicographical_compare(
+                op1.data().begin(), op1.data().end(),
+                op2.data().begin(), op2.data().end() );
+}
+
+template <typename T1, typename T2>
+bool operator < (
+    const Point2_<T1> & op1, const Point2_<T2> & op2 ) {
+
+    return std::lexicographical_compare(
+                op1.data().begin(), op1.data().end(),
+                op2.data().begin(), op2.data().end() );
+}
+
+#endif
 
 template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
