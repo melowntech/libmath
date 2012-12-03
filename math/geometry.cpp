@@ -56,7 +56,7 @@ Point3 midpoint( const Line3 & line1, const Line3 & line2 ) {
     b(0) = inner_prod( line2.u, line1.p - line2.p );
     b(1) = inner_prod( line1.u, line2.p - line1.p );
 
-    if ( fabs( inner_prod( line1.u, line2.u ) / ( norm_2( line1.u ) * norm_2( line2.u ) ) ) > 0.996 )
+    if ( fabs( inner_prod( line1.u, line2.u ) / ( norm_2( line1.u ) * norm_2( line2.u ) ) ) > 0.9962 )
       LOGTHROW( err1, std::runtime_error )
           << "Lines close to paralel, midpoint not reliable";
 
