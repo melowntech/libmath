@@ -225,6 +225,13 @@ typedef Extents2_<double> Extents2f;
 typedef Extents2f Extents2;
 
 template <typename T>
+Viewport2_<T> viewport(const Extents2_<T> &e)
+{
+    return Viewport2_<T>(e.ur(0) - e.ll(0), e.ur(1) - e.ll(1)
+                         , e.ll(0), e.ll(1));
+}
+
+template <typename T>
 const typename Extents2_<T>::point_type& ll(const Extents2_<T> &e) {
     return e.ll;
 }
