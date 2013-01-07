@@ -249,6 +249,17 @@ inline auto computeExtents(Iterator begin, Iterator end)
     return extents;
 }
 
+/** Simplified version for STL container.
+ */
+template <typename Container>
+inline auto computeExtents(const Container &c)
+    -> typename detail::ExtentsTypeTraits
+    <typename Container::value_type::value_type
+     , typename Container::value_type>::type
+{
+    return computeExtents(c.begin(), c.end());
+}
+
 } // namespace math
 
 #endif // MATH_GEOMETRY_HPP
