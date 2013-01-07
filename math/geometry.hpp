@@ -113,6 +113,14 @@ inline Point3_<T> crossProduct(const ublas::vector<T> & u, const Point3_<T> & v 
                      , u(0) * v(1) - v(0) * u(1));
 }
 
+/** 2D version of cross product; result is not an vector but crossproduct's
+ *  z-component.
+ */
+template <typename T>
+inline T crossProduct(const Point2_<T> & u, const Point2_<T> & v )
+{
+    return u(0) * v(1) - v(0) * u(1);
+}
 
 /** Parametric line, in euclidian 2D
  */
