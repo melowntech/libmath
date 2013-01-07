@@ -232,6 +232,12 @@ Viewport2_<T> viewport(const Extents2_<T> &e)
 }
 
 template <typename T>
+Extents2_<T> extents(const Viewport2_<T> &v)
+{
+    return Extents2_<T>(v.x, v.y, v.x + v.width, v.y + v.height);
+}
+
+template <typename T>
 const typename Extents2_<T>::point_type& ll(const Extents2_<T> &e) {
     return e.ll;
 }
