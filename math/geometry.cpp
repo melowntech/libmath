@@ -45,8 +45,8 @@ float lineDistance(
 
 Point3 midpoint( const Line3 & line1, const Line3 & line2 ) {
 
-    ublas::matrix<double> a(2,2);
-    ublas::vector<double> b(2);
+    Matrix2 a(2, 2);
+    Point2 b(2);
     double r1, r2;
     
     a(0,0) = - inner_prod( line1.u, line2.u );

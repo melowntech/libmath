@@ -57,6 +57,17 @@ inline Point3_<T> normalize( const Point3_<T> & v ) {
 
 /** homogeneous coordinates (from euclidian) */
 template <class T>
+inline ublas::vector<T, ublas::bounded_array<T, 4> >
+homogeneous( const Point3_<T> & src )
+{
+    ublas::vector<T, ublas::bounded_array<T, 4> > dst(4);
+    dst(0) = src(0); dst(1) = src(1); dst(2) = src(2);
+    dst(3) = T(1);
+    return dst;
+}
+
+/** homogeneous coordinates (from euclidian) */
+template <class T>
 inline ublas::vector<typename T::value_type> homogeneous( const T & src ) {
     
     ublas::vector<typename T::value_type> ret(
@@ -64,6 +75,15 @@ inline ublas::vector<typename T::value_type> homogeneous( const T & src ) {
             src.size() + 1, src.size() ) );
     ublas::subrange( ret, 0, src.size() ) = src;
     return ret;
+}
+
+/** euclidian coordinates (from homogenous) */
+template <class T>
+inline Point3_<T>
+euclidian( const ublas::vector<T, ublas::bounded_array<T, 4> > & src )
+{
+    auto div(src(3));
+    return Point3_<T>(src(0) / div, src(1) / div, src(2) / div);
 }
 
 /** euclidian coordinates (from homogenous) */
@@ -139,9 +159,7 @@ struct Line2 {
 struct Line3 {
     Point3 p, u;
 
-    Line3(
-        const ublas::vector<double> p = ublas::zero_vector<double>( 3 ),
-        const ublas::vector<double> u = ublas::zero_vector<double>( 3 ) )
+    Line3(const Point3 p = Point3(), const Point3 u = Point3() )
         : p( p ), u( u ) {}
 };
 

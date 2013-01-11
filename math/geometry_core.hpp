@@ -182,6 +182,8 @@ typedef std::vector<Point3_<double> > Points3d;
 typedef std::vector<Point3> Points3;
 
 typedef ublas::matrix<double,ublas::row_major,
+                      ublas::bounded_array<double, 4> > Matrix2;
+typedef ublas::matrix<double,ublas::row_major,
                       ublas::bounded_array<double, 9> > Matrix3;
 typedef ublas::matrix<double,ublas::row_major,
                       ublas::bounded_array<double, 16> > Matrix4;
@@ -493,7 +495,7 @@ operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
 #ifndef __APPLE__
 
 template <class UblasContainer>
-bool operator < (
+inline bool operator < (
     const UblasContainer & op1, const UblasContainer & op2 ) {
 
     return std::lexicographical_compare(
@@ -512,7 +514,7 @@ inline bool operator < (
 }
 
 template <typename T1, typename T2>
-bool operator < (
+inline bool operator < (
     const Point3_<T1> & op1, const Point3_<T2> & op2 ) {
 
     return std::lexicographical_compare(
@@ -521,7 +523,7 @@ bool operator < (
 }
 
 template <typename T1, typename T2>
-bool operator < (
+inline bool operator < (
     const Point2_<T1> & op1, const Point2_<T2> & op2 ) {
 
     return std::lexicographical_compare(

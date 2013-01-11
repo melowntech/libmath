@@ -59,7 +59,7 @@ int sgn( const Value_t & value ) {
   */
                        
 template <typename T, typename L, typename C>
-ublas::matrix<T> matrixInvert( const ublas::matrix<T,L,C> & input ) {
+ublas::matrix<T,L,C> matrixInvert( const ublas::matrix<T,L,C> & input ) {
                        
     typedef ublas::permutation_matrix<std::size_t> pmatrix;
                                
@@ -78,7 +78,7 @@ ublas::matrix<T> matrixInvert( const ublas::matrix<T,L,C> & input ) {
     }
                                                            
     // create identity matrix of "inverse"
-    ublas::matrix<T> inverse = ublas::identity_matrix<T>(A.size1());
+    ublas::matrix<T,L,C> inverse = ublas::identity_matrix<T>(A.size1());
                                                          
     // backsubstitute to get the inverse
     lu_substitute(A, pm, inverse);
