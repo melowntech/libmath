@@ -266,6 +266,30 @@ private:
     
 };
 
+class Linear2 {
+public:
+    Linear2(double cutoffX, double cutoffY)
+        : hwinx(cutoffX / 2.), hwiny(cutoffY / 2.)
+        , x2_T(2. / cutoffX), x4_T2(x2_T * x2_T)
+        , y2_T(2. / cutoffY), y4_T2(y2_T * y2_T)
+    {}
+
+    double operator()(const double x, const double y) const {
+        auto ax(std::abs(x));
+        auto ay(std::abs(y));
+        return (((ax >= hwinx) ? 0. : (x2_T - x4_T2 * ax))
+                * ((ay >= hwiny) ? 0. : (y2_T - y4_T2 * ay)));
+    }
+
+    double halfwinx() const { return hwinx; }
+    double halfwiny() const { return hwiny; }
+
+private:
+    double hwinx, hwiny;
+    double x2_T, x4_T2; // x coefficients: 2/T and (2/T)^2
+    double y2_T, y4_T2; // y coefficients: 2/T and (2/T)^2
+};
+
 
 /** OBSOLETE
  * Abstract class for 2D analytic window filter

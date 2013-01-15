@@ -9,14 +9,17 @@
 #define MATH_SIGNAL_HPP
 
 #include <boost/gil/gil_all.hpp>
+#include <boost/scoped_array.hpp>
 #include <boost/numeric/ublas/vector.hpp>
+
+#include "filters.hpp"
 
 namespace gil = boost::gil;
 namespace ublas = boost::numeric::ublas;
 
 namespace math {
 
-class Signal2 {
+class Signal2Base {
 
 public :
 
@@ -25,15 +28,9 @@ public :
         Xperiodic = 0x01
     };
 
-    Signal2( int sizeX, int sizeY,
+    Signal2Base( int sizeX, int sizeY,
         const double llx, const double lly, const double urx,
         const double ury, const Type_t type = Nonperiodic );
-
-    /**
-     * provide a signal sample at given position, of given value, and with
-     * given sampling period hint. */
-    void sample( double x, double y, double value,
-        double periodX, double periodY );
 
     int width() const { return sizeX; }
     int height() const { return sizeY; }
@@ -41,13 +38,6 @@ public :
     double pixelX() { return pixelx; }
     double pixelY() { return pixely; }
 
-    /**
-     * return interpolated value of the signal at given position.
-     */    
-    double operator () ( const double x, const double y ) const;
-    
-    ~Signal2();
-    
     struct Cell_s {
 
         enum {
@@ -116,21 +106,22 @@ public :
         int step;
     };
 
-    Cell_s & at( int i, int j ) { return *( cells + sizeX * j + i ); }
-    const Cell_s & at( int i, int j ) const { return *( cells + sizeX * j + i ); }
+    Cell_s & at( int i, int j ) { return cells[sizeX * j + i]; }
+    const Cell_s & at( int i, int j ) const { return cells[ sizeX * j + i]; }
 
-    iterator begin() { return iterator( cells ); }
-    const_iterator begin() const { return iterator( cells ); }
-    iterator end() { return iterator( cells + sizeX * sizeY ); }
-    const_iterator end() const { return const_iterator( cells + sizeX * sizeY ); }
+    iterator begin() { return iterator( cells.get() ); }
+    const_iterator begin() const { return iterator( cells.get() ); }
+    iterator end() { return iterator( cells.get() + sizeX * sizeY ); }
+    const_iterator end() const {
+        return const_iterator( cells.get() + sizeX * sizeY ); }
     const_iterator row_begin( int j ) const {
-        return iterator( cells + j * sizeX ); }
+        return iterator( cells.get() + j * sizeX ); }
     const_iterator row_end( int j ) const {
-        return const_iterator( cells + ( j + 1 ) * sizeX );  };
+        return const_iterator( cells.get() + ( j + 1 ) * sizeX );  };
     const_col_iterator col_begin( int i ) const {
-        return const_col_iterator( cells + i, sizeX ); }
+        return const_col_iterator( cells.get() + i, sizeX ); }
     const_col_iterator col_end( int i ) const {
-        return const_col_iterator( cells + sizeX * sizeY + i, sizeX ); };
+        return const_col_iterator( cells.get() + sizeX * sizeY + i, sizeX ); };
 
      /**
       * Provide a signal visualisation in form of an image.
@@ -155,14 +146,37 @@ public :
      void getQuads( QuadList_t & quads, const Transform_t & trafo =
          Transform_t() );
 
-private:
+protected:
     int sizeX, sizeY;
     double llx, lly, urx, ury, pixelx, pixely;
     Type_t type;
-    Cell_s * cells;
+    boost::scoped_array<Cell_s> cells;
 };
 
+template <typename FilterType = math::SincHamming2>
+class Signal2 : public Signal2Base {
+public :
+    Signal2( int sizeX, int sizeY,
+        const double llx, const double lly, const double urx,
+        const double ury, const Type_t type = Nonperiodic )
+        : Signal2Base(sizeX, sizeY, llx, lly,  urx, ury, type)
+    {}
+
+    /**
+     * provide a signal sample at given position, of given value, and with
+     * given sampling period hint. */
+    void sample( double x, double y, double value,
+        double periodX, double periodY );
+
+    /**
+     * return interpolated value of the signal at given position.
+     */
+    double operator () ( const double x, const double y ) const;
+};
 
 } // namespace math
+
+// templated functions implementation
+#include "signal.impl.hpp"
 
 #endif // MATH_SIGNAL_HPP
