@@ -290,56 +290,53 @@ private:
     double y2_T, y4_T2; // y coefficients: 2/T and (2/T)^2
 };
 
-
-/** OBSOLETE
- * Abstract class for 2D analytic window filter
- */
-
-/*class Filter2_t {
-public :
-    float halfwindowX() const { return hwinx; }
-    float halfwindowY() const { return hwiny; }
-
-    virtual float operator() ( float x, float y ) const = 0;
-
-    Filter2_t( float hwinx, float hwiny ) : hwinx( hwinx ), hwiny( hwiny ) {};
-
-protected :
-    float hwinx, hwiny;
-};*/
-
-/**
- * 2D sinc function with a hamming window
- */
-
-/*class LowPassFilter2_t : public Filter2_t {
-
+template <typename Def>
+class Cubic2 {
 public:
-    LowPassFilter2_t( float cutoffX, float hwinx, float cutoffY, float hwiny )
-        : Filter2_t( hwinx, hwiny ), cutoffX( cutoffX ),
-            cutoffY( cutoffY ) {}
+    Cubic2(double cutoffX, double cutoffY)
+        : cutoffX(cutoffX), cutoffY(cutoffY)
+        , x2_T(2. / cutoffX), y2_T(2. / cutoffY)
+    {}
 
-    virtual float operator() ( float x, float y ) const {
-
-        return sinc( x, cutoffX ) * hamming( x, hwinx )
-            * sinc( y, cutoffY ) * hamming( y, hwiny );
+    double operator()(const double x, const double y) const {
+        return value(std::abs(x * x2_T)) * value(std::abs(y * y2_T));
     }
 
-private :
+    double halfwinx() const { return cutoffX; }
+    double halfwiny() const { return cutoffY; }
 
-    static float sinc( float x, float cutoff )  {
-        if ( fabs( x ) < 1E-15 )
-            return 2.0 / cutoff;
-        else
-            return 1.0 / ( M_PI * x ) * sin( 2 * M_PI * x / cutoff );
+private:
+    static inline double value(const double x) {
+        if (x < 1.) {
+            return (x * (x * x * (12. - 9. * Def::B - 6. * Def::C)
+                         + x * (-18. + 12. * Def::B + 6. * Def::C))
+                    + 6. - 2. * Def::B) / 6.;
+        } else if (x < 2.) {
+            return (x * (x * (x * (-Def::B - 6. * Def::C)
+                              + (6. * Def::B + 30. * Def::C))
+                         + (-12. * Def::B - 48. * Def::C))
+                    + (8. * Def::B + 24. * Def::C)) / 6.;
+        }
+        return 0.;
     }
 
-    static float hamming( float x, float hwin ) {
-        return fabs( x ) > hwin ? 0.0 : 0.54 + 0.46 * cos( M_PI * x / hwin );
-    }
+    double cutoffX, cutoffY;
+    double x2_T, y2_T;
+};
 
-    float cutoffX, cutoffY;
-};*/
+namespace detail {
+    struct CatmullRom2Spline {
+        static constexpr double B = .0;
+        static constexpr double C = .5;
+    };
+} // namespace detail
+
+class CatmullRom2 : public Cubic2<detail::CatmullRom2Spline> {
+public:
+    CatmullRom2(double cutoffX, double cutoffY)
+        : Cubic2<detail::CatmullRom2Spline>(cutoffX, cutoffY)
+    {}
+};
 
 } // namespace math
 
