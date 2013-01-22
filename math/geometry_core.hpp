@@ -267,7 +267,7 @@ inline Point2_<T> clip(const Extents2_<T> &e, const Point2_<T> &p) {
 
 template<typename T>
 inline Point2_<T> center(const Extents2_<T> &e) {
-    return (e.ur - e.ll) / 2;
+    return (e.ur + e.ll) / 2;
 }
 
 template<typename T>
@@ -373,7 +373,7 @@ typedef Extents3f Extents3;
 
 template<typename T>
 inline Point3_<T> center(const Extents3_<T> &e) {
-    return (e.ur - e.ll) / 2;
+    return (e.ur + e.ll) / 2;
 }
 
 template<typename T>
@@ -580,6 +580,46 @@ operator>>(std::basic_istream<CharT, Traits> &is, Extents3_<T> &e)
                 , e.ll(0), e.ll(1), e.ll(2), e.ur(0), e.ur(1), e.ur(2));
 
     return is;
+}
+
+template <typename T>
+const typename Extents3_<T>::point_type& bll(const Extents3_<T> &e) {
+    return e.ll;
+}
+
+template <typename T>
+typename Extents3_<T>::point_type bul(const Extents3_<T> &e) {
+    return typename Extents3_<T>::point_type(e.ll(0), e.ur(1), e.ll(2));
+}
+
+template <typename T>
+typename Extents3_<T>::point_type bur(const Extents3_<T> &e) {
+    return typename Extents3_<T>::point_type(e.ur(0), e.ur(1), e.ll(2));
+}
+
+template <typename T>
+typename Extents3_<T>::point_type blr(const Extents3_<T> &e) {
+    return typename Extents3_<T>::point_type(e.ur(0), e.ll(1), e.ll(2));
+}
+
+template <typename T>
+const typename Extents3_<T>::point_type tll(const Extents3_<T> &e) {
+    return typename Extents3_<T>::point_type(e.ll(0), e.ll(1), e.ur(2));
+}
+
+template <typename T>
+typename Extents3_<T>::point_type tul(const Extents3_<T> &e) {
+    return typename Extents3_<T>::point_type(e.ll(0), e.ur(1), e.ur(2));
+}
+
+template <typename T>
+const typename Extents3_<T>::point_type& tur(const Extents3_<T> &e) {
+    return e.ur;
+}
+
+template <typename T>
+typename Extents3_<T>::point_type tlr(const Extents3_<T> &e) {
+    return typename Extents3_<T>::point_type(e.ur(0), e.ll(1), e.ur(2));
 }
 
 } // namespace math
