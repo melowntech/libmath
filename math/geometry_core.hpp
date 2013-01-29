@@ -242,6 +242,12 @@ inline bool inside(const Extents2_<T1> &e, const Point3_<T2> &p)
             && (p(1) >= e.ll(1)) && (p(1) <= e.ur(1)));
 }
 
+template <typename T1, typename T2>
+inline Extents2_<T1> operator+(const Extents2_<T1> &e, const T2 &diff)
+{
+    return { e.ll(0) - diff, e.ll(1) - diff, e.ur(0) + diff, e.ur(1) + diff };
+}
+
 template <typename T>
 Viewport2_<T> viewport(const Extents2_<T> &e)
 {
@@ -604,6 +610,13 @@ inline bool inside(const Extents3_<T1> &e, const Point3_<T2> &p)
     return ((p(0) >= e.ll(0)) && (p(0) <= e.ur(0))
             && (p(1) >= e.ll(1)) && (p(1) <= e.ur(1))
             && (p(2) >= e.ll(2)) && (p(2) <= e.ur(2)));
+}
+
+template <typename T1, typename T2>
+inline Extents2_<T1> operator+(const Extents3_<T1> &e, const T2 &diff)
+{
+    return { e.ll(0) - diff, e.ll(1) - diff, e.ll(2) - diff
+            , e.ur(0) + diff, e.ur(1) + diff, e.ur(2) + diff };
 }
 
 template <typename T>
