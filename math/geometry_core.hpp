@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include <opencv2/core/core.hpp>
 
 namespace math {
 
@@ -126,6 +127,15 @@ public:
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
 
+    Point2_( const cv::Point_<T> & op )
+        : ublas::vector<T, ublas::bounded_array<T, 2> >(2) {
+        (*this)(0) = op.x; (*this)(1) = op.y;
+    }
+
+    Point2_( const cv::Point3_<T> & op ) {
+        (*this)(0) = op.x / op.z; (*this)(1) = op.y / op.z;
+    }
+    
     bool operator== (const Point2_<T>& p) const {
         return (*this)(0) == p(0) && (*this)(1) == p(1);
     }
