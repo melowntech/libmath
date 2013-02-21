@@ -255,7 +255,8 @@ inline bool inside(const Extents2_<T1> &e, const Point3_<T2> &p)
 template <typename T1, typename T2>
 inline Extents2_<T1> operator+(const Extents2_<T1> &e, const T2 &diff)
 {
-    return { e.ll(0) - diff, e.ll(1) - diff, e.ur(0) + diff, e.ur(1) + diff };
+    return { T1(e.ll(0) - diff), T1(e.ll(1) - diff)
+            , T1(e.ur(0) + diff), T1(e.ur(1) + diff) };
 }
 
 template <typename T>
