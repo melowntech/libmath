@@ -230,6 +230,10 @@ struct Extents2_ {
     T area() const {
         if ( ur[1] < ll[1] || ur[0] < ll[0] ) return 0;
         return ( ur[1] - ll[1] ) * ( ur[0] - ll[0] ); }
+
+    T size() const {
+        return std::max(ur[0] - ll[0], ur[1] - ll[1]);
+    }
 };
 
 typedef Extents2_<int> Extents2i;
