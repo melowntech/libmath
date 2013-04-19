@@ -44,6 +44,8 @@ struct NoIntersectError : GeometryError {
 
 template <class T>
 struct Size2_ {
+    typedef T value_type;
+
     Size2_() : width( 0 ), height( 0 ) {};
 
     Size2_( const T & width, const T & height )
@@ -74,6 +76,7 @@ struct Size2_ {
 typedef Size2_<int> Size2i;
 typedef Size2_<double> Size2f;
 typedef Size2i Size2;
+typedef Size2_<boost::rational<long> > Size2r;
 
 template <typename T>
 T area(const Size2_<T> &size)
