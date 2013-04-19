@@ -18,6 +18,8 @@
 #include <boost/spirit/include/qi_match_auto.hpp>
 #include <boost/spirit/include/qi_alternative.hpp>
 
+#include <boost/rational.hpp>
+
 #include <vector>
 #include <iostream>
 #include <iomanip>
@@ -52,6 +54,12 @@ struct Size2_ {
     template <typename U>
     explicit Size2_(const Size2_<U> &s)
         : width(s.width), height(s.height)
+    {}
+
+    template <typename U>
+    explicit Size2_(const Size2_<boost::rational<U> > &s)
+        : width(boost::rational_cast<T>(s.width))
+        , height(boost::rational_cast<T>(s.height))
     {}
 
     bool operator== (const Size2_<T>& s) const {
@@ -673,6 +681,10 @@ template <typename T>
 typename Extents3_<T>::point_type tlr(const Extents3_<T> &e) {
     return typename Extents3_<T>::point_type(e.ur(0), e.ll(1), e.ur(2));
 }
+
+#define MATH_GEOMETRY_CORE_HPP_INLINES_
+#include "detail/size2.inline.hpp"
+#undef MATH_GEOMETRY_CORE_HPP_INLINES_
 
 } // namespace math
 
