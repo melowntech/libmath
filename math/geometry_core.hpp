@@ -540,8 +540,8 @@ operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
     return is;
 }
 
-#ifndef __APPLE__
-
+#if 0
+// original unsafe code
 template <class UblasContainer>
 inline bool operator < (
     const UblasContainer & op1, const UblasContainer & op2 ) {
@@ -555,7 +555,6 @@ inline bool operator < (
 
 inline bool operator < (
     const Matrix4 & op1, const Matrix4 & op2 ) {
-
     return std::lexicographical_compare(
                 op1.data().begin(), op1.data().end(),
                 op2.data().begin(), op2.data().end() );
