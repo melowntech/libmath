@@ -28,6 +28,8 @@
 
 #include <opencv2/core/core.hpp>
 
+#include "utility/streams.hpp"
+
 namespace math {
 
 namespace ublas = boost::numeric::ublas;
@@ -83,6 +85,14 @@ T area(const Size2_<T> &size)
 {
     return size.width * size.height;
 }
+
+template <typename T> struct Size2SimpleReader { math::Size2_<T> *value; };
+
+/** Used to safly read Size2_<T> in format WxH or A (equivalent to AxA) from
+ *  input stream.
+ */
+template <typename T>
+Size2SimpleReader<T> size2SimpleReader(math::Size2_<T> &value);
 
 /* viewports */
 
@@ -488,25 +498,6 @@ inline double overlap(const Extents3_<T> & a, const Extents3_<T> & b) {
     } catch (const NoIntersectError&) {
         return .0;
     }
-}
-
-template<typename CharT, typename Traits, typename T>
-inline std::basic_ostream<CharT, Traits>&
-operator<<(std::basic_ostream<CharT, Traits> &os, const Size2_<T> &s)
-{
-    return os << s.width << "x" << s.height;
-}
-
-template<typename CharT, typename Traits, typename T>
-inline std::basic_istream<CharT, Traits>&
-operator>>(std::basic_istream<CharT, Traits> &is, math::Size2_<T> &s)
-{
-    using boost::spirit::qi::auto_;
-    using boost::spirit::qi::char_;
-    using boost::spirit::qi::omit;
-    using boost::spirit::qi::match;
-
-    return is >> match(auto_ >> omit['x'] >> auto_, s.width, s.height);
 }
 
 template<typename CharT, typename Traits, typename T>

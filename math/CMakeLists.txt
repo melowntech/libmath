@@ -1,4 +1,4 @@
-define_module(LIBRARY math DEPENDS dbglog Boost)
+define_module(LIBRARY math DEPENDS dbglog utility Boost)
 
 set(math_SOURCES
 	math.cpp math.hpp

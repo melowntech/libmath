@@ -10,6 +10,42 @@
 #    error Do not include this implementation header directly!
 #endif
 
+template <typename T>
+inline Size2SimpleReader<T> size2SimpleReader(math::Size2_<T> &value)
+{
+    return { &value };
+}
+
+template<typename CharT, typename Traits, typename T>
+inline std::basic_istream<CharT, Traits>&
+operator>>(std::basic_istream<CharT, Traits> &is
+           , const Size2SimpleReader<T> &s)
+{
+    is >> s.value->width;
+    auto x(utility::match<CharT>('x'));
+    is >> x;
+    if (x.matched) {
+        is >> s.value->height;
+    } else {
+        s.value->height = s.value->width;
+    }
+
+    return is;
+}
+template<typename CharT, typename Traits, typename T>
+inline std::basic_ostream<CharT, Traits>&
+operator<<(std::basic_ostream<CharT, Traits> &os, const Size2_<T> &s)
+{
+    return os << s.width << "x" << s.height;
+}
+
+template<typename CharT, typename Traits, typename T>
+inline std::basic_istream<CharT, Traits>&
+operator>>(std::basic_istream<CharT, Traits> &is, math::Size2_<T> &s)
+{
+    return is >> s.width >> utility::expect('x') >> s.height;
+}
+
 template <typename T, typename U>
 inline auto operator*(const math::Size2_<T> &l, const math::Size2_<U> &r)
     -> math::Size2_<decltype(l.width * r.width)>
