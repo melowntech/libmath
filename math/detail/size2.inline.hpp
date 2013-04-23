@@ -21,17 +21,21 @@ inline std::basic_istream<CharT, Traits>&
 operator>>(std::basic_istream<CharT, Traits> &is
            , const Size2SimpleReader<T> &s)
 {
-    is >> s.value->width;
+    if (!(is >> s.value->width)) { return is; }
+
     auto x(utility::match<CharT>('x'));
-    is >> x;
+
+    if (!(is >> x)) { return is; }
     if (x.matched) {
-        is >> s.value->height;
-    } else {
-        s.value->height = s.value->width;
+        return is >> s.value->height;
     }
+
+    // use width value as height
+    s.value->height = s.value->width;
 
     return is;
 }
+
 template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
 operator<<(std::basic_ostream<CharT, Traits> &os, const Size2_<T> &s)
