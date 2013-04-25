@@ -20,6 +20,7 @@ inline Matrix4 rotationMatrix(const Point3 & rvec)
     Matrix4 m( ublas::identity_matrix<double>(4) );
 
     double angle = ublas::norm_2(rvec);
+    if (std::abs(angle) < 1e-10) { return m; }
 
     Point3 vec(rvec * (1.0 / angle));
 
