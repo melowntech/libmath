@@ -395,6 +395,15 @@ inline void update(Extents2_<T> &e, const Point2_<T> &p) {
 }
 
 template <typename T>
+inline void update(Extents2_<T> &e, const Point3_<T> &p) {
+    e.ll(0) = std::min(e.ll(0), p(0));
+    e.ll(1) = std::min(e.ll(1), p(1));
+
+    e.ur(0) = std::max(e.ur(0), p(0));
+    e.ur(1) = std::max(e.ur(1), p(1));
+}
+
+template <typename T>
 struct Extents3_ {
     typedef T value_type;
     typedef Point3_<T> point_type;
