@@ -684,6 +684,24 @@ typename Extents3_<T>::point_type tlr(const Extents3_<T> &e) {
     return typename Extents3_<T>::point_type(e.ur(0), e.ll(1), e.ur(2));
 }
 
+/** Get all 4 vertices from Extents2 as a vector of points.
+ */
+template <typename T>
+const typename std::vector<Extents2_<T>::point_type>
+vertices(const Extents2_<T> &e)
+{
+    return { ll(e), ul(e), ur(e), lr(e) };
+}
+
+/** Get all 8 vertices from Extents3 as a vector of points.
+ */
+template <typename T>
+const typename std::vector<Extents3_<T>::point_type>
+vertices(const Extents3_<T> &e)
+{
+    return { bll(e), bul(e), bur(e), blr(e), tll(e), tul(e), tur(e), tlr(e) };
+}
+
 #define MATH_GEOMETRY_CORE_HPP_INLINES_
 #include "detail/size2.inline.hpp"
 #undef MATH_GEOMETRY_CORE_HPP_INLINES_
