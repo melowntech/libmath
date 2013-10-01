@@ -156,7 +156,7 @@ public:
     Point2_( const cv::Point3_<T> & op ) {
         (*this)(0) = op.x / op.z; (*this)(1) = op.y / op.z;
     }
-    
+
     bool operator== (const Point2_<T>& p) const {
         return (*this)(0) == p(0) && (*this)(1) == p(1);
     }
@@ -687,7 +687,7 @@ typename Extents3_<T>::point_type tlr(const Extents3_<T> &e) {
 /** Get all 4 vertices from Extents2 as a vector of points.
  */
 template <typename T>
-const typename std::vector<Extents2_<T>::point_type>
+const std::vector<typename Extents2_<T>::point_type>
 vertices(const Extents2_<T> &e)
 {
     return { ll(e), ul(e), ur(e), lr(e) };
@@ -696,7 +696,7 @@ vertices(const Extents2_<T> &e)
 /** Get all 8 vertices from Extents3 as a vector of points.
  */
 template <typename T>
-const typename std::vector<Extents3_<T>::point_type>
+const std::vector<typename Extents3_<T>::point_type>
 vertices(const Extents3_<T> &e)
 {
     return { bll(e), bul(e), bur(e), blr(e), tll(e), tul(e), tur(e), tlr(e) };
