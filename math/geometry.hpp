@@ -174,6 +174,9 @@ inline std::basic_ostream<E, T> & operator << (
 
 Point3 midpoint( const Line3 & line1, const Line3 & line2 );
 
+double pointLineDistance(const Point3 &p, const Line3 &line);
+
+
 /**
  * Parametric plane, in euclidian 3D
  */
@@ -202,7 +205,6 @@ struct Plane3 {
         
     }
 };
-
 
 
 

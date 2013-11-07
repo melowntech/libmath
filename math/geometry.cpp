@@ -1,7 +1,7 @@
 /*
  * geometry.cpp
  */
- 
+
 #include "geometry.hpp"
 
 #include "math.hpp"
@@ -78,6 +78,12 @@ Point3 midpoint( const Line3 & line1, const Line3 & line2 ) {
     r2 = ( a(0,0) * b(1) - a(1,0) * b(0) ) / detA;
 
     return ( line1.p + r1 * line1.u + line2.p + r2 * line2.u ) * 0.5;
+}
+
+
+double pointLineDistance(const Point3 &p, const Line3 &line)
+{
+    return norm_2(crossProduct(line.u, line.p - p)) / norm_2(line.u);
 }
 
 
