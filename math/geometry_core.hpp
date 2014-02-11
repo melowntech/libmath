@@ -340,6 +340,11 @@ inline T area(const Extents2_<T> &e) {
         : (e.ur[1] - e.ll[1]) * (e.ur[0] - e.ll[0]);
 }
 
+template<typename T>
+inline bool empty(const Extents2_<T> &e) {
+    return !area(e);
+}
+
 template <typename T>
 inline Extents2_<T> unite( const Extents2_<T> &a, const Extents2_<T> &b ) {
 
@@ -455,6 +460,11 @@ inline T volume(const Extents3_<T> &e) {
     return ((e.ur[2] < e.ll[2]) || (e.ur[1] < e.ll[1]) || (e.ur[0] < e.ll[0]))
         ? 0
         : (e.ur[2] - e.ll[2]) * (e.ur[1] - e.ll[1]) * (e.ur[0] - e.ll[0]);
+}
+
+template<typename T>
+inline bool empty(const Extents3_<T> &e) {
+    return !volume(e);
 }
 
 template <typename T>
