@@ -25,6 +25,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <stdexcept>
+#include <limits>
 
 #include <opencv2/core/core.hpp>
 
@@ -220,6 +221,8 @@ typedef ublas::matrix<double,ublas::row_major,
                       ublas::bounded_array<double, 16> > Matrix4;
 
 
+struct InvalidExtents {};
+
 template <typename T>
 struct Extents2_ {
     typedef T value_type;
@@ -229,6 +232,13 @@ struct Extents2_ {
     point_type ur;
 
     Extents2_() : ll(), ur() {}
+
+    explicit Extents2_(InvalidExtents)
+        : ll(std::numeric_limits<T>::max()
+             , std::numeric_limits<T>::max())
+        , ur(std::numeric_limits<T>::lowest()
+             , std::numeric_limits<T>::lowest())
+    {}
 
     explicit Extents2_(const point_type &p)
         : ll(p), ur(p)
@@ -417,6 +427,13 @@ struct Extents3_ {
     point_type ur;
 
     Extents3_() : ll(), ur() {}
+
+    explicit Extents3_(InvalidExtents)
+        : ll(std::numeric_limits<T>::max(), std::numeric_limits<T>::max()
+             , std::numeric_limits<T>::max())
+        , ur(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest()
+             , std::numeric_limits<T>::lowest())
+    {}
 
     explicit Extents3_(const point_type &p)
         : ll(p), ur(p)
