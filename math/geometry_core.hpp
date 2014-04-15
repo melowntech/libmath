@@ -272,6 +272,13 @@ typedef Extents2_<double> Extents2f;
 typedef Extents2f Extents2;
 
 template <typename T1, typename T2>
+inline bool inside(const Extents2_<T1> &e, const T2 &p0, const T2 &p1)
+{
+    return ((p0 >= e.ll(0)) && (p0 <= e.ur(0))
+            && (p1 >= e.ll(1)) && (p1 <= e.ur(1)));
+}
+
+template <typename T1, typename T2>
 inline bool inside(const Extents2_<T1> &e, const Point2_<T2> &p)
 {
     return ((p(0) >= e.ll(0)) && (p(0) <= e.ur(0))
@@ -654,6 +661,15 @@ operator>>(std::basic_istream<CharT, Traits> &is, Extents3_<T> &e)
                 , e.ll(0), e.ll(1), e.ll(2), e.ur(0), e.ur(1), e.ur(2));
 
     return is;
+}
+
+template <typename T1, typename T2>
+inline bool inside(const Extents3_<T1> &e, const T2 &p0, const T2 &p1
+                   , const T2 &p2)
+{
+    return ((p0 >= e.ll(0)) && (p0 <= e.ur(0))
+            && (p1 >= e.ll(1)) && (p1 <= e.ur(1))
+            && (p2 >= e.ll(2)) && (p2 <= e.ur(2)));
 }
 
 template <typename T1, typename T2>
