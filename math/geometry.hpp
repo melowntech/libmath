@@ -252,6 +252,14 @@ namespace detail {
         typedef Extents3_<T> type;
     };
 
+    // TODO: compile only if opencv is available!
+    template <typename T> struct ExtentsTypeTraits<T, cv::Point_<T>> {
+        typedef Extents2_<T> type;
+    };
+
+    template <typename T> struct ExtentsTypeTraits<T, cv::Point3_<T>> {
+        typedef Extents3_<T> type;
+    };
 } // namespace detail
 
 template <typename Iterator>
