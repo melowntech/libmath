@@ -8,6 +8,8 @@
 #ifndef MATH_SIGNAL_HPP
 #define MATH_SIGNAL_HPP
 
+#include <ostream>
+
 #include <boost/gil/gil_all.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -132,6 +134,11 @@ public :
       * The input image needs to have the same dimensions as the sampled signal.
       * This function is intended for diagnostics. */
      void visualize( gil::rgba8_image_t & output ) const;
+
+     /** Debug dump in the form of a Matlab matrix. Undefined cells are stored
+      *  as "nan"s.
+      */
+     void dump(std::ostream &f) const;
 
      class Transform_t {
      public :

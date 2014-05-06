@@ -15,6 +15,8 @@
 #include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
+#include "dbglog/dbglog.hpp"
+
 
 namespace math {
 
@@ -41,7 +43,6 @@ bool ccinterval( const T & lb, const T  & ub, const T & value ) {
     return ( lb <= value && value <= ub );
 }
     
-
 
 /**
   * Signum function
@@ -114,6 +115,24 @@ double determinant(ublas::matrix_expression<matrix_T> const& mat_r)
 
   return det;
 } 
+
+
+/**
+ * Solve a 2x2 linear system
+ */
+template<typename MatrixType, typename VectorType>
+void solve2x2(const MatrixType &mat, const VectorType &rhs, VectorType &result)
+{
+    double det = mat(0,0)*mat(1,1) - mat(0,1)*mat(1,0);
+
+    // check the determinant
+    if (std::abs(det) < 1e-14) {
+        LOGTHROW(err1, std::runtime_error) << "Singular matrix in solve2x2.";
+    }
+
+    result(0) = (rhs(0)*mat(1,1) - mat(0,1)*rhs(1)) / det;
+    result(1) = (mat(0,0)*rhs(1) - rhs(0)*mat(1,0)) / det;
+}
 
                                                                                
 } // namespace math

@@ -85,6 +85,24 @@ void Signal2Base::visualize( gil::rgba8_image_t & output ) const {
     }
 }
 
+void Signal2Base::dump(std::ostream &f) const
+{
+    f << "[";
+    for (int j = 0; j < sizeY; j++)
+    {
+        for (int i = 0; i < sizeX; i++)
+        {
+            const Cell_s &c(at(i, j));
+            if (c.defined())
+                f << c.value() << " ";
+            else
+                f << "nan ";
+        }
+        f << "\n";
+    }
+    f << "];\n";
+}
+
 void Signal2Base::getQuads( QuadList_t & quads, const Transform_t & trafo  )
 {
 

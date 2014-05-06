@@ -193,6 +193,35 @@ public:
     }
 };
 
+template <class T>
+class Point4_ : public ublas::vector<T, ublas::bounded_array<T, 4> > {
+public:
+    Point4_( const T & x = 0.0, const T & y = 0.0
+           , const T & z = 0.0, const T & w = 0.0 )
+        : ublas::vector<T, ublas::bounded_array<T, 4> >(4) {
+        (*this)(0) = x; (*this)(1) = y; (*this)(2) = z; (*this)(3) = w;
+    }
+
+    template <class AE>
+    Point4_( const ublas::vector_expression<AE> & op )
+        : ublas::vector<T, ublas::bounded_array<T, 4> >(4) {
+        ublas::vector_assign<ublas::scalar_assign>( *this, op );
+    }
+
+    Point4_( const ublas::vector<T> & op )
+        : ublas::vector<T, ublas::bounded_array<T, 4> >(4) {
+        ublas::vector_assign<ublas::scalar_assign>( *this, op );
+    }
+
+    bool operator== (const Point4_<T>& p) const {
+        return (*this)(0) == p(0) && (*this)(1) == p(1) &&
+               (*this)(2) == p(2) && (*this)(3) == p(3);
+    }
+    bool operator!= (const Point4_<T>& p) const {
+        return !operator==(p);
+    }
+};
+
 typedef Point2_<int> Point2i;
 typedef Point2_<float> Point2f;
 typedef Point2_<double> Point2d;
@@ -202,6 +231,11 @@ typedef Point3_<int> Point3i;
 typedef Point3_<float> Point3f;
 typedef Point3_<double> Point3d;
 typedef Point3d Point3;
+
+typedef Point4_<int> Point4i;
+typedef Point4_<float> Point4f;
+typedef Point4_<double> Point4d;
+typedef Point4d Point4;
 
 typedef std::vector<Point2_<int> > Points2i;
 typedef std::vector<Point2_<float> > Points2f;
