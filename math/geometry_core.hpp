@@ -781,6 +781,7 @@ vertices(const Extents3_<T> &e)
 
 #define MATH_GEOMETRY_CORE_HPP_INLINES_
 #include "detail/size2.inline.hpp"
+#include "detail/extents2.inline.hpp"
 #undef MATH_GEOMETRY_CORE_HPP_INLINES_
 
 } // namespace math
