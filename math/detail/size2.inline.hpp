@@ -58,10 +58,24 @@ inline auto operator*(const math::Size2_<T> &l, const math::Size2_<U> &r)
 }
 
 template <typename T, typename U>
+inline auto operator*(const math::Size2_<T> &l, U r)
+    -> math::Size2_<decltype(l.width * r)>
+{
+    return { l.width * r, l.height * r };
+}
+
+template <typename T, typename U>
 inline auto operator/(const math::Size2_<T> &l, const math::Size2_<U> &r)
     -> math::Size2_<decltype(l.width / r.width)>
 {
     return { l.width / r.width, l.height / r.height };
+}
+
+template <typename T, typename U>
+inline auto operator/(const math::Size2_<T> &l, U r)
+    -> math::Size2_<decltype(l.width / r)>
+{
+    return { l.width / r, l.height / r };
 }
 
 template <typename T, typename U>
@@ -72,10 +86,24 @@ inline auto operator+(const math::Size2_<T> &l, const math::Size2_<U> &r)
 }
 
 template <typename T, typename U>
+inline auto operator+(const math::Size2_<T> &l, U r)
+    -> math::Size2_<decltype(l.width + r)>
+{
+    return { l.width + r, l.height + r };
+}
+
+template <typename T, typename U>
 inline auto operator-(const math::Size2_<T> &l, const math::Size2_<U> &r)
     -> math::Size2_<decltype(l.width - r.width)>
 {
     return { l.width - r.width, l.height - r.height };
+}
+
+template <typename T, typename U>
+inline auto operator-(const math::Size2_<T> &l, U &r)
+    -> math::Size2_<decltype(l.width - r)>
+{
+    return { l.width - r, l.height - r };
 }
 
 template <typename T, typename U>
