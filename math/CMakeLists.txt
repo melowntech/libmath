@@ -13,3 +13,4 @@ set(math_SOURCES
 add_library(math STATIC ${math_SOURCES})
 buildsys_library(math)
 target_link_libraries(math ${MODULE_LIBRARIES} -lm)
+target_compile_definitions(math PRIVATE ${MODULE_DEFINITIONS})
