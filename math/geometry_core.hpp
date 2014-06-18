@@ -539,7 +539,8 @@ inline void update(Extents3_<T> &e, const Point3_<T> &p) {
 template <typename T>
 inline Extents3_<T> unite(const Extents3_<T> &a, const Extents3_<T> &b ) {
     Extents3_<T> res(a);
-    update(res, b);
+    update(res, b.ll);
+    update(res, b.ur);
     return res;
 }
 
