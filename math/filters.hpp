@@ -28,7 +28,7 @@ public :
 
     FIRFilter_t( const uint halforder ) : halforder( halforder ) {
         order = 2 * halforder + 1;
-        kernel = new float[ order ];
+        kernel = new double[ order ];
         std::fill( kernel, kernel + order, 0 );
     }
 
@@ -38,13 +38,11 @@ public :
 
         halforder = std::floor(filter.halfwinx());
         order = 2 * halforder + 1;
-        kernel = new float[ order ];
+        kernel = new double[ order ];
 
         for(uint i=0; i<order; ++i){
             kernel[i]=filter((int)i - (int)halforder);
-            std::cout << kernel[i] << ", ";
         }
-        std::cout << std::endl;
     }
 
     ~FIRFilter_t() { delete[] kernel; };
@@ -65,11 +63,11 @@ public :
      * of the sequence.
      */
     template <typename Iterator_t>
-    float convolute( const Iterator_t & pos,
+    double convolute( const Iterator_t & pos,
                         uint xpos, uint rowSize ) const {
 
-        float weightSum = 0.0;
-        float valueSum = 0.0;
+        double weightSum = 0.0;
+        double valueSum = 0.0;
 
         Iterator_t begin = pos - std::min( xpos, halforder );
         Iterator_t end = pos + std::min( rowSize - 1 - xpos, halforder );
@@ -115,7 +113,7 @@ public :
 protected :
 
     uint halforder, order;
-    float * kernel;
+    double * kernel;
 };
 
 /**

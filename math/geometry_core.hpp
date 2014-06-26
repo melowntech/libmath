@@ -95,6 +95,42 @@ template <typename T> struct Size2SimpleReader { math::Size2_<T> *value; };
 template <typename T>
 Size2SimpleReader<T> size2SimpleReader(math::Size2_<T> &value);
 
+template <class T>
+struct Size3_ {
+    typedef T value_type;
+
+    Size3_() : width( 0 ), height( 0 ), depth( 0 ) {};
+
+    Size3_( const T & width, const T & height, const T & depth)
+        : width( width ), height( height ), depth(depth) {};
+
+    T width, height, depth;
+
+    template <typename U>
+    explicit Size3_(const Size3_<U> &s)
+        : width(s.width), height(s.height), depth(s.depth)
+    {}
+
+    template <typename U>
+    explicit Size3_(const Size3_<boost::rational<U> > &s)
+        : width(boost::rational_cast<T>(s.width))
+        , height(boost::rational_cast<T>(s.height))
+        , depth(boost::rational_cast<T>(s.depth))
+    {}
+
+    bool operator== (const Size3_<T>& s) const {
+        return width == s.width && height == s.height && depth == s.depth;
+    }
+    bool operator!= (const Size3_<T>& s) const {
+        return !operator==(s);
+    }
+};
+
+typedef Size3_<int> Size3i;
+typedef Size3_<double> Size3f;
+typedef Size3i Size3;
+typedef Size3_<boost::rational<long> > Size3r;
+
 /* viewports */
 
 template <typename T>
