@@ -89,7 +89,7 @@ T area(const Size2_<T> &size)
 
 template <typename T> struct Size2SimpleReader { math::Size2_<T> *value; };
 
-/** Used to safly read Size2_<T> in format WxH or A (equivalent to AxA) from
+/** Used to safely read Size2_<T> in format WxH or A (equivalent to AxA) from
  *  input stream.
  */
 template <typename T>
@@ -130,6 +130,14 @@ typedef Size3_<int> Size3i;
 typedef Size3_<double> Size3f;
 typedef Size3i Size3;
 typedef Size3_<boost::rational<long> > Size3r;
+
+template <typename T> struct Size3SimpleReader { math::Size3_<T> *value; };
+
+/** Used to safely read Size3_<T> in format WxHxD or WxA (equivalent WxAxA) or A
+ *  (equivalent to AxAxA) from input stream.
+ */
+template <typename T>
+Size3SimpleReader<T> size3SimpleReader(math::Size3_<T> &value);
 
 /* viewports */
 
@@ -550,6 +558,11 @@ inline Point3_<T> clip(const Extents3_<T> &e, const Point3_<T> &p) {
 }
 
 template<typename T>
+inline Size3_<T> size(const Extents3_<T> &e) {
+    return Size3_<T>(e.ur(0) - e.ll(0), e.ur(1) - e.ll(1), e.ur(2) - e.ll(2));
+}
+
+template<typename T>
 inline T volume(const Extents3_<T> &e) {
     return ((e.ur[2] < e.ll[2]) || (e.ur[1] < e.ll[1]) || (e.ur[0] < e.ll[0]))
         ? 0
@@ -818,6 +831,7 @@ vertices(const Extents3_<T> &e)
 
 #define MATH_GEOMETRY_CORE_HPP_INLINES_
 #include "detail/size2.inline.hpp"
+#include "detail/size3.inline.hpp"
 #include "detail/extents2.inline.hpp"
 #undef MATH_GEOMETRY_CORE_HPP_INLINES_
 
