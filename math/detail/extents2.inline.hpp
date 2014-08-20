@@ -23,3 +23,15 @@ inline bool operator!=(const math::Extents2_<T> &l
 {
     return !operator==(l, r);
 }
+
+/** Returns new extents that share center with original extents and size is
+ * scaled by scale parameter.
+ */
+template <typename T>
+inline math::Extents2_<T> operator*(const math::Extents2_<T> &e, double scale)
+{
+    return {
+        ((1. + scale) * e.ll + (1. - scale) * e.ur) / 2.
+        , ((1. - scale) * e.ll + (1. + scale) * e.ur) / 2.
+    };
+}
