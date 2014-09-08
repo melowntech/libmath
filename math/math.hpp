@@ -8,6 +8,8 @@
 #ifndef MATH_MATH_HPP
 #define MATH_MATH_HPP
 
+#include <algorithm>
+
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -54,7 +56,15 @@ int sgn( const Value_t & value ) {
    if ( value < 0 ) return -1;
    return 0;
 }
-                  
+
+/** Clamp value to given range.
+ */
+template <typename T>
+inline T clamp(T value, T min, T max)
+{
+    return std::max(min, std::min(value, max));
+}
+
 /**
   * Matrix inversion
   */
