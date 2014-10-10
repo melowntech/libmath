@@ -55,6 +55,12 @@ inline Point3_<T> normalize( const Point3_<T> & v ) {
     return v / ublas::norm_2( v );
 }
 
+/** length of the vector */
+template <typename T>
+inline double length( const T & v ) {
+    return ublas::norm_2(v);
+}
+
 /** homogeneous coordinates (from euclidian) */
 template <class T>
 inline ublas::vector<T, ublas::bounded_array<T, 4> >
