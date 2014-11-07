@@ -247,6 +247,12 @@ double polygonRegularity(
 double polygonRegularity(
     const Point3 & v0, const Point3 & v1, const Point3 & v2, const Point3 & v3 );
 
+/**
+ * Returns whether the triangle and rectagle collide.
+ */
+bool triangleRectangleCollision( math::Point2 triangle[3]
+                               , math::Point2 ll, math::Point2 ur);
+
 namespace detail {
     template <typename T, typename Q> struct ExtentsTypeTraits;
 
