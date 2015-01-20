@@ -167,6 +167,10 @@ struct Line3 {
 
     Line3(const Point3 p = Point3(), const Point3 u = Point3() )
         : p( p ), u( u ) {}
+
+    /** Returns line's point at given parameter (t)
+     */
+    Point3 point(double t) const { return p + u * t; }
 };
 
 template <typename E, typename T>
@@ -226,8 +230,15 @@ inline std::basic_ostream<E, T> & operator << (
 
 /** line and plane intersection */
 
-ublas::vector<double> intersection(
-    const Line3 & line, const Plane3 & plane );
+Point3 intersection( const Line3 & line, const Plane3 & plane );
+
+/** line and plane intersection
+ *  instead of point returns 3 coefficients:
+ *      * lines t-parameter
+ *      * planes t-parameter
+ *      * planes s-parameter
+ */
+Point3 intersectionParams(const Line3 &line, const Plane3 &plane);
 
 
 

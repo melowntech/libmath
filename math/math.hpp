@@ -9,6 +9,7 @@
 #define MATH_MATH_HPP
 
 #include <algorithm>
+#include <stdexcept>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
@@ -82,10 +83,9 @@ ublas::matrix<T,L,C> matrixInvert( const ublas::matrix<T,L,C> & input ) {
                                                
     // perform LU-factorization
     int res = lu_factorize(A,pm);
-    if( res != 0 )
-    {
-        std::cerr << "Singular matrix in math::matrixInvert. Aborting.";
-        abort();
+    if( res != 0 ) {
+        LOGTHROW(warn1, std::runtime_error)
+            << "Singular matrix in math::matrixInvert. Aborting.";
     }
                                                            
     // create identity matrix of "inverse"

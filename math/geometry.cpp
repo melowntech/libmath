@@ -87,9 +87,8 @@ double pointLineDistance(const Point3 &p, const Line3 &line)
 }
 
 
-ublas::vector<double> intersection(
-    const Line3 & line, const Plane3 & plane ) {
-
+Point3 intersectionParams(const Line3 &line, const Plane3 &plane)
+{
     ublas::matrix<double> a( 3, 3 ), ai( 3, 3 );
     ublas::vector<double> op( 3 ), pars( 3 );
 
@@ -100,7 +99,13 @@ ublas::vector<double> intersection(
 
     ai = matrixInvert( a );
     pars = ublas::prod( ai, op );
-    return line.p + line.u * pars( 0 );
+
+    return pars;
+}
+
+Point3 intersection( const Line3 & line, const Plane3 & plane )
+{
+    return line.point(intersectionParams(line, plane)(0));
 }
 
 
