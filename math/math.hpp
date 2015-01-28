@@ -66,6 +66,13 @@ inline T clamp(T value, T min, T max)
     return std::max(min, std::min(value, max));
 }
 
+template <typename T>
+inline bool isInteger(T value, T tolerance = T(0))
+{
+    T integer;
+    return (std::abs(std::modf(value, &integer)) <= tolerance);
+}
+
 /**
   * Matrix inversion
   */
