@@ -143,7 +143,7 @@ inline float signedDistance(math::Point2 &point, math::Point2 &normal ,double d)
 
 bool triangleRectangleCollision( math::Point2 triangle[3]
                                , math::Point2 ll, math::Point2 ur){
-    //find collision using SAT
+    //find collision using SAT, triangles are presumed to have points in CCW order
     //first try all half spaces of the rectangle
     //on the left side of rectangle
     bool allout = true;
@@ -196,10 +196,10 @@ bool triangleRectangleCollision( math::Point2 triangle[3]
     for(uint i=0;i<3;++i){
         bool allout = true;
         math::Point2 lvec = triangle[i]-triangle[(i+1)%3];
-        math::Point2 lnormal(lvec(1), -lvec(0)); 
+        math::Point2 lnormal = normalize(math::Point2(lvec(1), -lvec(0))); 
         double ld = -lnormal(0)*triangle[i](0)-lnormal(1)*triangle[i](1);
         for(uint c=0;c<4;++c){
-            allout = allout && signedDistance(corners[c], lnormal, ld) > 0; 
+            allout = allout && signedDistance(corners[c], lnormal, ld) < 0; 
         }
         if(allout){
             return false;
