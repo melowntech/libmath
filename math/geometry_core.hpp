@@ -299,6 +299,18 @@ typedef ublas::matrix<double,ublas::row_major,
                       ublas::bounded_array<double, 16> > Matrix4;
 
 
+// handy point->size conversion
+template<typename T>
+inline Size2_<T> size(const Point2_<T> &p) {
+    return { p(0), p(1) };
+}
+
+// handy size->point conversion
+template<typename T>
+inline Point2_<T> size(const Size2_<T> &s) {
+    return { s.width, s.height };
+}
+
 struct InvalidExtents {};
 
 template <typename T>
