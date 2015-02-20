@@ -207,6 +207,8 @@ public:
     }
     double halfwinx() const { return hwinx_; }
 
+    Box1 scaled(double scaleX) const { return { 4.0 * hwinx_ * scaleX }; }
+
 private:
     double hwinx_;
     double value_;
@@ -227,6 +229,9 @@ public:
     }
 
     double halfwinx() const { return hwinx; }
+
+    SincHamming1 scaled(double scaleX) const { return { cutoffX * scaleX }; }
+
 private :
 
     static double sinc( double x, double cutoff )  {
@@ -263,6 +268,7 @@ public:
 
     double halfwinx() const { return hwinx; }
 
+    Lanczos1 scaled(double scaleX) const { return { cutoffX * scaleX }; }
 
 private :
 
@@ -289,6 +295,8 @@ public:
 
     double halfwinx() const { return hwinx; }
 
+    Linear1 scaled(double scaleX) const { return { hwinx * 2.0 * scaleX }; }
+
 private:
     double hwinx;
     double x2_T, x4_T2; // x coefficients: 2/T and (2/T)^2
@@ -308,7 +316,9 @@ public:
 
     double halfwinx() const { return cutoffX; }
 
-private:
+    Cubic1<Def> scaled(double scaleX) const { return { cutoffX * scaleX }; }
+
+protected:
     static inline double value(const double x) {
         if (x < 1.) {
             return (x * (x * x * (12. - 9. * Def::B - 6. * Def::C)
@@ -332,9 +342,9 @@ public:
     CatmullRom1(double cutoffX)
         : Cubic1<detail::CatmullRom2Spline>(cutoffX)
     {}
+
+    CatmullRom1 scaled(double scaleX) const { return { cutoffX * scaleX }; }
 };
-
-
 
 
 /**
@@ -422,6 +432,9 @@ public:
     double halfwinx() const { return hwinx; }
     double halfwiny() const { return hwiny; }
 
+    Lanczos2 scaled(double scaleX, double scaleY) const {
+        return { cutoffX * scaleX, cutoffY * scaleY };
+    }
 
 private :
 
@@ -454,6 +467,10 @@ public:
     double halfwinx() const { return hwinx_; }
     double halfwiny() const { return hwiny_; }
 
+    Box2 scaled(double scaleX, double scaleY) const {
+        return { hwinx_ * scaleX, hwiny_ * scaleY };
+    }
+
 private:
     double hwinx_, hwiny_;
     double value_;
@@ -478,6 +495,10 @@ public:
     double halfwinx() const { return hwinx; }
     double halfwiny() const { return hwiny; }
 
+    Linear2 scaled(double scaleX, double scaleY) const {
+        return { 2.0 * hwinx * scaleX, 2.0 * hwiny * scaleY };
+    }
+
 private:
     double hwinx, hwiny;
     double x2_T, x4_T2; // x coefficients: 2/T and (2/T)^2
@@ -499,7 +520,11 @@ public:
     double halfwinx() const { return cutoffX; }
     double halfwiny() const { return cutoffY; }
 
-private:
+    Cubic2<Def> scaled(double scaleX, double scaleY) const {
+        return { cutoffX * scaleX, cutoffY * scaleY };
+    }
+
+protected:
     static inline double value(const double x) {
         if (x < 1.) {
             return (x * (x * x * (12. - 9. * Def::B - 6. * Def::C)
@@ -518,11 +543,17 @@ private:
     double x2_T, y2_T;
 };
 
-class CatmullRom2 : public Cubic2<detail::CatmullRom2Spline> {
+class CatmullRom2
+    : public Cubic2<detail::CatmullRom2Spline>
+{
 public:
     CatmullRom2(double cutoffX, double cutoffY)
         : Cubic2<detail::CatmullRom2Spline>(cutoffX, cutoffY)
     {}
+
+    CatmullRom2 scaled(double scaleX, double scaleY) const {
+        return { cutoffX * scaleX, cutoffY * scaleY };
+    }
 };
 
 /**
@@ -565,7 +596,11 @@ public:
     double halfwiny() const { return cutoffY; }
     double halfwinz() const { return cutoffZ; }
 
-private:
+    Cubic3<Def> scaled(double scaleX, double scaleY, double scaleZ) const {
+        return { cutoffX * scaleX, cutoffY * scaleY, cutoffZ * scaleZ };
+    }
+
+protected:
     static inline double value(const double x) {
         if (x < 1.) {
             return (x * (x * x * (12. - 9. * Def::B - 6. * Def::C)
@@ -589,6 +624,10 @@ public:
     CatmullRom3(double cutoffX, double cutoffY, double cutoffZ)
         : Cubic3<detail::CatmullRom2Spline>(cutoffX, cutoffY, cutoffZ)
     {}
+
+    CatmullRom3 scaled(double scaleX, double scaleY, double scaleZ) const {
+        return { cutoffX * scaleX, cutoffY * scaleY, cutoffZ * scaleZ };
+    }
 };
 
 
