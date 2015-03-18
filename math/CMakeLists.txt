@@ -8,6 +8,7 @@ set(math_SOURCES
 	combinatorics.cpp combinatorics.hpp
 	signal.cpp signal.hpp
     transform.hpp
+    io.hpp
 )
 
 add_library(math STATIC ${math_SOURCES})
