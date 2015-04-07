@@ -182,7 +182,8 @@ inline std::basic_ostream<E, T> & operator << (
     return os;
 }
 
-Point3 midpoint( const Line3 & line1, const Line3 & line2 );
+Point3 midpoint( const Line3 & line1, const Line3 & line2
+               , double minAngleAcos = 0.9962 );
 
 double pointLineDistance(const Point3 &p, const Line3 &line);
 
