@@ -45,7 +45,6 @@ float lineDistance(
 
 Point3 midpoint( const Line3 & line1, const Line3 & line2, double minAngleCos ) 
 {
-    LOG(info2) << "acos: " << minAngleCos;
     Matrix2 a(2, 2);
     Point2 b(2);
     double r1, r2;
