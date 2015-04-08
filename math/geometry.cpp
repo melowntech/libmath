@@ -43,8 +43,9 @@ float lineDistance(
 }
 
 
-Point3 midpoint( const Line3 & line1, const Line3 & line2, double minAngleAcos ) 
+Point3 midpoint( const Line3 & line1, const Line3 & line2, double minAngleCos ) 
 {
+    LOG(info2) << "acos: " << minAngleCos;
     Matrix2 a(2, 2);
     Point2 b(2);
     double r1, r2;
@@ -56,7 +57,7 @@ Point3 midpoint( const Line3 & line1, const Line3 & line2, double minAngleAcos )
     b(0) = inner_prod( line2.u, line1.p - line2.p );
     b(1) = inner_prod( line1.u, line2.p - line1.p );
 
-    if ( fabs( inner_prod( line1.u, line2.u ) / ( norm_2( line1.u ) * norm_2( line2.u ) ) ) > minAngleAcos )
+    if ( fabs( inner_prod( line1.u, line2.u ) / ( norm_2( line1.u ) * norm_2( line2.u ) ) ) > minAngleCos )
       LOGTHROW( err1, std::runtime_error )
           << "Lines close to paralel, midpoint not reliable";
 
