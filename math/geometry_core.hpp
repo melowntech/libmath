@@ -124,6 +124,26 @@ struct Size3_ {
     bool operator!= (const Size3_<T>& s) const {
         return !operator==(s);
     }
+    
+    T & operator()(int idx) {
+        switch(idx) {
+            case 0 : return width;
+            case 1 : return height;
+            case 2 : return depth;
+            default : 
+                throw GeometryError("Bad index to Size3.");
+        }
+    }
+    
+    const T & operator()(int idx) const {
+        switch(idx) {
+            case 0 : return width;
+            case 1 : return height;
+            case 2 : return depth;
+            default : 
+                throw GeometryError("Bad index to Size3.");
+        }
+    }
 };
 
 typedef Size3_<int> Size3i;
@@ -227,6 +247,19 @@ public:
     Point3_( const ublas::vector<T> & op )
         : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
+    }
+    
+    // make point movable
+    Point3_( Point3_<T> && op ) 
+        : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
+        ublas::vector_assign<ublas::scalar_assign>( *this, op );
+    }
+    
+    Point3_ & operator=(const Point3_<T> &) = default;
+    
+    Point3_ & operator=(Point3_<T> &&op) {
+        ublas::vector_assign<ublas::scalar_assign>( *this, op );
+        return *this;
     }
 
     bool operator== (const Point3_<T>& p) const {
