@@ -249,13 +249,13 @@ public:
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
     
+    Point3_ & operator=(const Point3_<T> &) = default;
+    
     // make point movable
     Point3_( Point3_<T> && op ) 
         : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
-    
-    Point3_ & operator=(const Point3_<T> &) = default;
     
     Point3_ & operator=(Point3_<T> &&op) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
