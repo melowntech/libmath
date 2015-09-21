@@ -486,6 +486,11 @@ inline bool empty(const Extents2_<T> &e) {
     return !area(e);
 }
 
+template<typename T>
+inline bool valid(const Extents2_<T> &e) {
+    return (e.ll(0) >= e.ur(0)) && (e.ll(1) >= e.ur(1));
+}
+
 template <typename T>
 inline Extents2_<T> unite( const Extents2_<T> &a, const Extents2_<T> &b ) {
 
@@ -529,6 +534,15 @@ inline double overlap( const Extents2_<T> & a, const Extents2_<T> & b ) {
     } catch (const NoIntersectError &) {
         return .0;
     }
+}
+
+template <typename T>
+inline void update(Extents2_<T> &e, const T &x, const T &y) {
+    e.ll(0) = std::min(e.ll(0), x);
+    e.ll(1) = std::min(e.ll(1), y);
+
+    e.ur(0) = std::max(e.ur(0), x);
+    e.ur(1) = std::max(e.ur(1), y);
 }
 
 template <typename T>
@@ -642,6 +656,13 @@ inline T volume(const Extents3_<T> &e) {
 template<typename T>
 inline bool empty(const Extents3_<T> &e) {
     return !volume(e);
+}
+
+template<typename T>
+inline bool valid(const Extents3_<T> &e) {
+    return ((e.ll(0) >= e.ur(0))
+            && (e.ll(1) >= e.ur(1))
+            && (e.ll(2) >= e.ur(2)));
 }
 
 template <typename T>
