@@ -12,6 +12,7 @@
 #include <sstream>
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 namespace math {
 
@@ -110,6 +111,13 @@ public :
 
         return valueSum / weightSum;
     }
+
+    /** Fetches kernel as a vector.
+     */
+    std::vector<double> getKernel() const {
+        return std::vector<double>(kernel, kernel + order);
+    }
+
 protected :
 
     uint halforder, order;

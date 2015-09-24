@@ -222,6 +222,11 @@ public:
         (*this)(0) = op.x / op.z; (*this)(1) = op.y / op.z;
     }
 
+    template <typename U>
+    explicit Point2_(const Point2_<U> &op) {
+        (*this)(0) = op(0); (*this)(1) = op(1);
+    }
+
     bool operator== (const Point2_<T>& p) const {
         return (*this)(0) == p(0) && (*this)(1) == p(1);
     }
@@ -261,6 +266,11 @@ public:
     Point3_ & operator=(Point3_<T> &&op) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
         return *this;
+    }
+
+    template <typename U>
+    explicit Point3_(const Point3_<U> &op) {
+        (*this)(0) = op(0); (*this)(1) = op(1); (*this)(2) = op(2);
     }
 
     bool operator== (const Point3_<T>& p) const {
