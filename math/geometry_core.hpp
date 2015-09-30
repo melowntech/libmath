@@ -87,6 +87,12 @@ T area(const Size2_<T> &size)
     return size.width * size.height;
 }
 
+template <typename T>
+bool empty(const Size2_<T> &size)
+{
+    return (size.width <= 0) || (size.height <= 0);
+}
+
 template <typename T> struct Size2SimpleReader { math::Size2_<T> *value; };
 
 /** Used to safely read Size2_<T> in format WxH or A (equivalent to AxA) from
@@ -498,7 +504,7 @@ inline bool empty(const Extents2_<T> &e) {
 
 template<typename T>
 inline bool valid(const Extents2_<T> &e) {
-    return (e.ll(0) >= e.ur(0)) && (e.ll(1) >= e.ur(1));
+    return (e.ll(0) <= e.ur(0)) && (e.ll(1) <= e.ur(1));
 }
 
 template <typename T>
@@ -670,9 +676,9 @@ inline bool empty(const Extents3_<T> &e) {
 
 template<typename T>
 inline bool valid(const Extents3_<T> &e) {
-    return ((e.ll(0) >= e.ur(0))
-            && (e.ll(1) >= e.ur(1))
-            && (e.ll(2) >= e.ur(2)));
+    return ((e.ll(0) <= e.ur(0))
+            && (e.ll(1) <= e.ur(1))
+            && (e.ll(2) <= e.ur(2)));
 }
 
 template <typename T>
