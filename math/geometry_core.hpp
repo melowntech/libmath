@@ -357,7 +357,7 @@ inline Size2_<T> size(const Point2_<T> &p) {
 
 // handy size->point conversion
 template<typename T>
-inline Point2_<T> size(const Size2_<T> &s) {
+inline Point2_<T> point(const Size2_<T> &s) {
     return { s.width, s.height };
 }
 
