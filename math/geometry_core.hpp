@@ -233,9 +233,12 @@ public:
         (*this)(0) = op.x; (*this)(1) = op.y;
     }
 
+#if 0
+    // quite dangerous, imho, should be phased out, use euclidian instead
     Point2_( const cv::Point3_<T> & op ) {
         (*this)(0) = op.x / op.z; (*this)(1) = op.y / op.z;
     }
+#endif
 
     template <typename U>
     explicit Point2_(const Point2_<U> &op) {
