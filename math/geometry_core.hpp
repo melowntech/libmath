@@ -198,6 +198,15 @@ typedef Viewport2_<int> Viewport2i;
 typedef Viewport2_<double> Viewport2f;
 typedef Viewport2i Viewport2;
 
+template <class T> class Point2_;
+
+template <typename T1, typename T2>
+inline bool inside(const Viewport2_<T1> &v, const Point2_<T2> &p)
+{
+    return ((p(0) >= v.x) && (p(0) <= (v.x + v.width))
+            && (p(1) >= v.y) && (p(1) <= (v.y + v.height)));
+}
+
 /* points and point vectors */
 
 template <class T>
