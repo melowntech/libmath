@@ -1,4 +1,8 @@
-define_module(LIBRARY math DEPENDS dbglog utility Boost)
+# bump version here
+set(math_VERSION 1.2)
+
+define_module(LIBRARY math=${math_VERSION}
+  DEPENDS dbglog>=1.4 utility>=1.11 Boost)
 
 set(math_SOURCES
 	math.cpp math.hpp
