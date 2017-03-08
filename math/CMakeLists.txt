@@ -1,5 +1,5 @@
 # bump version here
-set(math_VERSION 1.2)
+set(math_VERSION 1.3)
 
 define_module(LIBRARY math=${math_VERSION}
   DEPENDS dbglog>=1.4 utility>=1.11 Boost)
