@@ -81,10 +81,25 @@ typedef Size2_<double> Size2f;
 typedef Size2i Size2;
 typedef Size2_<boost::rational<long> > Size2r;
 
+namespace detail {
+
+/** Area type. Must be wide enough to hold result of (width * height).
+ *
+ *  Defaults to long long (should hold any sane area of integral sizes.
+ *
+ *  Floating types have identical area type.
+ */
+template <typename T> struct AreaType { typedef long long type; };
+template<> struct AreaType<float> { typedef float type; };
+template<> struct AreaType<double> { typedef double type; };
+template<> struct AreaType<long double> { typedef long double type; };
+
+} // namespace detail
+
 template <typename T>
-T area(const Size2_<T> &size)
+typename detail::AreaType<T>::type area(const Size2_<T> &size)
 {
-    return size.width * size.height;
+    return ((typename detail::AreaType<T>::type)(size.width) * size.height);
 }
 
 template <typename T>
