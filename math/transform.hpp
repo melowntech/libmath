@@ -62,6 +62,7 @@ inline Extents2 transform(const Matrix4& tr, const Extents2& extents)
         transform(tr, extents.ur));
 }
 
+#ifdef MATH_HAS_OPENCV
 template<typename T>
 inline cv::Point3_<T> transform(const Matrix4& tr, const cv::Point3_<T>& pt)
 {
@@ -70,6 +71,7 @@ inline cv::Point3_<T> transform(const Matrix4& tr, const cv::Point3_<T>& pt)
         tr(1,0)*pt.x + tr(1,1)*pt.y + tr(1,2)*pt.z + tr(1,3),
         tr(2,0)*pt.x + tr(2,1)*pt.y + tr(2,2)*pt.z + tr(2,3));
 }
+#endif
 
 // in-place transformations for vectors:
 
@@ -85,12 +87,14 @@ inline void transform(const Matrix4& tr, Points2& points)
         pt = transform(tr, pt);
 }
 
+#ifdef MATH_HAS_OPENCV
 template<typename T>
 inline void transform(const Matrix4& tr, std::vector<cv::Point3_<T> >& points)
 {
     for (cv::Point3_<T>& pt : points)
         pt = transform(tr, pt);
 }
+#endif
 
 
 // matrix3
@@ -110,6 +114,7 @@ inline Extents2 transform(const Matrix3 &tr, const Extents2 &extents)
         transform(tr, extents.ur));
 }
 
+#ifdef MATH_HAS_OPENCV
 template<typename T>
 inline cv::Point3_<T> transform(const Matrix3 &tr, const cv::Point_<T> &pt)
 {
@@ -118,6 +123,7 @@ inline cv::Point3_<T> transform(const Matrix3 &tr, const cv::Point_<T> &pt)
         tr(1,0)*pt.x + tr(1,1)*pt.y + tr(1,2),
         tr(2,0)*pt.x + tr(2,1)*pt.y + tr(2,2));
 }
+#endif
 
 // in-place transformations for vectors:
 
@@ -128,6 +134,7 @@ inline void transform(const Matrix3 &tr, Points2 &points)
     }
 }
 
+#ifdef MATH_HAS_OPENCV
 template<typename T>
 inline void transform(const Matrix3 &tr, std::vector<cv::Point_<T> > &points)
 {
@@ -135,6 +142,7 @@ inline void transform(const Matrix3 &tr, std::vector<cv::Point_<T> > &points)
         pt = transform(tr, pt);
     }
 }
+#endif
 
 } // namespace math
 

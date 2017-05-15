@@ -52,7 +52,9 @@
 #include <stdexcept>
 #include <limits>
 
+#ifdef MATH_HAS_OPENCV
 #include <opencv2/core/core.hpp>
+#endif
 
 #include "utility/streams.hpp"
 
@@ -268,10 +270,12 @@ public:
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
 
+#ifdef MATH_HAS_OPENCV
     Point2_( const cv::Point_<T> & op )
         : ublas::vector<T, ublas::bounded_array<T, 2> >(2) {
         (*this)(0) = op.x; (*this)(1) = op.y;
     }
+#endif
 
 #if 0
     // quite dangerous, imho, should be phased out, use euclidian instead
