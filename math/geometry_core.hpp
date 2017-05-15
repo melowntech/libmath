@@ -650,13 +650,18 @@ template <typename E, typename T>
 inline E snapToGrid( const E &ext, const typename E::point_type &origin
                    , T step, bool inscribe = false)
 {
+    typedef typename E::value_type VT;
     if (inscribe) {
-        return { snapToGrid(ext.ll, origin, step, ceil)
-               , snapToGrid(ext.ur, origin, step, floor) };
+        return { snapToGrid(ext.ll, origin, step
+                            , [](VT value) { return std::ceil(value); })
+                , snapToGrid(ext.ur, origin, step
+                             , [](VT value) { return std::floor(value); }) };
     }
     
-    return { snapToGrid(ext.ll, origin, step, floor)
-           , snapToGrid(ext.ur, origin, step, ceil) };
+    return { snapToGrid(ext.ll, origin, step
+                        , [](VT value) { return std::floor(value); })
+            , snapToGrid(ext.ur, origin, step
+                         , [](VT value) { return std::ceil(value); }) };
 }
 
 template <typename T>
