@@ -36,6 +36,7 @@
 #include "geometry_core.hpp"
 
 #include <algorithm>
+#include <array>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
@@ -46,8 +47,15 @@
 
 namespace math {
 
-
 namespace ublas = boost::numeric::ublas;
+
+
+typedef std::array<math::Point2d, 3> Triangle2d;
+typedef std::array<math::Point3d, 3> Triangle3d;
+
+typedef std::vector<Triangle2d> Triangles2d;
+typedef std::vector<Triangle3d> Triangles3d;
+
 
 /**
  * Find the point where two lines get closest in 3D space.
