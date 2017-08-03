@@ -172,8 +172,9 @@ void solve2x2(const MatrixType &mat, const VectorType &rhs, VectorType &result)
         LOGTHROW(err1, std::runtime_error) << "Singular matrix in solve2x2.";
     }
 
-    result(0) = (rhs(0)*mat(1,1) - mat(0,1)*rhs(1)) / det;
-    result(1) = (mat(0,0)*rhs(1) - rhs(0)*mat(1,0)) / det;
+    det = 1.0 / det;
+    result(0) = (rhs(0)*mat(1,1) - mat(0,1)*rhs(1)) * det;
+    result(1) = (mat(0,0)*rhs(1) - rhs(0)*mat(1,0)) * det;
 }
 
                                                                                

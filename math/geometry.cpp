@@ -233,5 +233,24 @@ bool triangleRectangleCollision( math::Point2 triangle[3]
     return true;
 }
 
+
+math::Point3 barycentricCoords(const math::Point2 &r, const math::Point2 &a
+                               , const math::Point2 &b, const math::Point2 &c)
+{
+    math::Matrix2 A(2, 2);
+    math::Point2 l12, rhs;
+
+    for (int i = 0; i < 2; i++) {
+        A(i,0) = a(i) - c(i);
+        A(i,1) = b(i) - c(i);
+        rhs(i) = r(i) - c(i);
+    }
+
+    math::solve2x2(A, rhs, l12);
+
+    return {l12(0), l12(1), 1.0 - l12(0) - l12(1)};
+}
+
+
 } // namespace math
 

@@ -298,6 +298,17 @@ double polygonRegularity(
 bool triangleRectangleCollision( math::Point2 triangle[3]
                                , math::Point2 ll, math::Point2 ur);
 
+/**
+ * Convert cartesian coordinates (r) to barycentric with respect to the (a,b,c)
+ * triangle. See http://en.wikipedia.org/wiki/Barycentric_coordinate_system
+ */
+math::Point3 barycentricCoords(const math::Point2 &r, const math::Point2 &a
+                               , const math::Point2 &b, const math::Point2 &c);
+inline
+math::Point3 barycentricCoords(const math::Point2 &r, const Triangle2d &tri) {
+    return barycentricCoords(r, tri[0], tri[1], tri[2]);
+}
+
 namespace detail {
     template <typename T, typename Q> struct ExtentsTypeTraits;
 
