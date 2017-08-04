@@ -56,6 +56,9 @@ typedef std::array<math::Point3d, 3> Triangle3d;
 typedef std::vector<Triangle2d> Triangles2d;
 typedef std::vector<Triangle3d> Triangles3d;
 
+typedef Points2d Polygon; // single CCW ring, not closed
+typedef std::vector<Polygon> MultiPolygon; // multiple rings, holes CW
+
 
 /**
  * Find the point where two lines get closest in 3D space.
