@@ -184,6 +184,17 @@ inline T crossProduct(const Point2_<T> & u, const Point2_<T> & v )
     return u(0) * v(1) - v(0) * u(1);
 }
 
+/** Returns a positive number if the sequence of points {a, b, c} turns
+ *  counter-clockwise in the XY plane (negative number otherwise).
+ *  Zero (within numerical tolerance) means collinear.
+ */
+template <typename T>
+inline T ccw(const Point2_<T> &a, const Point2_<T> &b, const Point2_<T> &c)
+{
+    return (b(0) - a(0))*(c(1) - a(1)) - (b(1) - a(1))*(c(0) - a(0));
+}
+
+
 /** Parametric line, in euclidian 2D
  */
 struct Line2 {
