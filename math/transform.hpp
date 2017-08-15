@@ -99,12 +99,19 @@ inline void transform(const Matrix4& tr, std::vector<cv::Point3_<T> >& points)
 
 // matrix3
 
-inline Point3 transform(const Matrix3 &tr, const Point2 &pt)
+inline Point3 transform(const Matrix3 &tr, const Point3 &pt)
 {
     return Point3(
         tr(0,0)*pt(0) + tr(0,1)*pt(1) + tr(0,2),
         tr(1,0)*pt(0) + tr(1,1)*pt(1) + tr(1,2),
         tr(2,0)*pt(0) + tr(2,1)*pt(1) + tr(2,2));
+}
+
+inline Point2 transform(const Matrix3 &tr, const Point2 &pt)
+{
+    return Point2(
+        tr(0,0)*pt(0) + tr(0,1)*pt(1) + tr(0,2),
+        tr(1,0)*pt(0) + tr(1,1)*pt(1) + tr(1,2));
 }
 
 inline Extents2 transform(const Matrix3 &tr, const Extents2 &extents)
