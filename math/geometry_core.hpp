@@ -417,7 +417,16 @@ inline Point2_<T> point(const Size2_<T> &s) {
     return { s.width, s.height };
 }
 
+/** Helper tag struct for invalid value extents instationation.
+ */
 struct InvalidExtents {};
+
+/** Helper tag struct for inclusive size computation:
+ *
+ *  size(Extents<integral>(x, y, x, y)) is (0, 0)
+ *  size(Extents<integral>(x, y, x, y), Inclusive{}) is (1, 1)
+ */
+struct Inclusive {};
 
 template <typename T>
 struct Extents2_ {
@@ -544,6 +553,11 @@ inline Point2_<T> center(const Extents2_<T> &e) {
 template<typename T>
 inline Size2_<T> size(const Extents2_<T> &e) {
     return Size2_<T>(e.ur(0) - e.ll(0), e.ur(1) - e.ll(1));
+}
+
+template<typename T>
+inline Size2_<T> size(const Extents2_<T> &e, const Inclusive&) {
+    return Size2_<T>(e.ur(0) - e.ll(0) + T(1), e.ur(1) - e.ll(1) + T(1));
 }
 
 template<typename T>
@@ -721,6 +735,13 @@ inline Point3_<T> clip(const Extents3_<T> &e, const Point3_<T> &p) {
 template<typename T>
 inline Size3_<T> size(const Extents3_<T> &e) {
     return Size3_<T>(e.ur(0) - e.ll(0), e.ur(1) - e.ll(1), e.ur(2) - e.ll(2));
+}
+
+template<typename T>
+inline Size3_<T> size(const Extents3_<T> &e, const Inclusive&) {
+    return Size3_<T>(e.ur(0) - e.ll(0) + T(1)
+                     , e.ur(1) - e.ll(1) + T(1)
+                     , e.ur(2) - e.ll(2) + T(1));
 }
 
 template<typename T>
