@@ -635,6 +635,12 @@ inline void update(Extents2_<T> &e, const Point3_<T> &p) {
     e.ur(1) = std::max(e.ur(1), p(1));
 }
 
+template <typename T>
+inline void update(Extents2_<T> &e, const Extents2_<T> &other) {
+    update(e, other.ll);
+    update(e, other.ur);
+}
+
 template <typename P, typename R, typename T>
 inline P snapToGrid(const P & point, const P & origin, T step, R roundFcn) {
     P res;
@@ -751,6 +757,13 @@ inline void update(Extents3_<T> &e, const Point3_<T> &p) {
     e.ur(0) = std::max(e.ur(0), p(0));
     e.ur(1) = std::max(e.ur(1), p(1));
     e.ur(2) = std::max(e.ur(2), p(2));
+}
+
+
+template <typename T>
+inline void update(Extents3_<T> &e, const Extents3_<T> &other) {
+    update(e, other.ll);
+    update(e, other.ur);
 }
 
 template <typename T>
