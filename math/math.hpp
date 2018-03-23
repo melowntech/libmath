@@ -101,33 +101,53 @@ inline bool isInteger(T value, T tolerance = T(0))
 /**
   * Matrix inversion
   */
-                       
+
 template <typename T, typename L, typename C>
 ublas::matrix<T,L,C> matrixInvert( const ublas::matrix<T,L,C> & input ) {
-                       
+
     typedef ublas::permutation_matrix<std::size_t> pmatrix;
-                               
+
     // create a working copy of the input
     ublas::matrix<T,L,C> A(input);
-                                       
+
     // create a permutation matrix for the LU-factorization
     pmatrix pm(A.size1());
-                                               
+
     // perform LU-factorization
     int res = lu_factorize(A,pm);
     if( res != 0 ) {
         LOGTHROW(warn1, std::runtime_error)
             << "Singular matrix in math::matrixInvert. Aborting.";
     }
-                                                           
+
     // create identity matrix of "inverse"
     ublas::matrix<T,L,C> inverse = ublas::identity_matrix<T>(A.size1());
-                                                         
+
     // backsubstitute to get the inverse
     lu_substitute(A, pm, inverse);
     return inverse;
 }
-                                                                               
+
+template <typename T, typename L, typename C>
+bool matrixInvertInplace( ublas::matrix<T,L,C> &input)
+{
+    typedef ublas::permutation_matrix<std::size_t> pmatrix;
+
+    // create a working copy of the input
+    ublas::matrix<T,L,C> A(input);
+
+    // create a permutation matrix for the LU-factorization
+    pmatrix pm(A.size1());
+
+    // perform LU-factorization
+    int res = lu_factorize(A,pm);
+    if (res != 0) { return false; }
+
+    // backsubstitute to get the inverse
+    lu_substitute(A, pm, input);
+    return true;
+}
+
 /**
  * Matrix determinant
  */
