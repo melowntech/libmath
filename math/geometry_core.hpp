@@ -249,6 +249,13 @@ inline bool inside(const Viewport2_<T1> &v, const Point2_<T2> &p)
             && (p(1) >= v.y) && (p(1) <= (v.y + v.height)));
 }
 
+template <typename T1, typename T2>
+inline bool inside(const Viewport2_<T1> &v, T2 x, T2 y)
+{
+    return ((x >= v.x) && (x <= (v.x + v.width))
+            && (y >= v.y) && (y <= (v.y + v.height)));
+}
+
 /* points and point vectors */
 
 template <class T>
