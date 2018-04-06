@@ -52,7 +52,7 @@ class FIRFilter_t {
 
 public :
 
-    FIRFilter_t( const uint halforder ) : halforder( halforder ) {
+    FIRFilter_t( const unsigned int halforder ) : halforder( halforder ) {
         order = 2 * halforder + 1;
         kernel = new double[ order ];
         std::fill( kernel, kernel + order, 0 );
@@ -66,7 +66,7 @@ public :
         order = 2 * halforder + 1;
         kernel = new double[ order ];
 
-        for(uint i=0; i<order; ++i){
+        for(unsigned int i=0; i<order; ++i){
             kernel[i]=filter((int)i - (int)halforder);
         }
     }
@@ -75,7 +75,7 @@ public :
 
     std::string dump() {
         std::ostringstream str;
-        for ( uint i = 0; i < order; i++ )
+        for ( unsigned int i = 0; i < order; i++ )
             str << "\t" << i << "\t"
             << std::setprecision( 10 ) << std::fixed << kernel[ i ] << "\n";
         return str.str();
@@ -90,7 +90,7 @@ public :
      */
     template <typename Iterator_t>
     double convolute( const Iterator_t & pos,
-                        uint xpos, uint rowSize ) const {
+                        unsigned int xpos, unsigned int rowSize ) const {
 
         double weightSum = 0.0;
         double valueSum = 0.0;
@@ -117,7 +117,7 @@ public :
      */
     template <typename Iterator_t>
     float gilConvolute( const Iterator_t & pos,
-                        uint xpos, uint rowSize ) const {
+                        unsigned int xpos, unsigned int rowSize ) const {
 
         float weightSum = 0.0;
         float valueSum = 0.0;
@@ -145,7 +145,7 @@ public :
 
 protected :
 
-    uint halforder, order;
+    unsigned int halforder, order;
     double * kernel;
 };
 
@@ -156,14 +156,14 @@ protected :
 class LowPassFilter_t : public FIRFilter_t {
 
 public :
-    LowPassFilter_t( float cutoffPeriod, uint halfwindow )
+    LowPassFilter_t( float cutoffPeriod, unsigned int halfwindow )
     : FIRFilter_t( halfwindow ) {
 
-        for ( uint i = 0; i <= halforder; i++ ) {
+        for ( unsigned int i = 0; i <= halforder; i++ ) {
 
-            float sinci = i == 0 ? 2 / cutoffPeriod :
+            auto sinci = i == 0 ? 2 / cutoffPeriod :
                 1.0 / ( M_PI * i ) * sin( 2 * M_PI * i / cutoffPeriod );
-            float hamming = ( order == 1 ) ? 1 :
+            auto hamming = ( order == 1 ) ? 1 :
                 0.54 + 0.46 * cos( 2 * M_PI * i / ( order - 1 ) );
             kernel[ halforder - i ]
                 = kernel[ halforder + i ] = hamming * sinci;
@@ -179,9 +179,9 @@ public :
 class BoxFilter : public FIRFilter_t {
 
 public:
-    BoxFilter( uint halfwindow ) : FIRFilter_t( halfwindow ) {
+    BoxFilter( unsigned int halfwindow ) : FIRFilter_t( halfwindow ) {
 
-        for ( uint i = 0; i <= halforder; i++ )
+        for ( unsigned int i = 0; i <= halforder; i++ )
             kernel[ halforder - i ] = 1.0 /  ( 2 * halforder + 1 );
     }
 };

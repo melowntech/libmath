@@ -43,7 +43,7 @@ namespace math {
  * Return de Brujin sequence for alphabet size k and subsequences of size n
  */
 
-class DeBruijn_t : public std::vector<uint> {
+class DeBruijn_t : public std::vector<unsigned int> {
 
 public :
     DeBruijn_t( const int k, const int n );

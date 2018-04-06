@@ -163,7 +163,7 @@ double polygonRegularity(
 }
 
 inline float signedDistance(math::Point2 &point, math::Point2 &normal ,double d){
-        return point(0)*normal(0) + point(1)*normal(1) + d;
+    return float(point(0)*normal(0) + point(1)*normal(1) + d);
 }
 
 bool triangleRectangleCollision( math::Point2 triangle[3]
@@ -172,7 +172,7 @@ bool triangleRectangleCollision( math::Point2 triangle[3]
     //first try all half spaces of the rectangle
     //on the left side of rectangle
     bool allout = true;
-    for(uint i=0;i<3;++i){
+    for(unsigned int i=0;i<3;++i){
         if(triangle[i](0)> ll(0)){
             allout = false;
         }
@@ -182,7 +182,7 @@ bool triangleRectangleCollision( math::Point2 triangle[3]
     }
     //on the right side of rectangle
     allout = true;
-    for(uint i=0;i<3;++i){
+    for(unsigned int i=0;i<3;++i){
         if(triangle[i](0)< ur(0)){
             allout = false;
         }
@@ -192,7 +192,7 @@ bool triangleRectangleCollision( math::Point2 triangle[3]
     }
     //on the bottom side of rectangle
     allout = true;
-    for(uint i=0;i<3;++i){
+    for(unsigned int i=0;i<3;++i){
         if(triangle[i](1)> ll(1)){
             allout = false;
         }
@@ -202,7 +202,7 @@ bool triangleRectangleCollision( math::Point2 triangle[3]
     }
     //on the top side of rectangle
     allout = true;
-    for(uint i=0;i<3;++i){
+    for(unsigned int i=0;i<3;++i){
         if(triangle[i](1)< ur(1)){
             allout = false;
         }
@@ -218,12 +218,12 @@ bool triangleRectangleCollision( math::Point2 triangle[3]
     corners[2] = math::Point2(ur(0),ll(1));
     corners[3] = math::Point2(ur(0),ur(1));
 
-    for(uint i=0;i<3;++i){
+    for(unsigned int i=0;i<3;++i){
         bool allout = true;
         math::Point2 lvec = triangle[i]-triangle[(i+1)%3];
         math::Point2 lnormal = normalize(math::Point2(lvec(1), -lvec(0))); 
         double ld = -lnormal(0)*triangle[i](0)-lnormal(1)*triangle[i](1);
-        for(uint c=0;c<4;++c){
+        for(unsigned int c=0;c<4;++c){
             allout = allout && signedDistance(corners[c], lnormal, ld) < 0; 
         }
         if(allout){

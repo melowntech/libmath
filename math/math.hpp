@@ -114,7 +114,7 @@ ublas::matrix<T,L,C> matrixInvert( const ublas::matrix<T,L,C> & input ) {
     pmatrix pm(A.size1());
 
     // perform LU-factorization
-    int res = lu_factorize(A,pm);
+    auto res = lu_factorize(A,pm);
     if( res != 0 ) {
         LOGTHROW(warn1, std::runtime_error)
             << "Singular matrix in math::matrixInvert. Aborting.";
@@ -140,7 +140,7 @@ bool matrixInvertInplace( ublas::matrix<T,L,C> &input)
     pmatrix pm(A.size1());
 
     // perform LU-factorization
-    int res = lu_factorize(A,pm);
+    auto res = lu_factorize(A,pm);
     if (res != 0) { return false; }
 
     // backsubstitute to get the inverse

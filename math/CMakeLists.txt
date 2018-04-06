@@ -19,18 +19,25 @@ define_module(LIBRARY math=${math_VERSION}
   DEFINITIONS ${math_EXTRA_DEFINITIONS})
 
 set(math_SOURCES
-	math.cpp math.hpp
-    geometry_core.hpp
-	geometry.cpp geometry.hpp
-	filters.cpp filters.hpp
-	combinatorics.cpp combinatorics.hpp
-	signal.cpp signal.hpp
-    transform.hpp
-    io.hpp
-)
+  math.cpp math.hpp
+  geometry_core.hpp
+  geometry.cpp geometry.hpp
+  filters.cpp filters.hpp
+  combinatorics.cpp combinatorics.hpp
+  signal.cpp signal.hpp
+  transform.hpp
+  io.hpp
+  )
+
+
+set(math_EXTRA_LIBS)
+if(NOT WIN32)
+  # libm needed on non-windows build
+  list(APPEND math_EXTRA_LIBS -lm)
+endif()
 
 add_library(math STATIC ${math_SOURCES})
 buildsys_library(math)
-target_link_libraries(math ${MODULE_LIBRARIES} -lm)
+target_link_libraries(math ${MODULE_LIBRARIES} ${math_EXTRA_LIBS})
 buildsys_target_compile_definitions(math ${MODULE_DEFINITIONS})
 
