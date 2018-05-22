@@ -216,6 +216,7 @@ BOOST_PYTHON_MODULE(melown_math)
     using namespace bp;
     namespace py = math::py;
 
+    // geometry core: 2D stuff
     py::point2<int>("Point2i");
     py::point2<float>("Point2f");
     py::point2<double>("Point2");
@@ -226,6 +227,7 @@ BOOST_PYTHON_MODULE(melown_math)
     py::extents2<int>("Extents2i");
     py::extents2<double>("Extents2");
 
+    // geometry core: 3D stuff
     py::point3<int>("Point3i");
     py::point3<float>("Point3f");
     py::point3<double>("Point3");
