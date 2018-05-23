@@ -27,8 +27,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <mutex>
-
+ 
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -240,31 +239,5 @@ BOOST_PYTHON_MODULE(melown_math)
 }
 
 namespace math { namespace py {
-
-namespace {
-std::once_flag onceFlag;
-} // namespace
-
-boost::python::object import()
-{
-    std::call_once(onceFlag, [&]()
-    {
-        typedef bp::handle< ::PyObject> Handle;
-        Handle module(PyInit_melown_math());
-
-        auto package(pysupport::package());
-
-        if (::PyModule_AddObject(package.ptr(), "math"
-                                 , bp::incref(module.get())) == -1)
-        {
-            LOG(err2) << "PyModule_AddObject failed";
-        }
-
-        auto sys(bp::import("sys"));
-        sys.attr("modules")["melown.math"] = module;
-    });
-
-    return bp::import("melown.math");
-}
-
+PYSUPPORT_MODULE_IMPORT(math)
 } } // namespace math::py
