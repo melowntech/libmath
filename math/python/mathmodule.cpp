@@ -27,7 +27,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
- 
+
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -36,6 +36,7 @@
 #include <boost/python/raw_function.hpp>
 #include <boost/python/slice.hpp>
 #include <boost/python/call.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 #include <stdint.h>
 
@@ -52,10 +53,10 @@ namespace math { namespace py {
 // point2
 
 template <typename T>
-bp::object Point2_repr(const math::Point2_<T> &p)
+bp::object repr_from_ostream(const T &t)
 {
     std::ostringstream os;
-    os << std::fixed << p;
+    os << std::fixed << t;
     return bp::str(os.str());
 }
 
@@ -70,22 +71,20 @@ bp::class_<Point2_<T>> point2(const char *name)
 {
     using namespace bp;
 
-    auto cls = class_<math::Point2_<T>>(name, init<math::Point2_<T>>())
-        .def("__repr__", &py::Point2_repr<T>)
+    typedef math::Point2_<T> Point;
+
+    auto cls = class_<Point>
+        (name, init<const Point&>())
+        .def(init<>())
+        .def(init<T, T>())
+
+        .def("__repr__", &py::repr_from_ostream<Point>)
         .def("__getitem__", &Point2_getItem<T>)
         ;
     return cls;
 }
 
 // point3
-
-template <typename T>
-bp::object Point3_repr(const math::Point3_<T> &p)
-{
-    std::ostringstream os;
-    os << std::fixed << p;
-    return bp::str(os.str());
-}
 
 template <typename T>
 T Point3_getItem(const math::Point3_<T> &p, int index)
@@ -98,8 +97,14 @@ bp::class_<Point3_<T>> point3(const char *name)
 {
     using namespace bp;
 
-    auto cls = class_<math::Point3_<T>>(name, init<math::Point3_<T>>())
-        .def("__repr__", &py::Point3_repr<T>)
+    typedef math::Point3_<T> Point;
+
+    auto cls = class_<Point>
+        (name, init<const Point&>())
+        .def(init<>())
+        .def(init<T, T, T>())
+
+        .def("__repr__", &py::repr_from_ostream<Point>)
         .def("__getitem__", &Point3_getItem<T>)
         ;
     return cls;
@@ -108,23 +113,21 @@ bp::class_<Point3_<T>> point3(const char *name)
 // size2
 
 template <typename T>
-bp::object Size2_repr(const math::Size2_<T> &e)
-{
-    std::ostringstream os;
-    os << std::fixed << e;
-    return bp::str(os.str());
-}
-
-template <typename T>
 bp::class_<Size2_<T>> size2(const char *name)
 {
     using namespace bp;
 
-    auto cls = class_<math::Size2_<T>>(name, init<math::Size2_<T>>())
-        .def("__repr__", &py::Size2_repr<T>)
-        .def_readonly("width", &math::Size2_<T>::width)
-        .def_readonly("height", &math::Size2_<T>::height)
-        .template def<bool (*)(const math::Size2_<T>&)
+    typedef math::Size2_<T> Size;
+
+    auto cls = class_<Size>
+        (name, init<const Size&>())
+        .def(init<>())
+        .def(init<T, T>())
+
+        .def("__repr__", &py::repr_from_ostream<Size>)
+        .def_readonly("width", &Size::width)
+        .def_readonly("height", &Size::height)
+        .template def<bool (*)(const Size&)
                       >("empty", &math::empty<T>)
         ;
     return cls;
@@ -133,35 +136,31 @@ bp::class_<Size2_<T>> size2(const char *name)
 // size3
 
 template <typename T>
-bp::object Size3_repr(const math::Size3_<T> &e)
-{
-    std::ostringstream os;
-    os << std::fixed << e;
-    return bp::str(os.str());
-}
-
-template <typename T>
 bp::class_<Size3_<T>> size3(const char *name)
 {
     using namespace bp;
 
-    auto cls = class_<math::Size3_<T>>(name, init<math::Size3_<T>>())
-        .def("__repr__", &py::Size3_repr<T>)
-        .def_readonly("width", &math::Size3_<T>::width)
-        .def_readonly("height", &math::Size3_<T>::height)
-        .def_readonly("depth", &math::Size3_<T>::depth)
+    typedef math::Size3_<T> Size;
+
+    auto cls = class_<Size>
+        (name, init<const Size&>())
+        .def(init<>())
+        .def(init<T, T, T>())
+
+        .def("__repr__", &py::repr_from_ostream<Size>)
+        .def_readonly("width", &Size::width)
+        .def_readonly("height", &Size::height)
+        .def_readonly("depth", &Size::depth)
         ;
     return cls;
 }
 
 // extents2
 
-template <typename T>
-bp::object Extents2_repr(const math::Extents2_<T> &e)
+template <typename Extents>
+std::shared_ptr<Extents> invalidExtents(void*)
 {
-    std::ostringstream os;
-    os << std::fixed << e;
-    return bp::str(os.str());
+    return std::make_shared<Extents>(math::InvalidExtents{});
 }
 
 template <typename T>
@@ -169,13 +168,23 @@ bp::class_<Extents2_<T>> extents2(const char *name)
 {
     using namespace bp;
 
-    auto cls = class_<math::Extents2_<T>>(name, init<math::Extents2_<T>>())
-        .def("__repr__", &py::Extents2_repr<T>)
-        .def_readonly("ll", &math::Extents2_<T>::ll)
-        .def_readonly("ur", &math::Extents2_<T>::ur)
-        .template def<math::Size2_<T> (*)(const math::Extents2_<T>&)
+    typedef math::Extents2_<T> Extents;
+    typedef math::Point2_<T> Point;
+
+    auto cls = class_<Extents>
+        (name, init<const Extents&>())
+        .def(init<>())
+        .def(init<const Point&>())
+        .def(init<const Point&, const Point&>())
+        .def(init<T, T, T, T>())
+        .def("__init__", make_constructor(&py::invalidExtents<Extents>))
+
+        .def("__repr__", &py::repr_from_ostream<Extents>)
+        .def_readonly("ll", &Extents::ll)
+        .def_readonly("ur", &Extents::ur)
+        .template def<math::Size2_<T> (*)(const Extents&)
                       >("size", &math::size<T>)
-        .template def<bool (*)(const math::Extents2_<T>&)
+        .template def<bool (*)(const Extents&)
                       >("empty", &math::empty<T>)
         ;
     return cls;
@@ -184,23 +193,25 @@ bp::class_<Extents2_<T>> extents2(const char *name)
 // extents3
 
 template <typename T>
-bp::object Extents3_repr(const math::Extents3_<T> &e)
-{
-    std::ostringstream os;
-    os << std::fixed << e;
-    return bp::str(os.str());
-}
-
-template <typename T>
 bp::class_<Extents3_<T>> extents3(const char *name)
 {
     using namespace bp;
 
-    auto cls = class_<math::Extents3_<T>>(name, init<math::Extents3_<T>>())
-        .def("__repr__", &py::Extents3_repr<T>)
-        .def_readonly("ll", &math::Extents3_<T>::ll)
-        .def_readonly("ur", &math::Extents3_<T>::ur)
-        .template def<math::Size3_<T> (*)(const math::Extents3_<T>&)
+    typedef math::Extents3_<T> Extents;
+    typedef math::Point3_<T> Point;
+
+    auto cls = class_<Extents>
+        (name, init<const Extents&>())
+        .def(init<>())
+        .def(init<const Point&>())
+        .def(init<const Point&, const Point&>())
+        .def(init<T, T, T, T, T, T>())
+        .def("__init__", make_constructor(&py::invalidExtents<Extents>))
+
+        .def("__repr__", &py::repr_from_ostream<Extents>)
+        .def_readonly("ll", &Extents::ll)
+        .def_readonly("ur", &Extents::ur)
+        .template def<math::Size3_<T> (*)(const Extents&)
                       >("size", &math::size<T>)
         .template def<bool (*)(const math::Extents2_<T>&)
                       >("empty", &math::empty<T>)
