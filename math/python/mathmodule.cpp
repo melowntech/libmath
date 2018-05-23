@@ -44,7 +44,7 @@
 
 #include "pysupport/package.hpp"
 
-#include "math/geometry_core.hpp"
+#include "../geometry_core.hpp"
 
 namespace bp = boost::python;
 
@@ -267,4 +267,4 @@ boost::python::object import()
     return bp::import("melown.math");
 }
 
-} } // namespace dbglog::py
+} } // namespace math::py
