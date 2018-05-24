@@ -219,6 +219,33 @@ bp::class_<Extents3_<T>> extents3(const char *name)
     return cls;
 }
 
+template <typename Matrix>
+double Matrix_get(const Matrix &m, int j, int i)
+{
+    return m(j, i);
+}
+
+template <typename Matrix>
+double Matrix_set(Matrix &m, int j, int i, double value)
+{
+    return m(j, i) = value;
+}
+
+template <typename Matrix>
+bp::class_<Matrix> matrix(const char *name)
+{
+    using namespace bp;
+
+    auto cls = class_<Matrix>
+        (name, init<const Matrix&>())
+        .def(init<>())
+        .def("__repr__", &py::repr_from_ostream<Matrix>)
+        .def("__call__", &py::Matrix_get<Matrix>)
+        .def("__call__", &py::Matrix_set<Matrix>)
+        ;
+    return cls;
+}
+
 } } // namespace math::py
 
 BOOST_PYTHON_MODULE(melown_math)
@@ -247,6 +274,11 @@ BOOST_PYTHON_MODULE(melown_math)
 
     py::extents3<int>("Extents3i");
     py::extents3<double>("Extents3");
+
+    // matrices (only doubles)
+    py::matrix<math::Matrix2>("Matrix2");
+    py::matrix<math::Matrix3>("Matrix3");
+    py::matrix<math::Matrix4>("Matrix4");
 }
 
 namespace math { namespace py {
