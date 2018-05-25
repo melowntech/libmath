@@ -67,6 +67,12 @@ T Point2_getItem(const math::Point2_<T> &p, int index)
 }
 
 template <typename T>
+void Point2_setItem(math::Point2_<T> &p, int index, T value)
+{
+    p[index] = value;
+}
+
+template <typename T>
 bp::class_<Point2_<T>> point2(const char *name)
 {
     using namespace bp;
@@ -80,6 +86,7 @@ bp::class_<Point2_<T>> point2(const char *name)
 
         .def("__repr__", &py::repr_from_ostream<Point>)
         .def("__getitem__", &Point2_getItem<T>)
+        .def("__setitem__", &Point2_setItem<T>)
         ;
     return cls;
 }
@@ -90,6 +97,12 @@ template <typename T>
 T Point3_getItem(const math::Point3_<T> &p, int index)
 {
     return p[index];
+}
+
+template <typename T>
+void Point3_setItem(math::Point3_<T> &p, int index, T value)
+{
+    p[index] = value;
 }
 
 template <typename T>
@@ -106,6 +119,7 @@ bp::class_<Point3_<T>> point3(const char *name)
 
         .def("__repr__", &py::repr_from_ostream<Point>)
         .def("__getitem__", &Point3_getItem<T>)
+        .def("__setitem__", &Point3_setItem<T>)
         ;
     return cls;
 }
