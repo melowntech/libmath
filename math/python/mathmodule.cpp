@@ -45,6 +45,7 @@
 #include "pysupport/package.hpp"
 
 #include "../geometry_core.hpp"
+#include "../transform.hpp"
 
 namespace bp = boost::python;
 
@@ -177,6 +178,20 @@ std::shared_ptr<Extents> invalidExtents(void*)
     return std::make_shared<Extents>(math::InvalidExtents{});
 }
 
+template <typename Extents>
+auto Extents_center(const Extents &extents)
+    -> decltype(math::center(extents))
+{
+    return math::center(extents);
+}
+
+template <typename Extents>
+auto Extents_size(const Extents &extents)
+    -> decltype(math::size(extents))
+{
+    return math::size(extents);
+}
+
 template <typename T>
 bp::class_<Extents2_<T>> extents2(const char *name)
 {
@@ -200,6 +215,8 @@ bp::class_<Extents2_<T>> extents2(const char *name)
                       >("size", &math::size<T>)
         .template def<bool (*)(const Extents&)
                       >("empty", &math::empty<T>)
+        .def("center", &py::Extents_center<Extents>)
+        .def("size", &py::Extents_size<Extents>)
         ;
     return cls;
 }
@@ -229,6 +246,9 @@ bp::class_<Extents3_<T>> extents3(const char *name)
                       >("size", &math::size<T>)
         .template def<bool (*)(const math::Extents2_<T>&)
                       >("empty", &math::empty<T>)
+
+        .def("center", &py::Extents_center<Extents>)
+        .def("size", &py::Extents_size<Extents>)
         ;
     return cls;
 }
@@ -246,6 +266,18 @@ double Matrix_set(Matrix &m, int j, int i, double value)
 }
 
 template <typename Matrix>
+Matrix Matrix_mul(const Matrix &m1, const Matrix &m2)
+{
+    return ublas::prod(m1, m2);
+}
+
+template <typename Matrix>
+void Matrix_imul(Matrix &m1, const Matrix &m2)
+{
+    m1 = ublas::prod(m1, m2);
+}
+
+template <typename Matrix>
 bp::class_<Matrix> matrix(const char *name)
 {
     using namespace bp;
@@ -256,7 +288,10 @@ bp::class_<Matrix> matrix(const char *name)
         .def("__repr__", &py::repr_from_ostream<Matrix>)
         .def("__call__", &py::Matrix_get<Matrix>)
         .def("__call__", &py::Matrix_set<Matrix>)
+        .def("__mul__",  &py::Matrix_mul<Matrix>)
+        .def("__imul__",  &py::Matrix_imul<Matrix>)
         ;
+
     return cls;
 }
 
@@ -293,6 +328,18 @@ BOOST_PYTHON_MODULE(melown_math)
     py::matrix<math::Matrix2>("Matrix2");
     py::matrix<math::Matrix3>("Matrix3");
     py::matrix<math::Matrix4>("Matrix4");
+
+    // transform.hpp
+    def<math::Point3 (*)(const math::Matrix4&, const math::Point3&)>
+        ("transform", &math::transform);
+    def<math::Point2 (*)(const math::Matrix4&, const math::Point2&)>
+        ("transform", &math::transform);
+    def<math::Extents2 (*)(const math::Matrix4&, const math::Extents2&)>
+        ("transform", &math::transform);
+    def<void (*)(const math::Matrix4&, math::Points3&)>
+        ("transform", &math::transform);
+    def<void (*)(const math::Matrix4&, math::Points2&)>
+        ("transform", &math::transform);
 }
 
 namespace math { namespace py {
