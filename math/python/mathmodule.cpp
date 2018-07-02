@@ -45,6 +45,7 @@
 #include "pysupport/package.hpp"
 
 #include "../geometry_core.hpp"
+#include "../math.hpp"
 #include "../transform.hpp"
 
 namespace bp = boost::python;
@@ -290,6 +291,12 @@ void Matrix_imul(Matrix &m1, const Matrix &m2)
     m1 = ublas::prod(m1, m2);
 }
 
+template <typename Matrix>
+Matrix Matrix_invert(const Matrix &m)
+{
+    return math::matrixInvert(m);
+}
+
 template <typename Matrix, int size>
 bp::class_<Matrix> matrix(const char *name)
 {
@@ -305,6 +312,7 @@ bp::class_<Matrix> matrix(const char *name)
         .def("__call__", &py::Matrix_set<Matrix>)
         .def("__mul__",  &py::Matrix_mul<Matrix>)
         .def("__imul__",  &py::Matrix_imul<Matrix>)
+        .def("invert",  &py::Matrix_invert<Matrix>)
         ;
 
     return cls;
