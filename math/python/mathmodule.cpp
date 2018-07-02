@@ -253,6 +253,19 @@ bp::class_<Extents3_<T>> extents3(const char *name)
     return cls;
 }
 
+template <typename Matrix, int size>
+std::shared_ptr<Matrix> Matrix_create()
+{
+    return std::make_shared<Matrix>
+        (boost::numeric::ublas::zero_matrix<double>(size));
+}
+
+template <typename Matrix, int size>
+Matrix Matrix_eye()
+{
+    return Matrix(boost::numeric::ublas::identity_matrix<double>(size));
+}
+
 template <typename Matrix>
 double Matrix_get(const Matrix &m, int j, int i)
 {
@@ -277,14 +290,16 @@ void Matrix_imul(Matrix &m1, const Matrix &m2)
     m1 = ublas::prod(m1, m2);
 }
 
-template <typename Matrix>
+template <typename Matrix, int size>
 bp::class_<Matrix> matrix(const char *name)
 {
     using namespace bp;
 
     auto cls = class_<Matrix>
         (name, init<const Matrix&>())
-        .def(init<>())
+        .def("__init__", make_constructor(&py::Matrix_create<Matrix, size>))
+        .def("eye", &py::Matrix_eye<Matrix, size>)
+        .staticmethod("eye")
         .def("__repr__", &py::repr_from_ostream<Matrix>)
         .def("__call__", &py::Matrix_get<Matrix>)
         .def("__call__", &py::Matrix_set<Matrix>)
@@ -325,9 +340,9 @@ BOOST_PYTHON_MODULE(melown_math)
     py::extents3<double>("Extents3");
 
     // matrices (only doubles)
-    py::matrix<math::Matrix2>("Matrix2");
-    py::matrix<math::Matrix3>("Matrix3");
-    py::matrix<math::Matrix4>("Matrix4");
+    py::matrix<math::Matrix2, 2>("Matrix2");
+    py::matrix<math::Matrix3, 3>("Matrix3");
+    py::matrix<math::Matrix4, 4>("Matrix4");
 
     // transform.hpp
     def<math::Point3 (*)(const math::Matrix4&, const math::Point3&)>
