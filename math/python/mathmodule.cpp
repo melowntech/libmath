@@ -46,6 +46,7 @@
 
 #include "../geometry_core.hpp"
 #include "../math.hpp"
+#include "../geometry.hpp"
 #include "../transform.hpp"
 
 namespace bp = boost::python;
@@ -75,7 +76,13 @@ void Point2_setItem(math::Point2_<T> &p, int index, T value)
 }
 
 template <typename T>
-bp::class_<Point2_<T>> point2(const char *name)
+math::Extents2_<T> computeExtents2(const std::vector<Point2_<T>> &points)
+{
+    return math::computeExtents(points.begin(), points.end());
+}
+
+template <typename T>
+bp::class_<Point2_<T>> point2(const char *name, const char *listName)
 {
     using namespace bp;
 
@@ -90,6 +97,17 @@ bp::class_<Point2_<T>> point2(const char *name)
         .def("__getitem__", &Point2_getItem<T>)
         .def("__setitem__", &Point2_setItem<T>)
         ;
+
+    {
+        // wrap vector of point2
+        bp::scope scope(cls);
+        class_<std::vector<Point>>(listName)
+            .def(vector_indexing_suite<std::vector<Point>>())
+            ;
+    }
+
+    def("computeExtents", &computeExtents2<T>);
+
     return cls;
 }
 
@@ -108,7 +126,13 @@ void Point3_setItem(math::Point3_<T> &p, int index, T value)
 }
 
 template <typename T>
-bp::class_<Point3_<T>> point3(const char *name)
+math::Extents3_<T> computeExtents3(const std::vector<Point3_<T>> &points)
+{
+    return math::computeExtents(points.begin(), points.end());
+}
+
+template <typename T>
+bp::class_<Point3_<T>> point3(const char *name, const char *listName)
 {
     using namespace bp;
 
@@ -123,6 +147,17 @@ bp::class_<Point3_<T>> point3(const char *name)
         .def("__getitem__", &Point3_getItem<T>)
         .def("__setitem__", &Point3_setItem<T>)
         ;
+
+    {
+        // wrap vector of point2
+        bp::scope scope(cls);
+        class_<std::vector<Point>>(listName)
+            .def(vector_indexing_suite<std::vector<Point>>())
+            ;
+    }
+
+    def("computeExtents", &computeExtents3<T>);
+
     return cls;
 }
 
@@ -326,9 +361,9 @@ BOOST_PYTHON_MODULE(melown_math)
     namespace py = math::py;
 
     // geometry core: 2D stuff
-    py::point2<int>("Point2i");
-    py::point2<float>("Point2f");
-    py::point2<double>("Point2");
+    py::point2<int>("Point2i", "Points2i");
+    py::point2<float>("Point2f", "Points2f");
+    py::point2<double>("Point2", "Points2");
 
     py::size2<int>("Size2");
     py::size2<double>("Size2f");
@@ -337,9 +372,9 @@ BOOST_PYTHON_MODULE(melown_math)
     py::extents2<double>("Extents2");
 
     // geometry core: 3D stuff
-    py::point3<int>("Point3i");
-    py::point3<float>("Point3f");
-    py::point3<double>("Point3");
+    py::point3<int>("Point3i", "Points3i");
+    py::point3<float>("Point3f", "Points3f");
+    py::point3<double>("Point3", "Points3");
 
     py::size3<int>("Size3");
     py::size3<double>("Size3f");
