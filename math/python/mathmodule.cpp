@@ -98,13 +98,10 @@ bp::class_<Point2_<T>> point2(const char *name, const char *listName)
         .def("__setitem__", &Point2_setItem<T>)
         ;
 
-    {
         // wrap vector of point2
-        bp::scope scope(cls);
-        class_<std::vector<Point>>(listName)
-            .def(vector_indexing_suite<std::vector<Point>>())
-            ;
-    }
+    class_<std::vector<Point>>(listName)
+        .def(vector_indexing_suite<std::vector<Point>>())
+        ;
 
     def("computeExtents", &computeExtents2<T>);
 
@@ -148,13 +145,10 @@ bp::class_<Point3_<T>> point3(const char *name, const char *listName)
         .def("__setitem__", &Point3_setItem<T>)
         ;
 
-    {
-        // wrap vector of point2
-        bp::scope scope(cls);
-        class_<std::vector<Point>>(listName)
-            .def(vector_indexing_suite<std::vector<Point>>())
-            ;
-    }
+    // wrap vector of point3
+    class_<std::vector<Point>>(listName)
+        .def(vector_indexing_suite<std::vector<Point>>())
+        ;
 
     def("computeExtents", &computeExtents3<T>);
 
