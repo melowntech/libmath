@@ -63,95 +63,69 @@ bp::object repr_from_ostream(const T &t)
     return bp::str(os.str());
 }
 
-template <typename T>
-T Point2_getItem(const math::Point2_<T> &p, int index)
+template <typename T, typename Point>
+T Point_getItem(const Point &p, int index)
 {
     return p[index];
 }
 
-template <typename T>
-void Point2_setItem(math::Point2_<T> &p, int index, T value)
+template <typename T, typename Point>
+void Point_setItem(Point &p, int index, T value)
 {
     p[index] = value;
 }
 
-template <typename T>
-math::Extents2_<T> computeExtents2(const std::vector<Point2_<T>> &points)
+template <typename T, typename Points, typename Extents>
+Extents computeExtents(const Points &points)
 {
     return math::computeExtents(points.begin(), points.end());
 }
+
+template <typename T, typename Point, typename Extents>
+bp::class_<Point> point(const char *name, const char *listName)
+{
+    using namespace bp;
+
+    typedef std::vector<Point> Points;
+
+    auto cls = class_<Point>
+        (name, init<const Point&>())
+        .def(init<>())
+
+        .def("__repr__", &py::repr_from_ostream<Point>)
+        .def("__getitem__", &Point_getItem<T, Point>)
+        .def("__setitem__", &Point_setItem<T, Point>)
+        ;
+
+        // wrap vector of point2
+    class_<Points>(listName)
+        .def(init<const Points&>())
+        .def(vector_indexing_suite<Points>())
+        ;
+
+    def("computeExtents", &computeExtents<T, Points, Extents>);
+
+    return cls;
+}
+
 
 template <typename T>
 bp::class_<Point2_<T>> point2(const char *name, const char *listName)
 {
     using namespace bp;
-
-    typedef math::Point2_<T> Point;
-
-    auto cls = class_<Point>
-        (name, init<const Point&>())
-        .def(init<>())
-        .def(init<T, T>())
-
-        .def("__repr__", &py::repr_from_ostream<Point>)
-        .def("__getitem__", &Point2_getItem<T>)
-        .def("__setitem__", &Point2_setItem<T>)
-        ;
-
-        // wrap vector of point2
-    class_<std::vector<Point>>(listName)
-        .def(vector_indexing_suite<std::vector<Point>>())
-        ;
-
-    def("computeExtents", &computeExtents2<T>);
-
+    auto cls(point<T, math::Point2_<T>, math::Extents2_<T>>(name, listName));
+    cls.def(init<T, T>());
     return cls;
 }
 
 // point3
 
 template <typename T>
-T Point3_getItem(const math::Point3_<T> &p, int index)
-{
-    return p[index];
-}
-
-template <typename T>
-void Point3_setItem(math::Point3_<T> &p, int index, T value)
-{
-    p[index] = value;
-}
-
-template <typename T>
-math::Extents3_<T> computeExtents3(const std::vector<Point3_<T>> &points)
-{
-    return math::computeExtents(points.begin(), points.end());
-}
-
-template <typename T>
 bp::class_<Point3_<T>> point3(const char *name, const char *listName)
 {
     using namespace bp;
-
-    typedef math::Point3_<T> Point;
-
-    auto cls = class_<Point>
-        (name, init<const Point&>())
-        .def(init<>())
-        .def(init<T, T, T>())
-
-        .def("__repr__", &py::repr_from_ostream<Point>)
-        .def("__getitem__", &Point3_getItem<T>)
-        .def("__setitem__", &Point3_setItem<T>)
-        ;
-
-    // wrap vector of point3
-    class_<std::vector<Point>>(listName)
-        .def(vector_indexing_suite<std::vector<Point>>())
-        ;
-
-    def("computeExtents", &computeExtents3<T>);
-
+    auto cls(point<T, math::Point3_<T>, math::Extents3_<T>>(name, listName));
+    cls.def(init<T, T, T>());
     return cls;
 }
 
