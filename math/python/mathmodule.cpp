@@ -81,6 +81,25 @@ Extents computeExtents(const Points &points)
     return math::computeExtents(points.begin(), points.end());
 }
 
+/** Constructor for creating Points* from any python sequence
+ */
+template <typename Point>
+void Points_create(const boost::python::object &self
+                   , const bp::object &iterable)
+{
+    // Create a constructor object.
+    const auto constructor
+        (boost::python::make_constructor
+         (+[](const bp::object &iterable) {
+             return std::make_shared<std::vector<Point>>
+                 (bp::stl_input_iterator<Point>(iterable)
+                  , bp::stl_input_iterator<Point>());
+         }));
+
+    // Invoke the constructor.
+    constructor(self, iterable);
+}
+
 template <typename T, typename Point, typename Extents>
 bp::class_<Point> point(const char *name, const char *listName)
 {
@@ -101,6 +120,7 @@ bp::class_<Point> point(const char *name, const char *listName)
     class_<Points>(listName)
         .def(init<const Points&>())
         .def(vector_indexing_suite<Points>())
+        .def("__init__", make_function(&py::Points_create<Point>))
         ;
 
     def("computeExtents", &computeExtents<T, Points, Extents>);
