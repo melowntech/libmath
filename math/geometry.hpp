@@ -357,7 +357,7 @@ inline auto computeExtents(Iterator begin, Iterator end)
     typedef typename Extents::point_type point_type;
 
     if (begin == end) {
-        return Extents();
+        return Extents(InvalidExtents{});
     }
 
     Extents extents(*begin++);
