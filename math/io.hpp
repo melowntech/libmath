@@ -34,7 +34,7 @@
 
 #include "dbglog/dbglog.hpp"
 
-#include "./geometry_core.hpp"
+#include "geometry_core.hpp"
 
 namespace math {
 
