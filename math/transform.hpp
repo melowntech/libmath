@@ -40,6 +40,26 @@ namespace math {
 
 // matrix4
 
+/** 4x4 identity matrix.
+ */
+inline Matrix4 identity4() {
+    return boost::numeric::ublas::identity_matrix<double>(4, 4);
+}
+
+/** 4x4 zero matrix.
+ */
+inline Matrix4 zero4() {
+    return boost::numeric::ublas::zero_matrix<double>(4, 4);
+}
+
+/** Makes 4x4 transformation matrix that shifts points by \param delta.
+ */
+template <typename T> Matrix4 translate(const math::Point3_<T> &delta);
+
+/** Makes 4x4 transformation matrix that scales points by \param scale.
+ */
+template <typename T> Matrix4 scale(const math::Point3_<T> &scale);
+
 inline Point3 transform(const Matrix4& tr, const Point3 &pt)
 {
     return Point3(
@@ -99,6 +119,26 @@ inline void transform(const Matrix4& tr, std::vector<cv::Point3_<T> >& points)
 
 // matrix3
 
+/** 3x3 identity matrix.
+ */
+inline Matrix3 identity3() {
+    return boost::numeric::ublas::identity_matrix<double>(3, 3);
+}
+
+/** 3x3 zero matrix.
+ */
+inline Matrix3 zero3() {
+    return boost::numeric::ublas::zero_matrix<double>(3, 3);
+}
+
+/** Makes 3x3 transformation matrix that shifts points by \param delta.
+ */
+template <typename T> Matrix3 translate(const math::Point2_<T> &delta);
+
+/** Makes 3x3 transformation matrix that scales points by \param scale.
+ */
+template <typename T> Matrix3 scale(const math::Point2_<T> &scale);
+
 inline Point3 transform(const Matrix3 &tr, const Point3 &pt)
 {
     return Point3(
@@ -150,6 +190,42 @@ inline void transform(const Matrix3 &tr, std::vector<cv::Point_<T> > &points)
     }
 }
 #endif
+
+// template inlines
+
+template <typename T> Matrix4 translate(const math::Point3_<T> &delta)
+{
+    auto m(identity4());
+    m(0, 3) = delta(0);
+    m(1, 3) = delta(1);
+    m(2, 3) = delta(2);
+    return m;
+}
+
+template <typename T> Matrix4 scale(const math::Point3_<T> &scale)
+{
+    auto m(identity4());
+    m(0, 0) = scale(0);
+    m(1, 1) = scale(1);
+    m(2, 2) = scale(2);
+    return m;
+}
+
+template <typename T> Matrix3 translate(const math::Point2_<T> &delta)
+{
+    auto m(identity3());
+    m(0, 2) = delta(0);
+    m(1, 2) = delta(1);
+    return m;
+}
+
+template <typename T> Matrix3 scale(const math::Point2_<T> &scale)
+{
+    auto m(identity4());
+    m(0, 0) = scale(0);
+    m(1, 1) = scale(1);
+    return m;
+}
 
 } // namespace math
 
