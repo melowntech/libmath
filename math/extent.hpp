@@ -123,7 +123,7 @@ inline Extent_<T> unite(const Extent_<T> &a, const Extent_<T> &b) {
 template <typename T1, typename T2>
 inline bool overlaps(const Extent_<T1> &a, const Extent_<T2> &b)
 {
-    return ((a.l < b.r) && (b.l < a.r));
+    return ((a.r > b.l) && (b.r > a.l));
 }
 
 template <typename T>
