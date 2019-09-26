@@ -82,6 +82,12 @@ inline Extents2 transform(const Matrix4& tr, const Extents2& extents)
         transform(tr, extents.ur));
 }
 
+inline Extents3 transform(const Matrix4& tr, const Extents3 &extents)
+{
+    return Extents3(transform(tr, extents.ll)
+                    , transform(tr, extents.ur));
+}
+
 #ifdef MATH_HAS_OPENCV
 template<typename T>
 inline cv::Point3_<T> transform(const Matrix4& tr, const cv::Point3_<T>& pt)
