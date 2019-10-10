@@ -172,23 +172,23 @@ struct Size3_ {
     bool operator!= (const Size3_<T>& s) const {
         return !operator==(s);
     }
-    
+
     T & operator()(int idx) {
         switch(idx) {
             case 0 : return width;
             case 1 : return height;
             case 2 : return depth;
-            default : 
+            default :
                 throw GeometryError("Bad index to Size3.");
         }
     }
-    
+
     const T & operator()(int idx) const {
         switch(idx) {
             case 0 : return width;
             case 1 : return height;
             case 2 : return depth;
-            default : 
+            default :
                 throw GeometryError("Bad index to Size3.");
         }
     }
@@ -322,16 +322,16 @@ public:
         : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
-    
+
     Point3_(const Point3_<T> &) = default;
     Point3_ & operator=(const Point3_<T> &) = default;
-    
+
     // make point movable
-    Point3_( Point3_<T> && op ) 
+    Point3_( Point3_<T> && op )
         : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
-    
+
     Point3_ & operator=(Point3_<T> &&op) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
         return *this;
@@ -422,6 +422,18 @@ inline Size2_<T> size(const Point2_<T> &p) {
 template<typename T>
 inline Point2_<T> point(const Size2_<T> &s) {
     return { s.width, s.height };
+}
+
+// handy point->size conversion for point3
+template<typename T>
+inline Size3_<T> size(const Point3_<T> &p) {
+    return { p(0), p(1), p(2) };
+}
+
+// handy size->point conversion
+template<typename T>
+inline Point3_<T> point(const Size3_<T> &s) {
+    return { s.width, s.height, s.depth };
 }
 
 /** Helper tag struct for invalid value extents instationation.
@@ -665,11 +677,11 @@ inline void update(Extents2_<T> &e, const Extents2_<T> &other) {
 template <typename P, typename R, typename T>
 inline P snapToGrid(const P & point, const P & origin, T step, R roundFcn) {
     P res;
-    
+
     for (uint i(0); i < res.size(); ++i) {
         res(i) = roundFcn((point(i) - origin(i))/step) * step + origin(i);
     }
-    
+
     return res;
 }
 
@@ -684,7 +696,7 @@ inline E snapToGrid( const E &ext, const typename E::point_type &origin
                 , snapToGrid(ext.ur, origin, step
                              , [](VT value) { return std::floor(value); }) };
     }
-    
+
     return { snapToGrid(ext.ll, origin, step
                         , [](VT value) { return std::floor(value); })
             , snapToGrid(ext.ur, origin, step
