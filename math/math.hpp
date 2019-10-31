@@ -50,10 +50,35 @@ namespace math {
 
 namespace ublas = boost::numeric::ublas;
 
-/* square function */
-
+/** square function */
 template <typename T>
 T sqr( T val ) { return val * val; }
+
+namespace detail {
+
+// enabled for N == 1
+template<int N, typename T>
+std::enable_if_t<N == 1, T> pow( T value ) {
+    return value;
+}
+// enabled for even N
+template<int N, typename T>
+std::enable_if_t<(N > 1) && (N & 1) == 0, T> pow( T value ) {
+    return pow<N/2>(value * value);
+}
+// enabled for odd N
+template<int N, typename T>
+std::enable_if_t<(N > 1) && (N & 1) == 1, T> pow( T value ) {
+    return pow<N/2>(value * value) * value;
+}
+
+} // namespace detail
+
+/** Power function with integer compile-time exponent */
+template<int N, typename T>
+T pow( T value ) {
+    return detail::pow<N>(value);
+}
 
 /** even and odd */
 
