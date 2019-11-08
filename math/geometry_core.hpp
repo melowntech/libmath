@@ -678,7 +678,7 @@ template <typename P, typename R, typename T>
 inline P snapToGrid(const P & point, const P & origin, T step, R roundFcn) {
     P res;
 
-    for (uint i(0); i < res.size(); ++i) {
+    for (std::size_t i(0); i < res.size(); ++i) {
         res(i) = roundFcn((point(i) - origin(i))/step) * step + origin(i);
     }
 
