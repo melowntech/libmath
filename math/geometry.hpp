@@ -382,12 +382,20 @@ inline auto computeExtents(const Container &c)
 // prefered natural aliases for above
 
 template <typename Iterator>
-inline auto extents(Iterator begin, Iterator end) {
+inline auto extents(Iterator begin, Iterator end)
+    -> typename detail::ExtentsTypeTraits
+    <typename std::iterator_traits<Iterator>::value_type::value_type
+    , typename std::iterator_traits<Iterator>::value_type>::type
+{
     return computeExtents<Iterator>(begin,end);
 }
 
 template <typename Container>
-inline auto extents(const Container &c) {
+inline auto extents(const Container &c)
+    -> typename detail::ExtentsTypeTraits
+    <typename Container::value_type::value_type
+     , typename Container::value_type>::type
+{
     return computeExtents<Container>(c);
 }
 
