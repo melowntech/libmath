@@ -111,7 +111,7 @@ homogeneous( const Point3_<T> & src )
 /** homogeneous coordinates (from euclidian) */
 template <class T>
 inline ublas::vector<typename T::value_type> homogeneous( const T & src ) {
-    
+
     ublas::vector<typename T::value_type> ret(
         ublas::unit_vector<typename T::value_type>(
             src.size() + 1, src.size() ) );
@@ -254,13 +254,13 @@ struct Plane3 {
     Plane3 transform( const Matrix & trafo ) const {
 
         Plane3 tplane;
-        
+
         tplane.p = euclidian( prod( trafo, homogeneous( p ) ) );
         tplane.u = euclidian( prod( trafo, homogeneous( p + u ) ) ) - tplane.p;
         tplane.v = euclidian( prod( trafo, homogeneous( p + v ) ) ) - tplane.p;
 
         return tplane;
-        
+
     }
 };
 
@@ -377,6 +377,26 @@ inline auto computeExtents(const Container &c)
      , typename Container::value_type>::type
 {
     return computeExtents(c.begin(), c.end());
+}
+
+// prefered natural aliases for above
+
+template <typename Iterator>
+inline auto extents(Iterator begin, Iterator end)
+    -> typename detail::ExtentsTypeTraits
+    <typename std::iterator_traits<Iterator>::value_type::value_type
+    , typename std::iterator_traits<Iterator>::value_type>::type
+{
+    return computeExtents<Iterator>(begin,end);
+}
+
+template <typename Container>
+inline auto extents(const Container &c)
+    -> typename detail::ExtentsTypeTraits
+    <typename Container::value_type::value_type
+     , typename Container::value_type>::type
+{
+    return computeExtents<Container>(c);
 }
 
 } // namespace math
