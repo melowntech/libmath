@@ -43,6 +43,7 @@
 #include "dbglog/dbglog.hpp"
 
 #include "pysupport/package.hpp"
+#include "pysupport/converters.hpp"
 
 #include "../geometry_core.hpp"
 #include "../math.hpp"
@@ -386,6 +387,9 @@ BOOST_PYTHON_MODULE(melown_math)
         ("transform", &math::transform);
     def<void (*)(const math::Matrix4&, math::Points2&)>
         ("transform", &math::transform);
+
+    PYSUPPORT_OPTIONAL(math::Size2_<int>);
+    PYSUPPORT_OPTIONAL(math::Size2_<double>);
 }
 
 namespace math { namespace py {
