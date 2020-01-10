@@ -1,5 +1,5 @@
 # bump version here
-set(math_VERSION 1.5)
+set(math_VERSION 1.6)
 
 set(math_EXTRA_DEPENDS)
 set(math_EXTRA_DEFINITIONS)
