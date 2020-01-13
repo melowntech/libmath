@@ -35,7 +35,7 @@
 
 #include <ostream>
 
-#include <boost/gil/gil_all.hpp>
+#include "boost_gil_all.hpp"
 #include <boost/scoped_array.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 
