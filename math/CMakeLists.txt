@@ -1,5 +1,5 @@
 # bump version here
-set(math_VERSION 1.6)
+set(math_VERSION 1.7)
 
 set(math_EXTRA_DEPENDS)
 set(math_EXTRA_DEFINITIONS)
@@ -19,6 +19,7 @@ define_module(LIBRARY math=${math_VERSION}
   DEFINITIONS ${math_EXTRA_DEFINITIONS})
 
 set(math_SOURCES
+  boost_gil_all.hpp
   math.cpp math.hpp
   geometry_core.hpp
   geometry.cpp geometry.hpp
