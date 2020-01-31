@@ -1050,6 +1050,25 @@ vertices(const Extents3_<T> &e)
     return { bll(e), bul(e), bur(e), blr(e), tll(e), tul(e), tur(e), tlr(e) };
 }
 
+template <typename T>
+Extents2_<T> extents2(const Extents3_<T> &e)
+{
+    return Extents2_<T>(e.ll(0), e.ll(1), e.ur(0), e.ur(1));
+}
+
+template <typename T>
+const Extents2_<T>& extents2(const Extents2_<T> &e) { return e; }
+
+template <typename T>
+Extents3_<T> extents3(const Extents2_<T> &e)
+{
+    return Extents3_<T>(e.ll(0), e.ll(1), T(0), e.ur(0), e.ur(1), T(0));
+}
+
+template <typename T>
+const Extents3_<T>& extents3(const Extents3_<T> &e) { return e; }
+
+
 #define MATH_GEOMETRY_CORE_HPP_INLINES_
 #include "detail/size2.inline.hpp"
 #include "detail/size3.inline.hpp"
