@@ -173,6 +173,18 @@ bool matrixInvertInplace( ublas::matrix<T,L,C> &input)
     return true;
 }
 
+
+/**
+ * Returns the trace of a square matrix.
+ */
+template <class T, class L, class C>
+double trace(ublas::matrix<T, L, C> m) {
+    const int n = m.size1();
+    ublas::matrix_vector_range<ublas::matrix<T, L, C>> diag
+            (m, ublas::range(0, n), ublas::range(0, n));
+    return sum(diag);
+}
+
 /**
  * Matrix determinant
  */
