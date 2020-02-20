@@ -292,7 +292,9 @@ public:
 #endif
 
     template <typename U>
-    explicit Point2_(const Point2_<U> &op) {
+    explicit Point2_(const Point2_<U> &op)
+        : ublas::vector<T, ublas::bounded_array<T, 2> >(2)
+    {
         (*this)(0) = op(0); (*this)(1) = op(1);
     }
 
@@ -338,7 +340,9 @@ public:
     }
 
     template <typename U>
-    explicit Point3_(const Point3_<U> &op) {
+    explicit Point3_(const Point3_<U> &op)
+        : ublas::vector<T, ublas::bounded_array<T, 3> >(3)
+    {
         (*this)(0) = op(0); (*this)(1) = op(1); (*this)(2) = op(2);
     }
 
