@@ -38,6 +38,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <algorithm> // std::min
 
 namespace math {
 
