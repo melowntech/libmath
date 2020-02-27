@@ -104,9 +104,10 @@ struct Size2_ {
 
 
 typedef Size2_<int> Size2i;
+typedef Size2_<long long> Size2ll;
 typedef Size2_<double> Size2f;
 typedef Size2i Size2;
-typedef Size2_<boost::rational<long> > Size2r;
+typedef Size2_<boost::rational<long long> > Size2r;
 
 namespace detail {
 
@@ -195,9 +196,10 @@ struct Size3_ {
 };
 
 typedef Size3_<int> Size3i;
+typedef Size3_<long long> Size3ll;
 typedef Size3_<double> Size3f;
 typedef Size3i Size3;
-typedef Size3_<boost::rational<long> > Size3r;
+typedef Size3_<boost::rational<long long> > Size3r;
 
 template <typename T> struct Size3SimpleReader { math::Size3_<T> *value; };
 
@@ -384,26 +386,31 @@ public:
 };
 
 typedef Point2_<int> Point2i;
+typedef Point2_<long long> Point2ll;
 typedef Point2_<float> Point2f;
 typedef Point2_<double> Point2d;
 typedef Point2d Point2;
 
 typedef Point3_<int> Point3i;
+typedef Point3_<long long> Point3ll;
 typedef Point3_<float> Point3f;
 typedef Point3_<double> Point3d;
 typedef Point3d Point3;
 
 typedef Point4_<int> Point4i;
+typedef Point4_<long long> Point4ll;
 typedef Point4_<float> Point4f;
 typedef Point4_<double> Point4d;
 typedef Point4d Point4;
 
 typedef std::vector<Point2_<int> > Points2i;
+typedef std::vector<Point2_<long long> > Points2ll;
 typedef std::vector<Point2_<float> > Points2f;
 typedef std::vector<Point2_<double> > Points2d;
 typedef std::vector<Point2> Points2;
 
 typedef std::vector<Point3_<int> > Points3i;
+typedef std::vector<Point3_<long long> > Points3ll;
 typedef std::vector<Point3_<float> > Points3f;
 typedef std::vector<Point3_<double> > Points3d;
 typedef std::vector<Point3> Points3;
@@ -496,6 +503,7 @@ struct Extents2_ {
 };
 
 typedef Extents2_<int> Extents2i;
+typedef Extents2_<long long> Extents2ll;
 typedef Extents2_<double> Extents2f;
 typedef Extents2f Extents2;
 
@@ -746,6 +754,7 @@ struct Extents3_ {
 };
 
 typedef Extents3_<int> Extents3i;
+typedef Extents3_<long long> Extents3ll;
 typedef Extents3_<double> Extents3f;
 typedef Extents3f Extents3;
 
