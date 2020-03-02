@@ -1063,6 +1063,31 @@ vertices(const Extents3_<T> &e)
     return { bll(e), bul(e), bur(e), blr(e), tll(e), tul(e), tur(e), tlr(e) };
 }
 
+/** Helper functions to convert between 2d and 3d entities
+ */
+
+// Size2_ <-> Size3_
+
+template <typename T>
+Size2_<T> size2(const Size3_<T> &s)
+{
+    return Size2_<T>(s.width, s.height);
+}
+
+template <typename T>
+const Size2_<T>& size2(const Size2_<T> &s) { return s; }
+
+template <typename T>
+Size3_<T> size3(const Size2_<T> &s)
+{
+    return Size3_<T>(s.width, s.height, T(0));
+}
+
+template <typename T>
+const Size3_<T>& size3(const Size3_<T> &s) { return s; }
+
+// Extents2_ <-> Extents3_
+
 template <typename T>
 Extents2_<T> extents2(const Extents3_<T> &e)
 {
@@ -1080,6 +1105,26 @@ Extents3_<T> extents3(const Extents2_<T> &e)
 
 template <typename T>
 const Extents3_<T>& extents3(const Extents3_<T> &e) { return e; }
+
+// Point2_ <-> Point3_
+
+template <typename T>
+Point2_<T> point2(const Point3_<T> &p)
+{
+    return Point2_<T>(p(0), p(1));
+}
+
+template <typename T>
+const Point2_<T>& point2(const Point2_<T> &p) { return p; }
+
+template <typename T>
+Point3_<T> point3(const Point2_<T> &p)
+{
+    return Point3_<T>(p(0), p(1), T(0));
+}
+
+template <typename T>
+const Point3_<T>& point3(const Point3_<T> &p) { return p; }
 
 
 #define MATH_GEOMETRY_CORE_HPP_INLINES_
