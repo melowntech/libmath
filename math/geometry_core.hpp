@@ -783,6 +783,17 @@ inline Size3_<T> size(const Extents3_<T> &e, const Inclusive&) {
 }
 
 template<typename T>
+inline Size2_<T> size2(const Extents3_<T> &e) {
+    return Size2_<T>(e.ur(0) - e.ll(0), e.ur(1) - e.ll(1));
+}
+
+template<typename T>
+inline Size2_<T> size2(const Extents3_<T> &e, const Inclusive&) {
+    return Size2_<T>(e.ur(0) - e.ll(0) + T(1)
+                     , e.ur(1) - e.ll(1) + T(1));
+}
+
+template<typename T>
 inline T volume(const Extents3_<T> &e) {
     return ((e.ur[2] < e.ll[2]) || (e.ur[1] < e.ll[1]) || (e.ur[0] < e.ll[0]))
         ? 0

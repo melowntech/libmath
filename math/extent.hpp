@@ -162,11 +162,25 @@ inline bool operator!=(const math::Extent_<T> &l
     return !operator==(l, r);
 }
 
+template <typename T>
+inline Extent_<T> extent(const math::Extents2_<T> &e, unsigned int axis)
+{
+    if (axis > 1) { return Extent_<T>(InvalidExtents{}); }
+    return { e.ll(axis), e.ur(axis) };
+}
+
+template <typename T>
+inline Extent_<T> extent(const math::Extents3_<T> &e, unsigned int axis)
+{
+    if (axis > 2) { return Extent_<T>(InvalidExtents{}); }
+    return { e.ll(axis), e.ur(axis) };
+}
+
 template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
 operator<<(std::basic_ostream<CharT, Traits> &os, const Extent_<T> &e)
 {
-    os << e.l << ':' << e.r(0);
+    os << e.l << ':' << e.r;
     return os;
 }
 
