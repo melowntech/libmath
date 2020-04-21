@@ -58,17 +58,17 @@ namespace detail {
 
 // enabled for N == 1
 template<int N, typename T>
-std::enable_if_t<N == 1, T> pow( T value ) {
+typename std::enable_if<N == 1, T>::type pow( T value ) {
     return value;
 }
 // enabled for even N
 template<int N, typename T>
-std::enable_if_t<(N > 1) && (N & 1) == 0, T> pow( T value ) {
+typename std::enable_if<(N > 1) && (N & 1) == 0, T>::type pow( T value ) {
     return pow<N/2>(value * value);
 }
 // enabled for odd N
 template<int N, typename T>
-std::enable_if_t<(N > 1) && (N & 1) == 1, T> pow( T value ) {
+typename std::enable_if<(N > 1) && (N & 1) == 1, T>::type pow( T value ) {
     return pow<N/2>(value * value) * value;
 }
 
