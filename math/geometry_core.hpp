@@ -547,8 +547,17 @@ inline bool inside(const Extents2_<T1> &e, const Point3_<T2> &p)
 template <typename T1, typename T2>
 inline Extents2_<T1> operator+(const Extents2_<T1> &e, const T2 &diff)
 {
-    return { T1(e.ll(0) - diff), T1(e.ll(1) - diff)
-            , T1(e.ur(0) + diff), T1(e.ur(1) + diff) };
+    return Extents2_<T1>
+        (e.ll(0) - diff, e.ll(1) - diff
+         , e.ur(0) + diff, e.ur(1) + diff);
+}
+
+template <typename T1, typename T2>
+inline Extents2_<T1> operator+(const Extents2_<T1> &e, const Size2_<T2> &diff)
+{
+    return Extents2_<T1>
+        (e.ll(0) - diff.width, e.ll(1) - diff.height
+         , e.ur(0) + diff.width, e.ur(1) + diff.height);
 }
 
 template <typename T>
@@ -1026,8 +1035,19 @@ inline bool inside(const Extents3_<T1> &e, const Point3_<T2> &p)
 template <typename T1, typename T2>
 inline Extents3_<T1> operator+(const Extents3_<T1> &e, const T2 &diff)
 {
-    return { e.ll(0) - diff, e.ll(1) - diff, e.ll(2) - diff
-            , e.ur(0) + diff, e.ur(1) + diff, e.ur(2) + diff };
+    return Extents3_<T1>
+        (e.ll(0) - diff, e.ll(1) - diff, e.ll(2) - diff
+        , e.ur(0) + diff, e.ur(1) + diff, e.ur(2) + diff);
+}
+
+template <typename T1, typename T2>
+inline Extents3_<T1> operator+(const Extents3_<T1> &e, const Size3_<T2> &diff)
+{
+    return Extents3_<T1>
+        (e.ll(0) - diff.width, e.ll(1) - diff.height
+         , e.ll(2) - diff.depth
+         , e.ur(0) + diff.width, e.ur(1) + diff.height
+         , e.ur(2) + diff.depth);
 }
 
 template <typename T>
