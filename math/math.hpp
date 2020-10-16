@@ -169,6 +169,7 @@ bool matrixInvertInplace( ublas::matrix<T,L,C> &input)
     if (res != 0) { return false; }
 
     // backsubstitute to get the inverse
+    input = ublas::identity_matrix<T>(A.size1());
     lu_substitute(A, pm, input);
     return true;
 }
