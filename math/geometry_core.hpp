@@ -507,6 +507,14 @@ struct Extents2_ {
         : ll(e.ll), ur(e.ur)
     {}
 
+    Extents2_<T>& operator=(InvalidExtents) {
+        ll(0) = std::numeric_limits<T>::max();
+        ll(1) = std::numeric_limits<T>::max();
+        ur(0) = std::numeric_limits<T>::lowest();
+        ur(1) = std::numeric_limits<T>::lowest();
+        return *this;
+    }
+
     T area() const {
         if ( ur[1] < ll[1] || ur[0] < ll[0] ) return 0;
         return ( ur[1] - ll[1] ) * ( ur[0] - ll[0] ); }
@@ -774,6 +782,16 @@ struct Extents3_ {
     explicit Extents3_(const Extents3_<U> &e)
         : ll(e.ll), ur(e.ur)
     {}
+
+    Extents3_<T>& operator=(InvalidExtents) {
+        ll(0) = std::numeric_limits<T>::max();
+        ll(1) = std::numeric_limits<T>::max();
+        ll(2) = std::numeric_limits<T>::max();
+        ur(0) = std::numeric_limits<T>::lowest();
+        ur(1) = std::numeric_limits<T>::lowest();
+        ur(2) = std::numeric_limits<T>::lowest();
+        return *this;
+    }
 };
 
 typedef Extents3_<int> Extents3i;
