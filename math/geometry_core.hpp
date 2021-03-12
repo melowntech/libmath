@@ -284,11 +284,11 @@ public:
         : ublas::vector<T, ublas::bounded_array<T, 2> >(2) {
         (*this)(0) = op.x; (*this)(1) = op.y;
     }
-    
+
     Point2_(const cv::Vec<T,2>& op)
         : ublas::vector<T, ublas::bounded_array<T, 2> >(2) {
         (*this)(0) = op[0]; (*this)(1) = op[1];
-    }    
+    }
 #endif
 
 
@@ -332,15 +332,20 @@ public:
         : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
-    
+
 #ifdef MATH_HAS_OPENCV
     // convieniece for reading points from 3-channel OpenCV matrices
     Point3_(const cv::Vec<T,3>& op)
         : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
         (*this)(0) = op[0]; (*this)(1) = op[1]; (*this)(2) = op[2];
     }
+
+    Point3_(const cv::Point3_<T>& op)
+        : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
+        (*this)(0) = op.x; (*this)(1) = op.y; (*this)(2) = op.z;
+    }
 #endif
-    
+
     Point3_(const Point3_<T> &) = default;
     Point3_ & operator=(const Point3_<T> &) = default;
 
@@ -354,7 +359,7 @@ public:
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
         return *this;
     }
-    
+
     template <typename U>
     explicit Point3_(const Point3_<U> &op)
         : ublas::vector<T, ublas::bounded_array<T, 3> >(3)
