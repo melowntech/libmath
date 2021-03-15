@@ -461,9 +461,13 @@ inline Point3_<T> point(const Size3_<T> &s) {
     return { s.width, s.height, s.depth };
 }
 
-/** Helper tag struct for invalid value extents instationation.
+/** Helper tag struct for invalid value extents instantiation.
  */
 struct InvalidExtents {};
+
+/** Helper tag struct for creating infinite extents
+ */
+struct InfiniteExtents {};
 
 /** Helper tag struct for inclusive size computation:
  *
@@ -487,6 +491,13 @@ struct Extents2_ {
              , std::numeric_limits<T>::max())
         , ur(std::numeric_limits<T>::lowest()
              , std::numeric_limits<T>::lowest())
+    {}
+
+    explicit Extents2_(InfiniteExtents)
+        : ll(std::numeric_limits<T>::lowest()
+             , std::numeric_limits<T>::lowest())
+        , ur(std::numeric_limits<T>::max()
+             , std::numeric_limits<T>::max())
     {}
 
     explicit Extents2_(const point_type &p)
