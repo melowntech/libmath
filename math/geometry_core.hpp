@@ -910,9 +910,9 @@ inline Extents3_<T> intersect( const Extents3_<T> &a, const Extents3_<T> &b ) {
     return Extents3(point_type(std::max(a.ll[0], b.ll[0])
                                , std::max(a.ll[1], b.ll[1])
                                , std::max(a.ll[2], b.ll[2]))
-                    , point_type(std::min(a.ll[0], b.ll[0])
-                                 , std::min(a.ll[1], b.ll[1])
-                                 , std::min(a.ll[2], b.ll[2])));
+                    , point_type(std::min(a.ur[0], b.ur[0])
+                                 , std::min(a.ur[1], b.ur[1])
+                                 , std::min(a.ur[2], b.ur[2])));
 }
 
 template <typename T>
