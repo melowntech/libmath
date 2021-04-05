@@ -60,6 +60,21 @@ typedef Points2d Polygon; // single CCW ring, not closed
 typedef std::vector<Polygon> MultiPolygon; // multiple rings, holes CW
 
 
+//! return area of a triangle in 2D plane
+inline double triangleArea(const math::Point2 &a, const math::Point2 &b,
+                           const math::Point2 &c)
+{
+    return std::abs(math::crossProduct(b - a, c - a)) * 0.5;
+}
+
+//! return area of a triangle in 3D space
+inline double triangleArea(const math::Point3 &a, const math::Point3 &b,
+                           const math::Point3 &c)
+{
+    return norm_2(math::crossProduct(b - a, c - a)) * 0.5;
+}
+
+
 /**
  * Find the point where two lines get closest in 3D space.
  * The lines are defined parametrically in euclidian coordinates.
