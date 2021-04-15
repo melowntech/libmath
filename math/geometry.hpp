@@ -184,18 +184,38 @@ inline T crossProduct(const Point2_<T> & u, const Point2_<T> & v )
 }
 
 //! return area of a triangle in 2D plane
-inline double triangleArea(const math::Point2 &a, const math::Point2 &b,
-                           const math::Point2 &c)
+template <typename T>
+inline double triangleArea(const Point2_<T>& a, const Point2_<T>& b,
+                           const Point2_<T>& c)
 {
     return std::abs(crossProduct(Point2(b - a), Point2(c - a))) * 0.5;
 }
 
 //! return area of a triangle in 3D space
-inline double triangleArea(const math::Point3 &a, const math::Point3 &b,
-                           const math::Point3 &c)
+template <typename T>
+inline double triangleArea(const Point3_<T>& a, const Point3_<T>& b,
+                           const Point3_<T>& c)
 {
     return norm_2(crossProduct(b - a, c - a)) * 0.5;
 }
+
+#ifdef MATH_HAS_OPENCV
+    //! return area of a triangle in 2D plane
+    template <typename T>
+    inline double triangleArea(const cv::Point_<T>& a, const cv::Point_<T>& b,
+                               const cv::Point_<T>& c)
+    {
+        return triangleArea(Point2_<T>(a), Point2_<T>(b), Point2_<T>(c));
+    }
+
+    //! return area of a triangle in 3D space
+    template <typename T>
+    inline double triangleArea(const cv::Point3_<T>& a, const cv::Point3_<T>& b,
+                               const cv::Point3_<T>& c)
+    {
+        return triangleArea(Point3_<T>(a), Point3_<T>(b), Point3_<T>(c));
+    }
+#endif // MATH_HAS_OPENCV
 
 /** Returns a positive number if the sequence of points {a, b, c} turns
  *  counter-clockwise in the XY plane (negative number otherwise).
