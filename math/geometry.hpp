@@ -59,7 +59,6 @@ typedef std::vector<Triangle3d> Triangles3d;
 typedef Points2d Polygon; // single CCW ring, not closed
 typedef std::vector<Polygon> MultiPolygon; // multiple rings, holes CW
 
-
 /**
  * Find the point where two lines get closest in 3D space.
  * The lines are defined parametrically in euclidian coordinates.
@@ -183,6 +182,40 @@ inline T crossProduct(const Point2_<T> & u, const Point2_<T> & v )
 {
     return u(0) * v(1) - v(0) * u(1);
 }
+
+//! return area of a triangle in 2D plane
+template <typename T>
+inline double triangleArea(const Point2_<T>& a, const Point2_<T>& b,
+                           const Point2_<T>& c)
+{
+    return std::abs(crossProduct(Point2(b - a), Point2(c - a))) * 0.5;
+}
+
+//! return area of a triangle in 3D space
+template <typename T>
+inline double triangleArea(const Point3_<T>& a, const Point3_<T>& b,
+                           const Point3_<T>& c)
+{
+    return norm_2(crossProduct(b - a, c - a)) * 0.5;
+}
+
+#ifdef MATH_HAS_OPENCV
+    //! return area of a triangle in 2D plane
+    template <typename T>
+    inline double triangleArea(const cv::Point_<T>& a, const cv::Point_<T>& b,
+                               const cv::Point_<T>& c)
+    {
+        return triangleArea(Point2_<T>(a), Point2_<T>(b), Point2_<T>(c));
+    }
+
+    //! return area of a triangle in 3D space
+    template <typename T>
+    inline double triangleArea(const cv::Point3_<T>& a, const cv::Point3_<T>& b,
+                               const cv::Point3_<T>& c)
+    {
+        return triangleArea(Point3_<T>(a), Point3_<T>(b), Point3_<T>(c));
+    }
+#endif // MATH_HAS_OPENCV
 
 /** Returns a positive number if the sequence of points {a, b, c} turns
  *  counter-clockwise in the XY plane (negative number otherwise).
