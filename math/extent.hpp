@@ -144,8 +144,8 @@ inline void update(Extent_<T> &e, const T &x) {
 
 template <typename T>
 inline void update(Extent_<T> &e, const Extent_<T> &other) {
-    update(e, other.l);
-    update(e, other.r);
+    e.l = std::min(e.l, other.l);
+    e.r = std::max(e.r, other.r);
 }
 
 template <typename T, typename U>
