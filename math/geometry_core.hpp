@@ -538,6 +538,14 @@ struct Extents2_ {
     T size() const {
         return std::max(ur[0] - ll[0], ur[1] - ll[1]);
     }
+
+    bool operator==(const Extents2_& other) const {
+        return ll == other.ll && ur == other.ur;
+    }
+
+    bool operator!=(const Extents2_& other) const {
+        return !(*this == other);
+    }
 };
 
 typedef Extents2_<int> Extents2i;
@@ -807,6 +815,14 @@ struct Extents3_ {
         ur(1) = std::numeric_limits<T>::lowest();
         ur(2) = std::numeric_limits<T>::lowest();
         return *this;
+    }
+
+    bool operator==(const Extents3_& other) const {
+        return ll == other.ll && ur == other.ur;
+    }
+
+    bool operator!=(const Extents3_& other) const {
+        return !(*this == other);
     }
 };
 
