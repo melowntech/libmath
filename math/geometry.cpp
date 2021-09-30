@@ -112,7 +112,7 @@ double pointLineDistance(const Point3 &p, const Line3 &line)
 }
 
 
-Point3 intersectionParams(const Line3 &line, const Plane3 &plane)
+Point3 intersectionParams(const Line3 &line, const legacy::Plane3 &plane)
 {
     ublas::matrix<double> a( 3, 3 ), ai( 3, 3 );
     ublas::vector<double> op( 3 ), pars( 3 );
@@ -128,7 +128,7 @@ Point3 intersectionParams(const Line3 &line, const Plane3 &plane)
     return pars;
 }
 
-Point3 intersection( const Line3 & line, const Plane3 & plane )
+Point3 intersection( const Line3 & line, const legacy::Plane3 & plane )
 {
     return line.point(intersectionParams(line, plane)(0));
 }

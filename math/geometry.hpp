@@ -270,8 +270,9 @@ double pointLineDistance(const Point3 &p, const Line3 &line);
 
 /**
  * Parametric plane, in euclidian 3D
+ * Legacy representation of plane by 3 points.
  */
-
+namespace legacy {
 struct Plane3 {
 
     Point3 p, u, v;
@@ -297,8 +298,6 @@ struct Plane3 {
     }
 };
 
-
-
 template <typename E, typename T>
 inline std::basic_ostream<E, T> & operator << (
         std::basic_ostream<E,T> & os,
@@ -307,11 +306,12 @@ inline std::basic_ostream<E, T> & operator << (
     os << plane.p << " + t * " << plane.u << " + s * " << plane.v;
     return os;
 }
+}  // namespace legacy
 
 
 /** line and plane intersection */
 
-Point3 intersection( const Line3 & line, const Plane3 & plane );
+Point3 intersection( const Line3 & line, const legacy::Plane3 & plane );
 
 /** line and plane intersection
  *  instead of point returns 3 coefficients:
@@ -319,7 +319,7 @@ Point3 intersection( const Line3 & line, const Plane3 & plane );
  *      * planes t-parameter
  *      * planes s-parameter
  */
-Point3 intersectionParams(const Line3 &line, const Plane3 &plane);
+Point3 intersectionParams(const Line3 &line, const legacy::Plane3 &plane);
 
 
 
