@@ -133,6 +133,21 @@ Point3 intersection( const Line3 & line, const legacy::Plane3 & plane )
     return line.point(intersectionParams(line, plane)(0));
 }
 
+double pointPlaneDistance(const Point3& p, const Plane3& plane)
+{
+    return std::abs(ublas::inner_prod(plane.n_, p) + plane.d_)
+           / ublas::norm_2(plane.n_);
+}
+
+Point3 pointPlaneProjection(const Point3& p, const Plane3& plane)
+{
+    double k
+        = (ublas::inner_prod(plane.n_, p) + plane.d_) / ublas::norm_2(plane.n_);
+
+    return Point3(p(0) - k * plane.n_(0),
+                  p(1) - k * plane.n_(1),
+                  p(2) - k * plane.n_(2));
+}
 
 double polygonRegularity(
     const Point3 & v0, const Point3 & v1, const Point3 & v2  ) {

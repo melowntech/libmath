@@ -335,6 +335,50 @@ Point3 intersection( const Line3 & line, const legacy::Plane3 & plane );
 Point3 intersectionParams(const Line3 &line, const legacy::Plane3 &plane);
 
 
+/**
+* Plane represented in general form
+* Representation as (a,b,c,d) in equation: ax+by+cz+d=0
+*/
+struct Plane3
+{
+    math::Point3 n_;  // vector with (a,b,c) i.e. normal vector
+    double d_;
+
+    // Plane from parameters
+    Plane3(double a, double b, double c, double d) : n_(a, b, c), d_(d) { }
+
+    // Plane from point and normal
+    Plane3(const math::Point3d& pt, const math::Point3d& n)
+        : n_(n),
+          d_(-ublas::inner_prod(pt, n)) {};
+
+    // Plane from three points
+    Plane3(const math::Point3d& p1,
+           const math::Point3d& p2,
+           const math::Point3d& p3)
+        : Plane3(p1, crossProduct(p2 - p1, p3 - p1)) {};
+
+    // Plane from legacy representation (point-normal packed as Line3)
+    Plane3(const math::Line3& l) : Plane3(l.p, l.u) {};
+
+    // Returns a plane with opposite orientation
+    Plane3 opposite() const {
+        Plane3 opposite(*this);
+        opposite.n_ *= -1;
+        opposite.d_ *= -1;
+        return opposite;
+    }
+};
+
+/**
+ * Returns a distance of point to a plane (perpendicular)
+*/
+double pointPlaneDistance(const Point3 &p, const Plane3 &plane);
+
+/**
+ * Returns an orthogonal projection of a point to a plane
+ */
+Point3 pointPlaneProjection(const Point3 &p, const Plane3 &plane);
 
 /**
  * Returns a measure of triangular polyface regularity. Value of 1.0
