@@ -96,6 +96,19 @@ inline double length( const T & v ) {
     return ublas::norm_2(v);
 }
 
+/** angle between two 3D vectors (in radians)
+ * See Kahan W.: How Futile are Mindless Assessments of Roundoff in
+ * Floating-Point Computation?, page 46
+ * (https://people.eecs.berkeley.edu/~wkahan/Mindless.pdf)
+ *  **/
+template <class T>
+inline T angle(const Point3_<T>& v1, const Point3_<T>& v2)
+{
+    return 2
+           * std::atan2(length(v1 * length(v2) - length(v1) * v2),
+                        length(v1 * length(v2) + length(v1) * v2));
+}
+
 /** homogeneous coordinates (from euclidian) */
 template <class T>
 inline ublas::vector<T, ublas::bounded_array<T, 4> >
