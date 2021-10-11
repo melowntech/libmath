@@ -141,8 +141,8 @@ double pointPlaneDistance(const Point3& p, const Plane3& plane)
 
 Point3 pointPlaneProjection(const Point3& p, const Plane3& plane)
 {
-    double k
-        = (ublas::inner_prod(plane.n_, p) + plane.d_) / ublas::norm_2(plane.n_);
+    double k = (ublas::inner_prod(plane.n_, p) + plane.d_)
+               / ublas::norm_2_square(plane.n_);
 
     return Point3(p(0) - k * plane.n_(0),
                   p(1) - k * plane.n_(1),
