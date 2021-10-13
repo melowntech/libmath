@@ -261,32 +261,33 @@ inline bool inside(const Viewport2_<T1> &v, T2 x, T2 y)
 /* points and point vectors */
 
 template <class T>
-class Point2_ : public ublas::vector<T, ublas::bounded_array<T, 2> > {
+class Point2_ : public ublas::fixed_vector<T, 2>  {
+    using Base = ublas::fixed_vector<T, 2>;
 public:
     Point2_( const T & x = 0.0, const T & y = 0.0 )
-        : ublas::vector<T, ublas::bounded_array<T, 2> >(2) {
+        : Base() {
         (*this)(0) = x; (*this)(1) = y;
     }
 
     template <class AE>
     Point2_( const ublas::vector_expression<AE> & op )
-        : ublas::vector<T, ublas::bounded_array<T, 2> >(2) {
+        : Base() {
         ublas::vector_assign<ublas::scalar_assign>(*this, op );
     }
 
     Point2_( const ublas::vector<T> & op )
-        : ublas::vector<T, ublas::bounded_array<T, 2> >(2) {
+        : Base() {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
 
 #ifdef MATH_HAS_OPENCV
     Point2_( const cv::Point_<T> & op )
-        : ublas::vector<T, ublas::bounded_array<T, 2> >(2) {
+        : Base() {
         (*this)(0) = op.x; (*this)(1) = op.y;
     }
 
     Point2_(const cv::Vec<T,2>& op)
-        : ublas::vector<T, ublas::bounded_array<T, 2> >(2) {
+        : Base() {
         (*this)(0) = op[0]; (*this)(1) = op[1];
     }
 #endif
@@ -301,7 +302,7 @@ public:
 
     template <typename U>
     explicit Point2_(const Point2_<U> &op)
-        : ublas::vector<T, ublas::bounded_array<T, 2> >(2)
+        : Base()
     {
         (*this)(0) = op(0); (*this)(1) = op(1);
     }
@@ -315,33 +316,34 @@ public:
 };
 
 template <class T>
-class Point3_ : public ublas::vector<T, ublas::bounded_array<T, 3> > {
+class Point3_ : public ublas::fixed_vector<T, 3> {
+    using Base = ublas::fixed_vector<T, 3>;
 public:
     Point3_( const T & x = 0.0, const T & y = 0.0, const T & z = 0.0 )
-        : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
+        : Base() {
         (*this)(0) = x; (*this)(1) = y; (*this)(2) = z;
     }
 
     template <class AE>
     Point3_( const ublas::vector_expression<AE> & op )
-        : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
+        : Base() {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
 
     Point3_( const ublas::vector<T> & op )
-        : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
+        : Base() {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
 
 #ifdef MATH_HAS_OPENCV
     // convieniece for reading points from 3-channel OpenCV matrices
     Point3_(const cv::Vec<T,3>& op)
-        : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
+        : Base() {
         (*this)(0) = op[0]; (*this)(1) = op[1]; (*this)(2) = op[2];
     }
 
     Point3_(const cv::Point3_<T>& op)
-        : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
+        : Base() {
         (*this)(0) = op.x; (*this)(1) = op.y; (*this)(2) = op.z;
     }
 #endif
@@ -351,7 +353,7 @@ public:
 
     // make point movable
     Point3_( Point3_<T> && op )
-        : ublas::vector<T, ublas::bounded_array<T, 3> >(3) {
+        : Base() {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
 
@@ -362,7 +364,7 @@ public:
 
     template <typename U>
     explicit Point3_(const Point3_<U> &op)
-        : ublas::vector<T, ublas::bounded_array<T, 3> >(3)
+        : Base()
     {
         (*this)(0) = op(0); (*this)(1) = op(1); (*this)(2) = op(2);
     }
@@ -376,22 +378,23 @@ public:
 };
 
 template <class T>
-class Point4_ : public ublas::vector<T, ublas::bounded_array<T, 4> > {
+class Point4_ : public ublas::fixed_vector<T, 4> {
+    using Base = ublas::fixed_vector<T, 4>;
 public:
     Point4_( const T & x = 0.0, const T & y = 0.0
            , const T & z = 0.0, const T & w = 0.0 )
-        : ublas::vector<T, ublas::bounded_array<T, 4> >(4) {
+        : Base() {
         (*this)(0) = x; (*this)(1) = y; (*this)(2) = z; (*this)(3) = w;
     }
 
     template <class AE>
     Point4_( const ublas::vector_expression<AE> & op )
-        : ublas::vector<T, ublas::bounded_array<T, 4> >(4) {
+        : Base() {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
 
     Point4_( const ublas::vector<T> & op )
-        : ublas::vector<T, ublas::bounded_array<T, 4> >(4) {
+        : Base() {
         ublas::vector_assign<ublas::scalar_assign>( *this, op );
     }
 
@@ -1207,6 +1210,7 @@ const Point3_<T>& point3(const Point3_<T> &p) { return p; }
 
 
 #define MATH_GEOMETRY_CORE_HPP_INLINES_
+#include "detail/point.inline.hpp"
 #include "detail/size2.inline.hpp"
 #include "detail/size3.inline.hpp"
 #include "detail/extents2.inline.hpp"
