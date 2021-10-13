@@ -243,13 +243,32 @@ inline T ccw(const Point2_<T> &a, const Point2_<T> &b, const Point2_<T> &c)
 
 /** Parametric line, in euclidian 2D
  */
-struct Line2 {
-    Point2 p, u;
 
-    Line2( const ublas::vector<double> p, const ublas::vector<double> u )
-        : p( p ), u( u ) {};
+template <typename T>
+struct Line2_
+{
+    T p, u;
+
+    Line2_(const T p, const T u) : p(p), u(u) {};
 };
 
+typedef Line2_<Point2> Line2;
+
+/** Returns a point where two lines `l1` and `l2` intersect.
+ * Point is inf
+ */
+template<typename T>
+inline T lineIntersection(const Line2_<T>& l1, const Line2_<T>& l2){
+    auto x1 = l1.p(0); auto y1 = l1.p(1);
+    auto x2 = l1.u(0); auto y2 = l1.u(1);
+    auto x3 = l2.p(0); auto y3 = l2.p(1);
+    auto x4 = l2.u(0); auto y4 = l2.u(1);
+    auto D = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+    return T(((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4))
+                 / D,
+             ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4))
+                 / D);
+}
 
 /**
  * Parametric line, in euclidian 3D
