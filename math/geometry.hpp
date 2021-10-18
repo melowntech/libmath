@@ -259,15 +259,10 @@ typedef Line2_<Point2> Line2;
  */
 template<typename T>
 inline T lineIntersection(const Line2_<T>& l1, const Line2_<T>& l2){
-    auto x1 = l1.p(0); auto y1 = l1.p(1);
-    auto x2 = l1.u(0); auto y2 = l1.u(1);
-    auto x3 = l2.p(0); auto y3 = l2.p(1);
-    auto x4 = l2.u(0); auto y4 = l2.u(1);
-    auto D = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-    return T(((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4))
-                 / D,
-             ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4))
-                 / D);
+    auto pd = l2.p - l1.p;  // diff of points
+    auto den = l2.u(0) * l1.u(1) - l1.u(0) * l2.u(1);
+    auto num = -l2.u(1) * pd(0) + l2.u(0) * pd(1);
+    return l1.p + (num / den) * l1.u;
 }
 
 /**
