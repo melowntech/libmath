@@ -149,6 +149,27 @@ Point3 pointPlaneProjection(const Point3& p, const Plane3& plane)
                   p(2) - k * plane.n_(2));
 }
 
+Line3 planeIntersection(const Plane3& p1, const Plane3& p2)
+{
+    // normalize plane representation
+    double norm1 = ublas::norm_2(p1.n_);
+    Point3 n1 = p1.n_ / norm1;
+    double d1 = p1.d_ / norm1;
+
+    double norm2 = ublas::norm_2(p2.n_);
+    Point3 n2 = p2.n_ / norm2;
+    double d2 = p2.d_ / norm2;
+
+    // get one point on line
+    double n1n2 = ublas::inner_prod(n1, n2);   
+    double den = 1 - std::pow(n1n2, 2);
+    double c1 = ((d2 * n1n2) - d1) / den;
+    double c2 = ((d1 * n1n2) - d2) / den;
+    Point3 pt = c1 * n1 + c2 * n2;
+
+    return Line3(pt, crossProduct(n1, n2));
+}
+
 double polygonRegularity(
     const Point3 & v0, const Point3 & v1, const Point3 & v2  ) {
 

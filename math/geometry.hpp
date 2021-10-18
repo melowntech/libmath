@@ -395,6 +395,11 @@ double pointPlaneDistance(const Point3 &p, const Plane3 &plane);
 Point3 pointPlaneProjection(const Point3 &p, const Plane3 &plane);
 
 /**
+ * Returns a line of intersection between two planes
+ */
+Line3 planeIntersection(const Plane3 &p1, const Plane3 &p2);
+
+/**
  * Returns a measure of triangular polyface regularity. Value of 1.0
  * indicates an equilateral triangle, value of 0.0 indicates a triangle
  * with at least one degenerate edge.
