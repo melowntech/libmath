@@ -400,6 +400,11 @@ Point3 pointPlaneProjection(const Point3 &p, const Plane3 &plane);
 Line3 planeIntersection(const Plane3 &p1, const Plane3 &p2);
 
 /**
+ * Returns a point of intersection between three planes
+ */
+Point3 planeIntersection(const Plane3 &p1, const Plane3 &p2, const Plane3 &p3);
+
+/**
  * Returns a measure of triangular polyface regularity. Value of 1.0
  * indicates an equilateral triangle, value of 0.0 indicates a triangle
  * with at least one degenerate edge.

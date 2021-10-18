@@ -170,6 +170,29 @@ Line3 planeIntersection(const Plane3& p1, const Plane3& p2)
     return Line3(pt, crossProduct(n1, n2));
 }
 
+Point3 planeIntersection(const Plane3& p1, const Plane3& p2, const Plane3& p3)
+{
+    Matrix3 D = ublas::zero_matrix<double>(3, 3);
+    ublas::row(D, 0) = p1.n_;
+    ublas::row(D, 1) = p2.n_;
+    ublas::row(D, 2) = p3.n_;
+
+    Point3 p(-p1.d_, -p2.d_, -p3.d_);
+
+    Matrix3 Dx = D;
+    ublas::column(Dx, 0) = p;
+    Matrix3 Dy = D;
+    ublas::column(Dy, 1) = p;
+    Matrix3 Dz = D;
+    ublas::column(Dz, 2) = p;
+
+    double den = determinant(D);
+
+    return Point3(determinant(Dx) / den,
+                  determinant(Dy) / den,
+                  determinant(Dz) / den);
+}
+
 double polygonRegularity(
     const Point3 & v0, const Point3 & v1, const Point3 & v2  ) {
 
