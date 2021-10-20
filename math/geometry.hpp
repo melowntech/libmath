@@ -38,7 +38,6 @@
 #include <algorithm>
 #include <array>
 
-#include <boost/optional/optional_io.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -256,18 +255,14 @@ struct Line2_
 typedef Line2_<Point2> Line2;
 
 /** Returns a point where two lines `l1` and `l2` intersect.
- * Returns none if lines are parallel (exactly).
  */
 template <typename T>
-inline boost::optional<T> lineIntersection(const Line2_<T>& l1,
-                                           const Line2_<T>& l2)
+inline T lineIntersection(const Line2_<T>& l1, const Line2_<T>& l2)
 {
-    auto pd = l2.p - l1.p; // diff of points
-    auto den = l2.u(0) * l1.u(1) - l1.u(0) * l2.u(1);
+    T pd = l2.p - l1.p; // diff of origins
     auto num = -l2.u(1) * pd(0) + l2.u(0) * pd(1);
-    if (den == 0) { return boost::none; }
-    T pt = l1.p + (num / den) * l1.u;
-    return pt;
+    auto den = l2.u(0) * l1.u(1) - l1.u(0) * l2.u(1);
+    return l1.p + (num / den) * l1.u;
 }
 
 /**
@@ -382,10 +377,10 @@ struct Plane3
 
     // Returns a plane with opposite orientation
     Plane3 opposite() const {
-        Plane3 opposite(*this);
-        opposite.n_ *= -1;
-        opposite.d_ *= -1;
-        return opposite;
+        Plane3 pl2(*this);
+        pl2.n_ *= -1;
+        pl2.d_ *= -1;
+        return pl2;
     }
 };
 
