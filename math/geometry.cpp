@@ -149,6 +149,13 @@ Point3 pointPlaneProjection(const Point3& p, const Plane3& plane)
                   p(2) - k * plane.n_(2));
 }
 
+Point3 linePlaneIntersection(const Line3& l, const Plane3& plane)
+{
+    double t = (-ublas::inner_prod(plane.n_, l.p) - plane.d_)
+               / (ublas::inner_prod(plane.n_, l.u));
+    return l.p + t * l.u;
+}
+
 Line3 planeIntersection(const Plane3& p1, const Plane3& p2)
 {
     // normalize plane representation
