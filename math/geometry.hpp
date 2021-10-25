@@ -266,6 +266,19 @@ inline T lineIntersection(const Line2_<T>& l1, const Line2_<T>& l2)
 }
 
 /**
+ * Line segment represented by start and end points
+ */
+template <typename T>
+struct Segment2_
+{
+    T p1, p2;
+
+    Segment2_(const T p1, const T p2) : p1(p1), p2(p2) {};
+};
+
+typedef Segment2_<Point2> Segment2;
+
+/**
  * Parametric line, in euclidian 3D
  */
 
@@ -393,6 +406,11 @@ double pointPlaneDistance(const Point3 &p, const Plane3 &plane);
  * Returns an orthogonal projection of a point to a plane
  */
 Point3 pointPlaneProjection(const Point3 &p, const Plane3 &plane);
+
+/**
+ * Returns a point of intersection between plane and line
+ */
+Point3 linePlaneIntersection(const Line3 &l, const Plane3 &plane);
 
 /**
  * Returns a line of intersection between two planes
