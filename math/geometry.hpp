@@ -96,6 +96,19 @@ inline double length( const T & v ) {
     return ublas::norm_2(v);
 }
 
+/** angle between two 3D vectors (in radians)
+ * See Kahan W.: How Futile are Mindless Assessments of Roundoff in
+ * Floating-Point Computation?, page 46
+ * (https://people.eecs.berkeley.edu/~wkahan/Mindless.pdf)
+ *  **/
+template <class T>
+inline T angle(const Point3_<T>& v1, const Point3_<T>& v2)
+{
+    return 2
+           * std::atan2(length(v1 * length(v2) - length(v1) * v2),
+                        length(v1 * length(v2) + length(v1) * v2));
+}
+
 /** homogeneous coordinates (from euclidian) */
 template <class T>
 inline ublas::vector<T, ublas::bounded_array<T, 4> >
@@ -230,13 +243,40 @@ inline T ccw(const Point2_<T> &a, const Point2_<T> &b, const Point2_<T> &c)
 
 /** Parametric line, in euclidian 2D
  */
-struct Line2 {
-    Point2 p, u;
 
-    Line2( const ublas::vector<double> p, const ublas::vector<double> u )
-        : p( p ), u( u ) {};
+template <typename T>
+struct Line2_
+{
+    T p, u;
+
+    Line2_(const T p, const T u) : p(p), u(u) {};
 };
 
+typedef Line2_<Point2> Line2;
+
+/** Returns a point where two lines `l1` and `l2` intersect.
+ */
+template <typename T>
+inline T lineIntersection(const Line2_<T>& l1, const Line2_<T>& l2)
+{
+    T pd = l2.p - l1.p; // diff of origins
+    auto num = -l2.u(1) * pd(0) + l2.u(0) * pd(1);
+    auto den = l2.u(0) * l1.u(1) - l1.u(0) * l2.u(1);
+    return l1.p + (num / den) * l1.u;
+}
+
+/**
+ * Line segment represented by start and end points
+ */
+template <typename T>
+struct Segment2_
+{
+    T p1, p2;
+
+    Segment2_(const T p1, const T p2) : p1(p1), p2(p2) {};
+};
+
+typedef Segment2_<Point2> Segment2;
 
 /**
  * Parametric line, in euclidian 3D
@@ -270,8 +310,9 @@ double pointLineDistance(const Point3 &p, const Line3 &line);
 
 /**
  * Parametric plane, in euclidian 3D
+ * Legacy representation of plane by 3 points.
  */
-
+namespace legacy {
 struct Plane3 {
 
     Point3 p, u, v;
@@ -297,8 +338,6 @@ struct Plane3 {
     }
 };
 
-
-
 template <typename E, typename T>
 inline std::basic_ostream<E, T> & operator << (
         std::basic_ostream<E,T> & os,
@@ -307,11 +346,12 @@ inline std::basic_ostream<E, T> & operator << (
     os << plane.p << " + t * " << plane.u << " + s * " << plane.v;
     return os;
 }
+}  // namespace legacy
 
 
 /** line and plane intersection */
 
-Point3 intersection( const Line3 & line, const Plane3 & plane );
+Point3 intersection( const Line3 & line, const legacy::Plane3 & plane );
 
 /** line and plane intersection
  *  instead of point returns 3 coefficients:
@@ -319,9 +359,68 @@ Point3 intersection( const Line3 & line, const Plane3 & plane );
  *      * planes t-parameter
  *      * planes s-parameter
  */
-Point3 intersectionParams(const Line3 &line, const Plane3 &plane);
+Point3 intersectionParams(const Line3 &line, const legacy::Plane3 &plane);
 
 
+/**
+* Plane represented in general form
+* Representation as (a,b,c,d) in equation: ax+by+cz+d=0
+*/
+struct Plane3
+{
+    math::Point3 n_;  // vector with (a,b,c) i.e. normal vector
+    double d_;
+
+    // Plane from parameters
+    Plane3(double a, double b, double c, double d) : n_(a, b, c), d_(d) { }
+
+    // Plane from point and normal
+    Plane3(const math::Point3d& pt, const math::Point3d& n)
+        : n_(n),
+          d_(-ublas::inner_prod(pt, n)) {};
+
+    // Plane from three points
+    Plane3(const math::Point3d& p1,
+           const math::Point3d& p2,
+           const math::Point3d& p3)
+        : Plane3(p1, crossProduct(p2 - p1, p3 - p1)) {};
+
+    // Plane from legacy representation (point-normal packed as Line3)
+    Plane3(const math::Line3& l) : Plane3(l.p, l.u) {};
+
+    // Returns a plane with opposite orientation
+    Plane3 opposite() const {
+        Plane3 pl2(*this);
+        pl2.n_ *= -1;
+        pl2.d_ *= -1;
+        return pl2;
+    }
+};
+
+/**
+ * Returns a distance of point to a plane (perpendicular)
+*/
+double pointPlaneDistance(const Point3 &p, const Plane3 &plane);
+
+/**
+ * Returns an orthogonal projection of a point to a plane
+ */
+Point3 pointPlaneProjection(const Point3 &p, const Plane3 &plane);
+
+/**
+ * Returns a point of intersection between plane and line
+ */
+Point3 linePlaneIntersection(const Line3 &l, const Plane3 &plane);
+
+/**
+ * Returns a line of intersection between two planes
+ */
+Line3 planeIntersection(const Plane3 &p1, const Plane3 &p2);
+
+/**
+ * Returns a point of intersection between three planes
+ */
+Point3 planeIntersection(const Plane3 &p1, const Plane3 &p2, const Plane3 &p3);
 
 /**
  * Returns a measure of triangular polyface regularity. Value of 1.0

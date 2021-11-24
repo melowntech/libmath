@@ -112,7 +112,7 @@ double pointLineDistance(const Point3 &p, const Line3 &line)
 }
 
 
-Point3 intersectionParams(const Line3 &line, const Plane3 &plane)
+Point3 intersectionParams(const Line3 &line, const legacy::Plane3 &plane)
 {
     ublas::matrix<double> a( 3, 3 ), ai( 3, 3 );
     ublas::vector<double> op( 3 ), pars( 3 );
@@ -128,11 +128,77 @@ Point3 intersectionParams(const Line3 &line, const Plane3 &plane)
     return pars;
 }
 
-Point3 intersection( const Line3 & line, const Plane3 & plane )
+Point3 intersection( const Line3 & line, const legacy::Plane3 & plane )
 {
     return line.point(intersectionParams(line, plane)(0));
 }
 
+double pointPlaneDistance(const Point3& p, const Plane3& plane)
+{
+    return std::abs(ublas::inner_prod(plane.n_, p) + plane.d_)
+           / ublas::norm_2(plane.n_);
+}
+
+Point3 pointPlaneProjection(const Point3& p, const Plane3& plane)
+{
+    double k = (ublas::inner_prod(plane.n_, p) + plane.d_)
+               / ublas::norm_2_square(plane.n_);
+
+    return Point3(p(0) - k * plane.n_(0),
+                  p(1) - k * plane.n_(1),
+                  p(2) - k * plane.n_(2));
+}
+
+Point3 linePlaneIntersection(const Line3& l, const Plane3& plane)
+{
+    double t = (-ublas::inner_prod(plane.n_, l.p) - plane.d_)
+               / (ublas::inner_prod(plane.n_, l.u));
+    return l.p + t * l.u;
+}
+
+Line3 planeIntersection(const Plane3& p1, const Plane3& p2)
+{
+    // normalize plane representation
+    double norm1 = ublas::norm_2(p1.n_);
+    Point3 n1 = p1.n_ / norm1;
+    double d1 = p1.d_ / norm1;
+
+    double norm2 = ublas::norm_2(p2.n_);
+    Point3 n2 = p2.n_ / norm2;
+    double d2 = p2.d_ / norm2;
+
+    // get one point on line
+    double n1n2 = ublas::inner_prod(n1, n2);   
+    double den = 1 - std::pow(n1n2, 2);
+    double c1 = ((d2 * n1n2) - d1) / den;
+    double c2 = ((d1 * n1n2) - d2) / den;
+    Point3 pt = c1 * n1 + c2 * n2;
+
+    return Line3(pt, crossProduct(n1, n2));
+}
+
+Point3 planeIntersection(const Plane3& p1, const Plane3& p2, const Plane3& p3)
+{
+    Matrix3 D = ublas::zero_matrix<double>(3, 3);
+    ublas::row(D, 0) = p1.n_;
+    ublas::row(D, 1) = p2.n_;
+    ublas::row(D, 2) = p3.n_;
+
+    Point3 p(-p1.d_, -p2.d_, -p3.d_);
+
+    Matrix3 Dx = D;
+    ublas::column(Dx, 0) = p;
+    Matrix3 Dy = D;
+    ublas::column(Dy, 1) = p;
+    Matrix3 Dz = D;
+    ublas::column(Dz, 2) = p;
+
+    double den = determinant(D);
+
+    return Point3(determinant(Dx) / den,
+                  determinant(Dy) / den,
+                  determinant(Dz) / den);
+}
 
 double polygonRegularity(
     const Point3 & v0, const Point3 & v1, const Point3 & v2  ) {
