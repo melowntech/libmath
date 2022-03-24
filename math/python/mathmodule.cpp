@@ -50,6 +50,8 @@
 #include "../geometry.hpp"
 #include "../transform.hpp"
 
+#include "mathmodule.hpp"
+
 namespace bp = boost::python;
 
 namespace math { namespace py {
