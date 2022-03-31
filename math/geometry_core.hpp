@@ -38,10 +38,12 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
+#if !(defined(_MSC_VER) && defined(__CUDACC__))
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/qi_match.hpp>
 #include <boost/spirit/include/qi_match_auto.hpp>
 #include <boost/spirit/include/qi_alternative.hpp>
+#endif
 
 #include <boost/rational.hpp>
 
@@ -942,6 +944,7 @@ operator<<(std::basic_ostream<CharT, Traits> &os, const Viewport2_<T> &v)
     return os;
 }
 
+#if !(defined(_MSC_VER) && defined(__CUDACC__))
 template<typename CharT, typename Traits, typename T>
 inline std::basic_istream<CharT, Traits>&
 operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
@@ -962,6 +965,7 @@ operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
     if (sign2 == '-') { v.y = -v.y; }
     return is;
 }
+#endif
 
 #if 0
 // original unsafe code
@@ -1011,6 +1015,7 @@ operator<<(std::basic_ostream<CharT, Traits> &os, const Extents2_<T> &e)
     return os;
 }
 
+#if !(defined(_MSC_VER) && defined(__CUDACC__))
 template<typename CharT, typename Traits, typename T>
 inline std::basic_istream<CharT, Traits>&
 operator>>(std::basic_istream<CharT, Traits> &is, Extents2_<T> &e)
@@ -1026,6 +1031,7 @@ operator>>(std::basic_istream<CharT, Traits> &is, Extents2_<T> &e)
 
     return is;
 }
+#endif
 
 template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits>&
@@ -1036,6 +1042,7 @@ operator<<(std::basic_ostream<CharT, Traits> &os, const Extents3_<T> &e)
     return os;
 }
 
+#if !(defined(_MSC_VER) && defined(__CUDACC__))
 template<typename CharT, typename Traits, typename T>
 inline std::basic_istream<CharT, Traits>&
 operator>>(std::basic_istream<CharT, Traits> &is, Extents3_<T> &e)
@@ -1051,6 +1058,7 @@ operator>>(std::basic_istream<CharT, Traits> &is, Extents3_<T> &e)
 
     return is;
 }
+#endif
 
 template <typename T1, typename T2>
 inline bool inside(const Extents3_<T1> &e, const T2 &p0, const T2 &p1

@@ -184,6 +184,7 @@ operator<<(std::basic_ostream<CharT, Traits> &os, const Extent_<T> &e)
     return os;
 }
 
+#if !(defined(_MSC_VER) && defined(__CUDACC__))
 template<typename CharT, typename Traits, typename T>
 inline std::basic_istream<CharT, Traits>&
 operator>>(std::basic_istream<CharT, Traits> &is, Extent_<T> &e)
@@ -198,6 +199,7 @@ operator>>(std::basic_istream<CharT, Traits> &is, Extent_<T> &e)
 
     return is;
 }
+#endif
 
 } // namespace math
 
