@@ -1,7 +1,7 @@
 define_module(LIBRARY pymath=${MODULE_math_VERSION}
   DEPENDS
   math=${MODULE_math_VERSION}
-  pysupport>=1.3
+  pysupport>=1.4
   Boost_THREAD Boost_SYSTEM)
 
 set(pymath_SOURCES

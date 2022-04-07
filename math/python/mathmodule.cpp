@@ -42,7 +42,11 @@
 
 #include "dbglog/dbglog.hpp"
 
+#undef PYSUPPORT_MODULE_IMPORT_API
+#define PYSUPPORT_MODULE_IMPORT_API 2
 #include "pysupport/package.hpp"
+#undef PYSUPPORT_MODULE_IMPORT_API
+
 #include "pysupport/converters.hpp"
 
 #include "../geometry_core.hpp"
