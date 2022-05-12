@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "mathmodule.hpp"
+
 #include <sstream>
 #include <string>
 #include <vector>
@@ -53,8 +55,6 @@
 #include "../math.hpp"
 #include "../geometry.hpp"
 #include "../transform.hpp"
-
-#include "mathmodule.hpp"
 
 namespace bp = boost::python;
 

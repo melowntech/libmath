@@ -27,6 +27,7 @@
 #ifndef math_python_mathmodule_hpp_included_
 #define math_python_mathmodule_hpp_included_
 
+#include <pysupport/boost-python-definitions.hpp>
 #include <boost/python.hpp>
 
 namespace math { namespace py {
