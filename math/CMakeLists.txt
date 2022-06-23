@@ -1,5 +1,5 @@
 # bump version here
-set(math_VERSION 1.9)
+set(math_VERSION 1.10)
 
 set(math_EXTRA_DEPENDS)
 set(math_EXTRA_DEFINITIONS)
@@ -14,7 +14,7 @@ endif()
 
 
 define_module(LIBRARY math=${math_VERSION}
-  DEPENDS dbglog>=1.4 utility>=1.11 Boost
+  DEPENDS dbglog>=1.7 utility>=1.41 Boost
   ${math_EXTRA_DEPENDS}
   DEFINITIONS ${math_EXTRA_DEFINITIONS})
 
@@ -40,5 +40,5 @@ endif()
 add_library(math STATIC ${math_SOURCES})
 buildsys_library(math)
 target_link_libraries(math ${MODULE_LIBRARIES} ${math_EXTRA_LIBS})
-buildsys_target_compile_definitions(math ${MODULE_DEFINITIONS})
+target_compile_definitions(math PRIVATE ${MODULE_DEFINITIONS})
 
