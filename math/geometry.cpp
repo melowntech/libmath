@@ -318,5 +318,36 @@ math::Point3 barycentricCoords(const math::Point2 &r, const math::Point2 &a
 }
 
 
+math::Point3 centroid(const math::Points3& points,
+                      const std::vector<double>& weights,
+                      const double eps)
+{
+    // calculate the (weighted) centroid
+    bool weigthed = !weights.empty();
+    math::Point3 centroid(0, 0, 0);
+    double wSum = 0.0;
+    for (std::size_t i = 0; i < points.size(); i++) {
+        math::Point3 pt(points[i]);
+        if (weigthed) {
+            pt *= weights[i];
+            wSum += weights[i];
+        }
+        centroid += pt;
+    }
+    if (weigthed && (std::abs(wSum) < eps)) {
+        LOGTHROW(err4, std::runtime_error) << "Point weights are too small.";
+    }
+
+    if (weigthed) { centroid /= wSum; }
+    else { centroid /= points.size(); }
+
+    return centroid;
+}
+
+math::Point3 centroid(const math::Points3& points)
+{
+    return centroid(points, {}, 0);
+}
+
 } // namespace math
 
