@@ -531,6 +531,19 @@ inline auto extents(const Container &c)
     return computeExtents<Container>(c);
 }
 
+/**
+ * Returns weighted centroid of points
+ * Throws an error if sum of weights for all points is less then eps
+ */
+math::Point3 centroid(const math::Points3& points,
+                      const std::vector<double>& weights,
+                      const double eps = 1e-8);
+
+/**
+ * Returns centroid of points
+ */
+math::Point3 centroid(const math::Points3& points);
+
 } // namespace math
 
 #endif // MATH_GEOMETRY_HPP
