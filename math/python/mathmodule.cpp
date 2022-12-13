@@ -226,7 +226,7 @@ auto Extents_size(const Extents &extents)
 }
 
 template <typename Extents>
-auto Extend(const Extents &extents, const float& value)
+Extents Extend(const Extents &extents, const float& value)
 {
     return extents + value;
 }
