@@ -39,6 +39,7 @@
 #include <boost/python/slice.hpp>
 #include <boost/python/call.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include "boost/python/numpy.hpp"
 
 #include <stdint.h>
 
@@ -57,6 +58,7 @@
 #include "../transform.hpp"
 
 namespace bp = boost::python;
+namespace bn = boost::python::numpy;
 
 namespace math { namespace py {
 
@@ -142,7 +144,7 @@ bp::class_<Point2_<T>> point2(const char *name, const char *listName)
     using namespace bp;
     auto cls(point<T, math::Point2_<T>, math::Extents2_<T>>(name, listName));
     cls.def(init<T, T>());
-    return cls;
+    cls.def(init<const math::Point3_<T>&>());
 }
 
 // point3
@@ -153,6 +155,7 @@ bp::class_<Point3_<T>> point3(const char *name, const char *listName)
     using namespace bp;
     auto cls(point<T, math::Point3_<T>, math::Extents3_<T>>(name, listName));
     cls.def(init<T, T, T>());
+    cls.def(init<const math::Point2_<T>&>());
     return cls;
 }
 
@@ -223,6 +226,12 @@ auto Extents_size(const Extents &extents)
     return math::size(extents);
 }
 
+template <typename Extents>
+auto Extend(const Extents &extents, const float& value)
+{
+    return extents + value;
+}
+
 template <typename T>
 bp::class_<Extents2_<T>> extents2(const char *name)
 {
@@ -239,6 +248,7 @@ bp::class_<Extents2_<T>> extents2(const char *name)
         .def(init<T, T, T, T>())
         .def("__init__", make_constructor(&py::invalidExtents<Extents>))
 
+        .def("__add__", &py::Extend<Extents>)
         .def("__repr__", &py::repr_from_ostream<Extents>)
         .def_readwrite("ll", &Extents::ll)
         .def_readwrite("ur", &Extents::ur)
@@ -270,6 +280,7 @@ bp::class_<Extents3_<T>> extents3(const char *name)
         .def(init<T, T, T, T, T, T>())
         .def("__init__", make_constructor(&py::invalidExtents<Extents>))
 
+        .def("__add__", &py::Extend<Extents>)
         .def("__repr__", &py::repr_from_ostream<Extents>)
         .def_readwrite("ll", &Extents::ll)
         .def_readwrite("ur", &Extents::ur)

@@ -35,6 +35,8 @@
 
 #include <algorithm>
 #include <stdexcept>
+#include <iterator>
+#include <functional>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
@@ -235,7 +237,50 @@ void solve2x2(const MatrixType &mat, const VectorType &rhs, VectorType &result)
     result(1) = (mat(0,0)*rhs(1) - rhs(0)*mat(1,0)) * det;
 }
 
-                                                                               
+/**
+ * Calculate centroid
+ */
+template <typename T>
+T centroid(const std::vector<T>& points)
+{
+    T centroid(0, 0, 0);
+
+    for (const auto& point : points)
+    {
+        centroid += point;
+    }
+    centroid /= points.size();
+
+    return centroid;
+}
+
+/**
+ * Calculates covariance matrix
+ */
+template <typename T, typename M>
+void covMatrix(
+    const std::vector<T>& A,
+    M& matrix,
+    T (*func)(const T&, const T&)
+    = [](const T& a, const T& b) -> T { return a - b; })
+{
+    size_t recordSize = A[0].size();
+    matrix = M(recordSize, recordSize);
+
+    for (std::size_t n = 0; n < A.size(); ++n)
+    {
+        T x(func(A[n], centroid(A)));
+        for (size_t i = 0; i < recordSize; ++i)
+        {
+            for (size_t j = 0; j < recordSize; ++j)
+            {
+                if(!n) matrix(i, j) = 0;
+                matrix(i, j) += x(i) * x(j);
+            }
+        }
+    }
+}
+
 } // namespace math
 
 #endif // MATH_MATH_HPP
