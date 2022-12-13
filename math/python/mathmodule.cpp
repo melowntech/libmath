@@ -39,7 +39,6 @@
 #include <boost/python/slice.hpp>
 #include <boost/python/call.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include "boost/python/numpy.hpp"
 
 #include <stdint.h>
 
@@ -58,7 +57,6 @@
 #include "../transform.hpp"
 
 namespace bp = boost::python;
-namespace bn = boost::python::numpy;
 
 namespace math { namespace py {
 
@@ -145,6 +143,7 @@ bp::class_<Point2_<T>> point2(const char *name, const char *listName)
     auto cls(point<T, math::Point2_<T>, math::Extents2_<T>>(name, listName));
     cls.def(init<T, T>());
     cls.def(init<const math::Point3_<T>&>());
+    return cls;
 }
 
 // point3

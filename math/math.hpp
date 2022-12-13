@@ -35,8 +35,6 @@
 
 #include <algorithm>
 #include <stdexcept>
-#include <iterator>
-#include <functional>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
