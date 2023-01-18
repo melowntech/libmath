@@ -142,6 +142,7 @@ bp::class_<Point2_<T>> point2(const char *name, const char *listName)
     using namespace bp;
     auto cls(point<T, math::Point2_<T>, math::Extents2_<T>>(name, listName));
     cls.def(init<T, T>());
+    cls.def(init<const math::Point3_<T>&>());
     return cls;
 }
 
@@ -153,6 +154,7 @@ bp::class_<Point3_<T>> point3(const char *name, const char *listName)
     using namespace bp;
     auto cls(point<T, math::Point3_<T>, math::Extents3_<T>>(name, listName));
     cls.def(init<T, T, T>());
+    cls.def(init<const math::Point2_<T>&>());
     return cls;
 }
 
@@ -223,6 +225,12 @@ auto Extents_size(const Extents &extents)
     return math::size(extents);
 }
 
+template <typename Extents>
+Extents Extend(const Extents &extents, const float& value)
+{
+    return extents + value;
+}
+
 template <typename T>
 bp::class_<Extents2_<T>> extents2(const char *name)
 {
@@ -239,6 +247,7 @@ bp::class_<Extents2_<T>> extents2(const char *name)
         .def(init<T, T, T, T>())
         .def("__init__", make_constructor(&py::invalidExtents<Extents>))
 
+        .def("__add__", &py::Extend<Extents>)
         .def("__repr__", &py::repr_from_ostream<Extents>)
         .def_readwrite("ll", &Extents::ll)
         .def_readwrite("ur", &Extents::ur)
@@ -270,6 +279,7 @@ bp::class_<Extents3_<T>> extents3(const char *name)
         .def(init<T, T, T, T, T, T>())
         .def("__init__", make_constructor(&py::invalidExtents<Extents>))
 
+        .def("__add__", &py::Extend<Extents>)
         .def("__repr__", &py::repr_from_ostream<Extents>)
         .def_readwrite("ll", &Extents::ll)
         .def_readwrite("ur", &Extents::ur)
