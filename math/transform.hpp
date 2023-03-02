@@ -60,6 +60,13 @@ template <typename T> Matrix4 translate(const math::Point3_<T> &delta);
  */
 template <typename T> Matrix4 scale(const math::Point3_<T> &scale);
 
+/** Makes 4x4 transformation matrix that rotates 3D points by angle along the
+ * given axis
+ */
+template <typename T> Matrix4 rotateX(const T& angle);
+template <typename T> Matrix4 rotateY(const T& angle);
+template <typename T> Matrix4 rotateZ(const T& angle);
+
 inline Point3 transform(const Matrix4& tr, const Point3 &pt)
 {
     return Point3(
@@ -145,6 +152,10 @@ template <typename T> Matrix3 translate(const math::Point2_<T> &delta);
  */
 template <typename T> Matrix3 scale(const math::Point2_<T> &scale);
 
+/** Make 3x3 transformation matrix that rotates 2D points by angle
+ */
+template <typename T> Matrix3 rotate(const T& angle);
+
 inline Point3 transform(const Matrix3 &tr, const Point3 &pt)
 {
     return Point3(
@@ -217,6 +228,42 @@ template <typename T> Matrix4 scale(const math::Point3_<T> &scale)
     return m;
 }
 
+template <typename T> Matrix4 rotateX(const T& angle)
+{
+    auto r { math::identity4() };
+    auto c { std::cos(angle) };
+    r(1, 1) = c;
+    r(2, 2) = c;
+    auto s { std::sin(angle) };
+    r(1, 2) = -s;
+    r(2, 1) = s;
+    return r;
+}
+
+template <typename T> Matrix4 rotateY(const T& angle)
+{
+    auto r { math::identity4() };
+    auto c { std::cos(angle) };
+    r(0, 0) = c;
+    r(2, 2) = c;
+    auto s { std::sin(angle) };
+    r(0, 2) = s;
+    r(2, 0) = -s;
+    return r;
+}
+
+template <typename T> Matrix4 rotateZ(const T& angle)
+{
+    auto r { math::identity4() };
+    auto c { std::cos(angle) };
+    r(0, 0) = c;
+    r(1, 1) = c;
+    auto s { std::sin(angle) };
+    r(1, 0) = s;
+    r(0, 1) = -s;
+    return r;
+}
+
 template <typename T> Matrix3 translate(const math::Point2_<T> &delta)
 {
     auto m(identity3());
@@ -231,6 +278,18 @@ template <typename T> Matrix3 scale(const math::Point2_<T> &scale)
     m(0, 0) = scale(0);
     m(1, 1) = scale(1);
     return m;
+}
+
+template <typename T> Matrix3 rotate(const T& angle)
+{
+    auto r { math::identity3() };
+    auto c { std::cos(angle) };
+    r(0, 0) = c;
+    r(1, 1) = c;
+    auto s { std::sin(angle) };
+    r(1, 0) = s;
+    r(0, 1) = -s;
+    return r;
 }
 
 } // namespace math
