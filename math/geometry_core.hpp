@@ -536,6 +536,14 @@ struct Extents2_ {
         return *this;
     }
 
+    Extents2_<T>& operator=(InfiniteExtents) {
+        ll(0) = std::numeric_limits<T>::lowest();
+        ll(1) = std::numeric_limits<T>::lowest();
+        ur(0) = std::numeric_limits<T>::max();
+        ur(1) = std::numeric_limits<T>::max();
+        return *this;
+    }
+
     T area() const {
         if ( ur[1] < ll[1] || ur[0] < ll[0] ) return 0;
         return ( ur[1] - ll[1] ) * ( ur[0] - ll[0] ); }
@@ -661,6 +669,22 @@ inline bool valid(const Extents2_<T> &e) {
 }
 
 template <typename T>
+inline bool infinite(const Extents2_<T>& e) {
+    return e.ll(0) == std::numeric_limits<T>::lowest()
+           && e.ll(1) == std::numeric_limits<T>::lowest()
+           && e.ur(0) == std::numeric_limits<T>::max()
+           && e.ur(1) == std::numeric_limits<T>::max();
+}
+
+template <typename T>
+inline bool anyInfinite(const Extents2_<T>& e) {
+    return e.ll(0) == std::numeric_limits<T>::lowest()
+           || e.ll(1) == std::numeric_limits<T>::lowest()
+           || e.ur(0) == std::numeric_limits<T>::max()
+           || e.ur(1) == std::numeric_limits<T>::max();
+}
+
+template <typename T>
 inline Extents2_<T> unite( const Extents2_<T> &a, const Extents2_<T> &b ) {
 
     return Extents2_<T>(
@@ -778,10 +802,21 @@ struct Extents3_ {
     Extents3_() : ll(), ur() {}
 
     explicit Extents3_(InvalidExtents)
-        : ll(std::numeric_limits<T>::max(), std::numeric_limits<T>::max()
+        : ll(std::numeric_limits<T>::max()
+             , std::numeric_limits<T>::max()
              , std::numeric_limits<T>::max())
-        , ur(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest()
+        , ur(std::numeric_limits<T>::lowest()
+             , std::numeric_limits<T>::lowest()
              , std::numeric_limits<T>::lowest())
+    {}
+
+    explicit Extents3_(InfiniteExtents)
+        : ll(std::numeric_limits<T>::lowest()
+             , std::numeric_limits<T>::lowest()
+             , std::numeric_limits<T>::lowest())
+        , ur(std::numeric_limits<T>::max()
+             , std::numeric_limits<T>::max()
+             , std::numeric_limits<T>::max())
     {}
 
     explicit Extents3_(const point_type &p)
@@ -811,6 +846,16 @@ struct Extents3_ {
         ur(0) = std::numeric_limits<T>::lowest();
         ur(1) = std::numeric_limits<T>::lowest();
         ur(2) = std::numeric_limits<T>::lowest();
+        return *this;
+    }
+
+    Extents3_<T>& operator=(InfiniteExtents) {
+        ll(0) = std::numeric_limits<T>::lowest();
+        ll(1) = std::numeric_limits<T>::lowest();
+        ll(2) = std::numeric_limits<T>::lowest();
+        ur(0) = std::numeric_limits<T>::max();
+        ur(1) = std::numeric_limits<T>::max();
+        ur(2) = std::numeric_limits<T>::max();
         return *this;
     }
 };
@@ -872,6 +917,26 @@ inline bool valid(const Extents3_<T> &e) {
     return ((e.ll(0) <= e.ur(0))
             && (e.ll(1) <= e.ur(1))
             && (e.ll(2) <= e.ur(2)));
+}
+
+template <typename T>
+inline bool infinite(const Extents3_<T>& e) {
+    return e.ll(0) == std::numeric_limits<T>::lowest()
+           && e.ll(1) == std::numeric_limits<T>::lowest()
+           && e.ll(2) == std::numeric_limits<T>::lowest()
+           && e.ur(0) == std::numeric_limits<T>::max()
+           && e.ur(1) == std::numeric_limits<T>::max()
+           && e.ur(2) == std::numeric_limits<T>::max();
+}
+
+template <typename T>
+inline bool anyInfinite(const Extents3_<T>& e) {
+    return e.ll(0) == std::numeric_limits<T>::lowest()
+           || e.ll(1) == std::numeric_limits<T>::lowest()
+           || e.ll(2) == std::numeric_limits<T>::lowest()
+           || e.ur(0) == std::numeric_limits<T>::max()
+           || e.ur(1) == std::numeric_limits<T>::max()
+           || e.ur(2) == std::numeric_limits<T>::max();
 }
 
 template <typename T>
@@ -1227,4 +1292,3 @@ const Point3_<T>& point3(const Point3_<T> &p) { return p; }
 } // namespace math
 
 #endif // MATH_GEOMETRY_CORE_HPP
-
