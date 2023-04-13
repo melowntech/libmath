@@ -758,8 +758,10 @@ inline void update(Extents2_<T> &e, const Point3_<T> &p) {
 
 template <typename T>
 inline void update(Extents2_<T> &e, const Extents2_<T> &other) {
-    update(e, other.ll);
-    update(e, other.ur);
+    if (valid(other)) {
+        update(e, other.ll);
+        update(e, other.ur);
+    }
 }
 
 template <typename P, typename R, typename T>
@@ -953,8 +955,10 @@ inline void update(Extents3_<T> &e, const Point3_<T> &p) {
 
 template <typename T>
 inline void update(Extents3_<T> &e, const Extents3_<T> &other) {
-    update(e, other.ll);
-    update(e, other.ur);
+    if (valid(other)) {
+        update(e, other.ll);
+        update(e, other.ur);
+    }
 }
 
 template <typename T>
