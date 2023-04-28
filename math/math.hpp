@@ -279,7 +279,20 @@ void covMatrix(
     }
 }
 
+/** Templatized 1/2 for float and double.
+ */
+template <typename T> constexpr T OneHalf;
+template <> inline constexpr double OneHalf<double> = 0.5;
+template <> inline constexpr float OneHalf<float> = 0.5f;
+
+/** Floating point rounding with half-way cases rounded up (towards positive
+ *  infinity)
+ */
+template <typename T>
+T roundup(T value) {
+    return std::floor(value + OneHalf<T>);
+}
+
 } // namespace math
 
 #endif // MATH_MATH_HPP
-      
