@@ -42,3 +42,6 @@ buildsys_library(math)
 target_link_libraries(math ${MODULE_LIBRARIES} ${math_EXTRA_LIBS})
 target_compile_definitions(math PRIVATE ${MODULE_DEFINITIONS})
 
+if(TARGET service)
+  add_subdirectory(tools EXCLUDE_FROM_ALL)
+endif()
