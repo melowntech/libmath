@@ -120,6 +120,65 @@ bool MathIo::help(std::ostream &out, const std::string &what) const
 }
 
 template <typename T>
+bool lexicalCast(LexicalCast lc)
+{
+    try {
+        const auto value(boost::lexical_cast<T>(lc.value));
+        std::cout << "lexically cast " << lc.type << "(" << value << ")"
+                  << std::endl;
+    } catch (const boost::bad_lexical_cast&) {
+        return false;
+    }
+
+    return true;
+}
+
+int MathIo::useLexicalCast()
+{
+    const auto &lc(lexicalCast_.value());
+
+#define CASE(TYPE)                                                      \
+    case Type::TYPE:                                                    \
+        if (!lexicalCast<math::TYPE>(lc)) {                             \
+            std::cerr << "failed to parse " << lc.type                  \
+                      << std::endl;                                     \
+            return EXIT_FAILURE;                                        \
+        }                                                               \
+        break
+
+    switch (lc.type) {
+        CASE(Size2);
+        CASE(Size2i);
+        CASE(Size2ll);
+        CASE(Size2f);
+        CASE(Size2r);
+
+        CASE(Size3);
+        CASE(Size3i);
+        CASE(Size3ll);
+        CASE(Size3f);
+        CASE(Size3r);
+
+        CASE(Extents2);
+        CASE(Extents2i);
+        CASE(Extents2ll);
+        CASE(Extents2f);
+
+        CASE(Extents3);
+        CASE(Extents3i);
+        CASE(Extents3ll);
+        CASE(Extents3f);
+
+        CASE(Viewport2);
+        CASE(Viewport2i);
+        CASE(Viewport2f);
+    }
+#undef CASE
+
+    return EXIT_SUCCESS;
+}
+
+template <typename T>
 bool parse(std::istream &is, Type type)
 {
     T value;
@@ -131,12 +190,6 @@ bool parse(std::istream &is, Type type)
     std::cout << "parsed " << type << "(" << value << ")" << std::endl;
 
     return true;
-}
-
-int MathIo::useLexicalCast()
-{
-    // TODO: implement me
-    return EXIT_SUCCESS;
 }
 
 void state(const std::string &message, std::istream &is)
@@ -217,4 +270,3 @@ int main(int argc, char *argv[])
 {
     return MathIo()(argc, argv);
 }
-
