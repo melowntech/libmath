@@ -40,16 +40,7 @@
 
 #if !(defined(_MSC_VER) && defined(__CUDACC__))
 #  define MATH_CAN_USE_BOOST_SPIRIT
-#  include <boost/config/warning_disable.hpp>
-#  include <boost/fusion/include/io.hpp>
-#  include <boost/spirit/include/qi.hpp>
-#  include <boost/spirit/include/qi_match.hpp>
-#  include <boost/spirit/include/qi_match_attr.hpp>
-#  include <boost/spirit/include/qi_match_auto.hpp>
-#  include <boost/spirit/include/qi_alternative.hpp>
-#  include <boost/spirit/include/qi_stream.hpp>
-#  include <boost/spirit/include/qi_optional.hpp>
-#  include <boost/io/ios_state.hpp>
+#  include "utility/streamspirit.hpp"
 #else
 #  undef MATH_CAN_USE_BOOST_SPIRIT
 #endif
@@ -1030,50 +1021,25 @@ operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
     using boost::spirit::qi::auto_;
     using boost::spirit::qi::char_;
     using boost::spirit::qi::omit;
-    using boost::spirit::qi::phrase_match;
-    using boost::spirit::qi::match;
-    using boost::spirit::ascii::blank;
-    using boost::spirit::lexeme;
-    using boost::spirit::qi::skip_flag;
     using boost::fusion::vector;
     using boost::fusion::at_c;
 
-    typename std::basic_istream<CharT, Traits>::sentry sentry(is);
-
-    boost::io::ios_flags_saver ifs(is);
-    is.unsetf(std::ios::skipws);
-
-#if 1
     boost::optional<vector<char, T, char, T>> shift;
 
-    is >> phrase_match(lexeme
-                       [auto_ >> omit['x'] >> auto_
-                        >> -(char_("+-") >> auto_
-                             >> char_("+-") >> auto_)]
-                       , blank, skip_flag::dont_postskip
-                       , v.width, v.height, shift);
+    utility::parseToken
+        (is
+         , (auto_ >> omit['x'] >> auto_
+            >> -(char_("+-") >> auto_ >> char_("+-") >> auto_))
+         , v.width, v.height, shift);
 
-    if (shift) {
+    if (is && shift) {
         auto &&applyShift([&](char sign, T value) {
             return ((sign == '-') ? -value : value);
         });
         v.x = applyShift(at_c<0>(*shift), at_c<1>(*shift));
         v.y = applyShift(at_c<2>(*shift), at_c<3>(*shift));
     }
-#else
-    is >> phrase_match
-        (lexeme[auto_ >> omit['x'] >> auto_]
-         , blank, skip_flag::dont_postskip
-         , v.width, v.height);
-#endif
 
-#if 0
-    std::cout << "sign1: " << sign1.value_or('?') << std::endl;
-    std::cout << "sign2: " << sign2.value_or('?') << std::endl;
-
-    if (sign1) { v.x = (*sign1 == '-') ? -*x : *x; }
-    if (sign2) { v.y = (*sign2 == '-') ? -*y : *y; }
-#endif
     return is;
 }
 #endif
@@ -1133,22 +1099,12 @@ operator>>(std::basic_istream<CharT, Traits> &is, Extents2_<T> &e)
 {
     using boost::spirit::qi::auto_;
     using boost::spirit::qi::omit;
-    using boost::spirit::qi::phrase_match;
-    using boost::spirit::ascii::blank;
-    using boost::spirit::lexeme;
-    using boost::spirit::qi::skip_flag;
 
-    typename std::basic_istream<CharT, Traits>::sentry sentry(is);
-
-    boost::io::ios_flags_saver ifs(is);
-    is.unsetf(std::ios::skipws);
-
-    is >> phrase_match(lexeme[auto_ >> omit[','] >> auto_ >> omit[':']
-                              >> auto_ >> omit[','] >> auto_]
-                       , blank, skip_flag::dont_postskip
-                       , e.ll(0), e.ll(1), e.ur(0), e.ur(1));
-
-    return is;
+    return utility::parseToken
+        (is
+         , (auto_ >> omit[','] >> auto_ >> omit[':']
+            >> auto_ >> omit[','] >> auto_)
+         , e.ll(0), e.ll(1), e.ur(0), e.ur(1));
 }
 #endif
 
@@ -1168,23 +1124,11 @@ operator>>(std::basic_istream<CharT, Traits> &is, Extents3_<T> &e)
 {
     using boost::spirit::qi::auto_;
     using boost::spirit::qi::omit;
-    using boost::spirit::qi::phrase_match;
-    using boost::spirit::ascii::blank;
-    using boost::spirit::lexeme;
-    using boost::spirit::qi::skip_flag;
-
-    typename std::basic_istream<CharT, Traits>::sentry sentry(is);
-
-    boost::io::ios_all_saver ias(is);
-    is.unsetf(std::ios::skipws);
-
-    is >> phrase_match
-        (lexeme[auto_ >> omit[','] >> auto_ >> omit[','] >> auto_ >> omit[':']
-                >> auto_ >> omit[','] >> auto_ >> omit[','] >> auto_]
-         , blank, skip_flag::dont_postskip
+    return utility::parseToken
+        (is
+         , (auto_ >> omit[','] >> auto_ >> omit[','] >> auto_ >> omit[':']
+            >> auto_ >> omit[','] >> auto_ >> omit[','] >> auto_)
          , e.ll(0), e.ll(1), e.ll(2), e.ur(0), e.ur(1), e.ur(2));
-
-    return is;
 }
 #endif
 

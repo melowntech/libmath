@@ -82,22 +82,12 @@ operator>>(std::basic_istream<CharT, Traits> &is, math::Size3_<T> &s)
 {
     using boost::spirit::qi::auto_;
     using boost::spirit::qi::omit;
-    using boost::spirit::qi::phrase_match;
-    using boost::spirit::ascii::blank;
-    using boost::spirit::lexeme;
-    using boost::spirit::qi::skip_flag;
 
-    typename std::basic_istream<CharT, Traits>::sentry sentry(is);
-
-    boost::io::ios_flags_saver ifs(is);
-    is.unsetf(std::ios::skipws);
-
-    is >> phrase_match(lexeme[auto_ >> omit['x'] >> auto_
-                              >> omit['x'] >> auto_]
-                       , blank, skip_flag::dont_postskip
-                       , s.width, s.height, s.depth);
-
-    return is;
+    return utility::parseToken
+        (is
+         , (auto_ >> omit['x'] >> auto_
+            >> omit['x'] >> auto_)
+         , s.width, s.height, s.depth);
 }
 
 template<typename CharT, typename Traits, typename T>
@@ -107,26 +97,22 @@ operator>>(std::basic_istream<CharT, Traits> &is
 {
     using boost::spirit::qi::auto_;
     using boost::spirit::qi::omit;
-    using boost::spirit::qi::phrase_match;
-    using boost::spirit::ascii::blank;
-    using boost::spirit::lexeme;
-    using boost::spirit::qi::skip_flag;
-
-    typename std::basic_istream<CharT, Traits>::sentry sentry(is);
-
-    boost::io::ios_flags_saver ifs(is);
-    is.unsetf(std::ios::skipws);
 
     std::pair<T, T> width, height, depth;
-    is >> phrase_match(lexeme[auto_ >> omit['/'] >> auto_
-                              >> omit['x']
-                              >> auto_ >> omit['/'] >> auto_
-                              >> omit['x']
-                              >> auto_ >> omit['/'] >> auto_]
-                       , blank, skip_flag::dont_postskip
-                       , width.first, width.second
-                       , height.first, height.second
-                       , depth.first, depth.second);
+    utility::parseToken
+        (is
+         , (auto_ >> omit['/'] >> auto_
+            >> omit['x'] >> auto_ >> omit['/'] >> auto_
+            >> omit['x'] >> auto_ >> omit['/'] >> auto_)
+         , width.first, width.second
+         , height.first, height.second
+         , depth.first, depth.second);
+
+    if (!width.second || !height.second || !depth.second) {
+        is.setstate(std::ios::failbit);
+        return is;
+    }
+
     if (is) {
         s.width.assign(width.first, width.second);
         s.height.assign(height.first, height.second);
