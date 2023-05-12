@@ -1029,7 +1029,8 @@ operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
     utility::parseToken
         (is
          , (auto_ >> omit['x'] >> auto_
-            >> -(char_("+-") >> auto_ >> char_("+-") >> auto_))
+            >> -(char_("+-") >> !char_("+-") >> auto_
+                 >> char_("+-") >> !char_("+-") >> auto_))
          , v.width, v.height, shift);
 
     if (is && shift) {
