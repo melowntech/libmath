@@ -75,13 +75,53 @@ operator<<(std::basic_ostream<CharT, Traits> &os, const Size3_<T> &s)
     return os << s.width << "x" << s.height << "x" << s.depth;
 }
 
+#ifdef MATH_CAN_USE_BOOST_SPIRIT
 template<typename CharT, typename Traits, typename T>
 inline std::basic_istream<CharT, Traits>&
 operator>>(std::basic_istream<CharT, Traits> &is, math::Size3_<T> &s)
 {
-    return is >> s.width >> utility::expect('x') >> s.height
-              >> utility::expect('x') >> s.depth;
+    using boost::spirit::qi::auto_;
+    using boost::spirit::qi::omit;
+
+    return utility::parseToken
+        (is
+         , (auto_ >> omit['x'] >> auto_
+            >> omit['x'] >> auto_)
+         , s.width, s.height, s.depth);
 }
+
+template<typename CharT, typename Traits, typename T>
+inline std::basic_istream<CharT, Traits>&
+operator>>(std::basic_istream<CharT, Traits> &is
+           , math::Size3_<boost::rational<T>> &s)
+{
+    using boost::spirit::qi::auto_;
+    using boost::spirit::qi::omit;
+
+    std::pair<T, T> width, height, depth;
+    utility::parseToken
+        (is
+         , (auto_ >> omit['/'] >> auto_
+            >> omit['x'] >> auto_ >> omit['/'] >> auto_
+            >> omit['x'] >> auto_ >> omit['/'] >> auto_)
+         , width.first, width.second
+         , height.first, height.second
+         , depth.first, depth.second);
+
+    if (!width.second || !height.second || !depth.second) {
+        is.setstate(std::ios::failbit);
+        return is;
+    }
+
+    if (is) {
+        s.width.assign(width.first, width.second);
+        s.height.assign(height.first, height.second);
+        s.depth.assign(depth.first, depth.second);
+    }
+
+    return is;
+}
+#endif
 
 template <typename T, typename U>
 inline auto operator*(const math::Size3_<T> &l, const math::Size3_<U> &r)

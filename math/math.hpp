@@ -282,8 +282,14 @@ void covMatrix(
 /** Templatized 1/2 for float and double.
  */
 template <typename T> constexpr T OneHalf;
+
+#ifdef __cpp_inline_variables
 template <> inline constexpr double OneHalf<double> = 0.5;
 template <> inline constexpr float OneHalf<float> = 0.5f;
+#else
+template <> constexpr double OneHalf<double> = 0.5;
+template <> constexpr float OneHalf<float> = 0.5f;
+#endif
 
 /** Floating point rounding with half-way cases rounded up (towards positive
  *  infinity)

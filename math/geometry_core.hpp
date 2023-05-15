@@ -39,10 +39,10 @@
 #include <boost/numeric/ublas/io.hpp>
 
 #if !(defined(_MSC_VER) && defined(__CUDACC__))
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/qi_match.hpp>
-#include <boost/spirit/include/qi_match_auto.hpp>
-#include <boost/spirit/include/qi_alternative.hpp>
+#  define MATH_CAN_USE_BOOST_SPIRIT
+#  include "utility/streamspirit.hpp"
+#else
+#  undef MATH_CAN_USE_BOOST_SPIRIT
 #endif
 
 #include <boost/rational.hpp>
@@ -1013,7 +1013,7 @@ operator<<(std::basic_ostream<CharT, Traits> &os, const Viewport2_<T> &v)
     return os;
 }
 
-#if !(defined(_MSC_VER) && defined(__CUDACC__))
+#ifdef MATH_CAN_USE_BOOST_SPIRIT
 template<typename CharT, typename Traits, typename T>
 inline std::basic_istream<CharT, Traits>&
 operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
@@ -1021,17 +1021,26 @@ operator>>(std::basic_istream<CharT, Traits> &is, Viewport2_<T> &v)
     using boost::spirit::qi::auto_;
     using boost::spirit::qi::char_;
     using boost::spirit::qi::omit;
-    using boost::spirit::qi::match;
+    using boost::fusion::vector;
+    using boost::fusion::at_c;
 
-    char sign1, sign2;
+    boost::optional<vector<char, T, char, T>> shift;
 
-    is >> match((auto_ >> omit['x'] >> auto_
-                 >> (char_('+') | char_('-')) >> auto_
-                 >> (char_('+') | char_('-')) >> auto_)
-                , v.width, v.height, sign1, v.x, sign2, v.y);
+    utility::parseToken
+        (is
+         , (auto_ >> omit['x'] >> auto_
+            >> -(char_("+-") >> !char_("+-") >> auto_
+                 >> char_("+-") >> !char_("+-") >> auto_))
+         , v.width, v.height, shift);
 
-    if (sign1 == '-') { v.x = -v.x; }
-    if (sign2 == '-') { v.y = -v.y; }
+    if (is && shift) {
+        auto &&applyShift([&](char sign, T value) {
+            return ((sign == '-') ? -value : value);
+        });
+        v.x = applyShift(at_c<0>(*shift), at_c<1>(*shift));
+        v.y = applyShift(at_c<2>(*shift), at_c<3>(*shift));
+    }
+
     return is;
 }
 #endif
@@ -1084,21 +1093,19 @@ operator<<(std::basic_ostream<CharT, Traits> &os, const Extents2_<T> &e)
     return os;
 }
 
-#if !(defined(_MSC_VER) && defined(__CUDACC__))
+#ifdef MATH_CAN_USE_BOOST_SPIRIT
 template<typename CharT, typename Traits, typename T>
 inline std::basic_istream<CharT, Traits>&
 operator>>(std::basic_istream<CharT, Traits> &is, Extents2_<T> &e)
 {
     using boost::spirit::qi::auto_;
-    using boost::spirit::qi::char_;
     using boost::spirit::qi::omit;
-    using boost::spirit::qi::match;
 
-    is >> match((auto_ >> omit[','] >> auto_ >> omit[':']
-                 >> auto_ >> omit[','] >> auto_)
-                , e.ll(0), e.ll(1), e.ur(0), e.ur(1));
-
-    return is;
+    return utility::parseToken
+        (is
+         , (auto_ >> omit[','] >> auto_ >> omit[':']
+            >> auto_ >> omit[','] >> auto_)
+         , e.ll(0), e.ll(1), e.ur(0), e.ur(1));
 }
 #endif
 
@@ -1111,21 +1118,18 @@ operator<<(std::basic_ostream<CharT, Traits> &os, const Extents3_<T> &e)
     return os;
 }
 
-#if !(defined(_MSC_VER) && defined(__CUDACC__))
+#ifdef MATH_CAN_USE_BOOST_SPIRIT
 template<typename CharT, typename Traits, typename T>
 inline std::basic_istream<CharT, Traits>&
 operator>>(std::basic_istream<CharT, Traits> &is, Extents3_<T> &e)
 {
     using boost::spirit::qi::auto_;
-    using boost::spirit::qi::char_;
     using boost::spirit::qi::omit;
-    using boost::spirit::qi::match;
-
-    is >> match((auto_ >> omit[','] >> auto_ >> omit[','] >> auto_ >> omit[':']
-                 >> auto_ >> omit[','] >> auto_ >> omit[','] >> auto_)
-                , e.ll(0), e.ll(1), e.ll(2), e.ur(0), e.ur(1), e.ur(2));
-
-    return is;
+    return utility::parseToken
+        (is
+         , (auto_ >> omit[','] >> auto_ >> omit[','] >> auto_ >> omit[':']
+            >> auto_ >> omit[','] >> auto_ >> omit[','] >> auto_)
+         , e.ll(0), e.ll(1), e.ll(2), e.ur(0), e.ur(1), e.ur(2));
 }
 #endif
 
