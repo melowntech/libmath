@@ -29,7 +29,7 @@
  *
  * Low level math helper functions
  */
-      
+
 #ifndef MATH_MATH_HPP
 #define MATH_MATH_HPP
 
@@ -95,12 +95,12 @@ template<typename T>
 bool ccinterval( const T & lb, const T  & ub, const T & value ) {
     return ( lb <= value && value <= ub );
 }
-    
+
 
 /**
   * Signum function
   */
-  
+
 template <typename Value_t>
 int sgn( const Value_t & value ) {
    if ( value > 0 ) return 1;
@@ -214,7 +214,7 @@ double determinant(ublas::matrix_expression<matrix_T> const& mat_r)
     det = 0.0;
 
   return det;
-} 
+}
 
 
 /**
@@ -294,6 +294,9 @@ template <> constexpr float OneHalf<float> = 0.5f;
 /** Floating point rounding with half-way cases rounded up (towards positive
  *  infinity)
  */
+#ifdef __APPLE__
+#undef roundup
+#endif
 template <typename T>
 T roundup(T value) {
     return std::floor(value + OneHalf<T>);
