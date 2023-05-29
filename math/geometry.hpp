@@ -423,6 +423,14 @@ Line3 planeIntersection(const Plane3 &p1, const Plane3 &p2);
 Point3 planeIntersection(const Plane3 &p1, const Plane3 &p2, const Plane3 &p3);
 
 /**
+ * Creates a transformation matrix of on-plane 2D crs (plane -> global)
+ *
+ * Creates a 2D coordinate system for points on the plane and returns the
+ * transformation from the 2D system to global 3D system.
+ */
+math::Matrix4 createPlaneCrs(const math::Plane3& plane);
+
+/**
  * Returns a measure of triangular polyface regularity. Value of 1.0
  * indicates an equilateral triangle, value of 0.0 indicates a triangle
  * with at least one degenerate edge.
