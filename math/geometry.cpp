@@ -200,6 +200,38 @@ Point3 planeIntersection(const Plane3& p1, const Plane3& p2, const Plane3& p3)
                   determinant(Dz) / den);
 }
 
+math::Matrix4 createPlaneCrs(const math::Plane3& plane)
+{
+    // origin of the crs
+    math::Point3 og = math::pointPlaneProjection(math::Point3(0, 0, 0), plane);
+
+    // get some second point on the plane
+    math::Point3 p1 = math::pointPlaneProjection(math::Point3(1, 0, 0), plane);
+    math::Point3 p2 = math::pointPlaneProjection(math::Point3(0, 1, 0), plane);
+
+    // choose the more distant to avoid singularity
+    math::Point3 p = math::length(og - p1) > math::length(og - p2) ? p1 : p2;
+
+    // two base vectors
+    math::Point3 n1 = math::normalize(p - og);
+    math::Point3 n3 = math::normalize(plane.n_);
+
+    // get the third to form a right-hand crs
+    math::Point3 n2 = math::normalize(math::crossProduct(n3, n1));
+
+    math::Matrix4 tf = boost::numeric::ublas::identity_matrix<double>(4, 4);
+
+    auto col1 = ublas::column(tf, 0);
+    auto col2 = ublas::column(tf, 1);
+    auto col3 = ublas::column(tf, 2);
+    auto col4 = ublas::column(tf, 3);
+    ublas::subrange(col1, 0, 3) = n1;
+    ublas::subrange(col2, 0, 3) = n2;
+    ublas::subrange(col3, 0, 3) = n3;
+    ublas::subrange(col4, 0, 3) = og;
+    return tf;
+}
+
 double polygonRegularity(
     const Point3 & v0, const Point3 & v1, const Point3 & v2  ) {
 
