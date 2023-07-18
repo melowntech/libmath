@@ -67,6 +67,13 @@ template <typename T> Matrix4 rotateX(const T& angle);
 template <typename T> Matrix4 rotateY(const T& angle);
 template <typename T> Matrix4 rotateZ(const T& angle);
 
+/** Checks whether supplied 4x4 matrix is valid transformation.
+ */
+inline bool isValidTransformation(const math::Matrix4& mat)
+{
+    return mat(3, 0) == 0 && mat(3, 1) == 0 && mat(3, 2) == 0 && mat(3, 3) == 1;
+}
+
 inline Point3 transform(const Matrix4& tr, const Point3 &pt)
 {
     return Point3(
