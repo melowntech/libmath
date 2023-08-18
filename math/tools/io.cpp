@@ -34,6 +34,24 @@ UTILITY_GENERATE_ENUM(Type,
                       ((Viewport2))
                       ((Viewport2i))
                       ((Viewport2f))
+
+                      ((Point2))
+                      ((Point2i))
+                      ((Point2ll))
+                      ((Point2f))
+                      ((Point2d))
+
+                      ((Point3))
+                      ((Point3i))
+                      ((Point3ll))
+                      ((Point3f))
+                      ((Point3d))
+
+                      ((Point4))
+                      ((Point4i))
+                      ((Point4ll))
+                      ((Point4f))
+                      ((Point4d))
                       )
 
 struct LexicalCast {
@@ -172,6 +190,24 @@ int MathIo::useLexicalCast()
         CASE(Viewport2);
         CASE(Viewport2i);
         CASE(Viewport2f);
+
+        CASE(Point2);
+        CASE(Point2i);
+        CASE(Point2ll);
+        CASE(Point2f);
+        CASE(Point2d);
+
+        CASE(Point3);
+        CASE(Point3i);
+        CASE(Point3ll);
+        CASE(Point3f);
+        CASE(Point3d);
+
+        CASE(Point4);
+        CASE(Point4i);
+        CASE(Point4ll);
+        CASE(Point4f);
+        CASE(Point4d);
     }
 #undef CASE
 
@@ -244,6 +280,24 @@ int MathIo::useStream()
             CASE(Viewport2);
             CASE(Viewport2i);
             CASE(Viewport2f);
+
+            CASE(Point2);
+            CASE(Point2i);
+            CASE(Point2ll);
+            CASE(Point2f);
+            CASE(Point2d);
+
+            CASE(Point3);
+            CASE(Point3i);
+            CASE(Point3ll);
+            CASE(Point3f);
+            CASE(Point3d);
+
+            CASE(Point4);
+            CASE(Point4i);
+            CASE(Point4ll);
+            CASE(Point4f);
+            CASE(Point4d);
         }
 #undef CASE
 
