@@ -109,6 +109,14 @@ inline T angle(const Point3_<T>& v1, const Point3_<T>& v2)
                         length(v1 * length(v2) + length(v1) * v2));
 }
 
+template <class T>
+inline T angle(const Point2_<T>& v1, const Point2_<T>& v2)
+{
+    return 2
+           * std::atan2(length(v1 * length(v2) - length(v1) * v2),
+                        length(v1 * length(v2) + length(v1) * v2));
+}
+
 /** homogeneous coordinates (from euclidian) */
 template <class T>
 inline ublas::vector<T, ublas::bounded_array<T, 4> >
