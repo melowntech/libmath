@@ -265,6 +265,22 @@ inline T lineIntersection(const Line2_<T>& l1, const Line2_<T>& l2)
     return l1.p + (num / den) * l1.u;
 }
 
+template <typename T>
+inline T pointLineProjectionParametric(const Point2_<T>& p,
+                                       const Line2_<Point2_<T>>& line)
+{
+    auto num { ublas::inner_prod(line.u, p - line.p) };
+    auto den { ublas::inner_prod(line.u, line.u) };
+    return num / den;
+}
+
+template <typename T>
+inline T pointLineProjection(const T& p, const Line2_<T>& line)
+{
+    auto t { pointLineProjectionParametric(p, line) };
+    return line.p + t * line.u;
+}
+
 /**
  * Line segment represented by start and end points
  */
